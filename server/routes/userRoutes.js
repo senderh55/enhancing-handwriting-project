@@ -20,14 +20,17 @@ router.post("/users", async (req, res) => {
 router.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
-      req.body.email,
+      req.body.username,
       req.body.password
     );
     const token = await user.generateAuthToken();
     res.send({ user, token });
   } catch (e) {
-    console.log(e);
-    res.status(400).send();
+    let errorMessage = JSON.stringify(e.message);
+    if (e.message === "User not found") res.status(404).send(errorMessage);
+    else if (e.message === "Incorrect password")
+      res.status(401).send(errorMessage);
+    else res.status(500).send(errorMessage);
   }
 });
 
