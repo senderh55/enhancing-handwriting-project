@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
     const user = await User.findOne({
       // find the user
       _id: decoded._id,
-      "tokens.tohen": token,
+      "tokens.token": token,
     });
 
     if (!user) throw new Error(); // triger catch
