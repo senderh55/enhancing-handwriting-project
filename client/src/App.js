@@ -1,18 +1,32 @@
-import logo from "./logo.svg";
-import "./App.css";
-import LoginForm from "./components/LoginForm";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import HomePage from "./pages/Home";
+
+import RootLayout from "./pages/Root";
+import ErrorPage from "./pages/Error";
+import SignInSide from "./pages/SignInSide";
+import SignUp from "./pages/SignUp";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, path: "/", element: <HomePage /> },
+      {
+        path: "login",
+        element: <SignInSide />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Welcome, Please login.</p>
-
-        <LoginForm />
-      </header>
-    </div>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;
