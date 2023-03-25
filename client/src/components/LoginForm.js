@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { Form, FormikProvider, useFormik } from "formik";
+import { login } from "./../utils/api";
+
 import * as Yup from "yup";
 
 import {
@@ -49,13 +51,17 @@ const LoginForm = ({ setAuth }) => {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      console.log("submitting...");
-      setTimeout(() => {
-        console.log("submited!!");
-        setAuth(true);
-        navigate(from, { replace: true });
-      }, 2000);
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const data = await login(values.email, values.password); // FIXME
+        console.log("Login success:", data);
+        // handle successful login, e.g. redirect user to dashboard page
+      } catch (error) {
+        console.log("Login error:", error);
+        setErrors({ login: error.message });
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -143,7 +149,7 @@ const LoginForm = ({ setAuth }) => {
               <Link
                 component={RouterLink}
                 variant="subtitle2"
-                to="#"
+                to="/ForgotPassword"
                 underline="hover"
               >
                 Forgot password?

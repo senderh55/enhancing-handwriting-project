@@ -5,6 +5,7 @@ import RootLayout from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { useState } from "react";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  const [auth, setAuth] = useState(false);
+  return <RouterProvider router={router} setAuth={setAuth}></RouterProvider>;
 }
 
 export default App;

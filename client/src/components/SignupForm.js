@@ -12,6 +12,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
+import { signup } from "./../utils/api";
 
 /////////////////////////////////////////////////////////////
 let easing = [0.6, -0.05, 0.01, 0.99];
@@ -43,7 +44,7 @@ const SignupForm = ({ setAuth }) => {
       .email("Email must be a valid email address")
       .required("Email is required"),
     password: Yup.string()
-      .min(5, "Too Short! please use at least 5 characters")
+      .min(7, "Too Short! please use at least 7 characters")
       .max(20, "Too Long! max 20 characters")
       .required("Password is required"),
   });
@@ -56,11 +57,23 @@ const SignupForm = ({ setAuth }) => {
       password: "",
     },
     validationSchema: SignupSchema,
-    onSubmit: () => {
-      setTimeout(() => {
-        setAuth(true);
+
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const data = await signup(
+          values.firstName + " " + values.lastName,
+          values.email,
+          values.password
+        );
+        console.log("Signup success:", data);
+        // handle successful signup, e.g. redirect user to dashboard page
         navigate("/", { replace: true });
-      }, 2000);
+      } catch (error) {
+        console.log("Signup error:", error);
+        setErrors({ signup: error.message });
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
