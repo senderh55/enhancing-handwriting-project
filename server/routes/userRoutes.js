@@ -11,16 +11,18 @@ router.post("/users", async (req, res) => {
     const token = await user.generateAuthToken();
     res.status(201).send({ user, token });
   } catch (e) {
-    res.status(400).send(e);
-    console.log(e);
+    let errorMessage = JSON.stringify(e.message);
+    res.status(400).send(errorMessage);
+    console.log(errorMessage);
   }
 });
 
 // LOGIN User
 router.post("/users/login", async (req, res) => {
+  console.log(req.body);
   try {
     const user = await User.findByCredentials(
-      req.body.username,
+      req.body.email,
       req.body.password
     );
     const token = await user.generateAuthToken();
