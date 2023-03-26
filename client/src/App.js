@@ -5,7 +5,7 @@ import RootLayout from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import { useState } from "react";
+import UserDashboard from "./pages/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -22,13 +22,16 @@ const router = createBrowserRouter([
         path: "signup",
         element: <Signup />,
       },
+      {
+        path: "userDashboard",
+        element: <UserDashboard />,
+      },
     ],
   },
 ]);
 
 function App() {
-  const [auth, setAuth] = useState(false);
-  return <RouterProvider router={router} setAuth={setAuth}></RouterProvider>;
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Form, FormikProvider, useFormik } from "formik";
-import { login } from "./../utils/api";
+import { AuthContext } from "../context/authContext";
 
 import * as Yup from "yup";
 
@@ -31,10 +31,8 @@ const animate = {
 };
 
 const LoginForm = ({ setAuth }) => {
+  const { login } = React.useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -53,14 +51,13 @@ const LoginForm = ({ setAuth }) => {
     validationSchema: LoginSchema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const data = await login(values.email, values.password); // FIXME
+        const data = await login(values.email, values.password); // login using the context function
+
+        navigate("../UserDashboard", { replace: true });
         console.log("Login success:", data);
-        // handle successful login, e.g. redirect user to dashboard page
       } catch (error) {
         console.log("Login error:", error);
         setErrors({ login: error.message });
-      } finally {
-        setSubmitting(false);
       }
     },
   });
