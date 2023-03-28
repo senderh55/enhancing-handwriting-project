@@ -1,59 +1,77 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { Button, Grid, Paper } from "@mui/material";
 import { AuthContext } from "../context/authContext";
-import { useEffect } from "react";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+} from "@mui/material";
 
-const DashboardContainer = styled.div`
-  margin: 2rem;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
-const PaperContainer = styled(Paper)`
-  && {
-    padding: 2rem;
-    text-align: center;
-    color: #fff;
-    background: #2196f3;
-  }
+const Greeting = styled(Typography)`
+  margin-top: 32px;
 `;
 
-const ButtonContainer = styled(Button)`
-  && {
-    margin: 1rem;
-    background: #fff;
-    color: #2196f3;
-  }
+const ProfileCard = styled(Card)`
+  min-width: 275px;
+  background-color: #2196f3;
+  color: #fff;
+  margin-top: 32px;
 `;
 
-function UserDashboard() {
-  const { userName, isLoggedIn } = useContext(AuthContext);
-  console.log("isLoggedIn", isLoggedIn);
+const ProfileCardContent = styled(CardContent)`
+  text-align: center;
+`;
+
+const ProfileTitle = styled(Typography)`
+  font-size: 24px;
+  font-weight: bold;
+  margin: 16px 0;
+`;
+
+const ProfileButton = styled(Button)`
+  margin: 8px;
+`;
+
+const UserDashboard = () => {
+  const { isLoggedIn, userName, profiles } = useContext(AuthContext);
+  console.log(isLoggedIn, userName, profiles);
+
   return (
-    <DashboardContainer>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <PaperContainer>
-            <h2>Welcome {userName}!</h2>
-            <h4>Select a Profile</h4>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <ButtonContainer variant="contained">Profile 1</ButtonContainer>
-              </Grid>
-              <Grid item xs={4}>
-                <ButtonContainer variant="contained">Profile 2</ButtonContainer>
-              </Grid>
-              <Grid item xs={4}>
-                <ButtonContainer variant="contained">Profile 3</ButtonContainer>
-              </Grid>
-            </Grid>
-            <ButtonContainer variant="contained">
-              Create New Profile
-            </ButtonContainer>
-          </PaperContainer>
-        </Grid>
-      </Grid>
-    </DashboardContainer>
+    <Wrapper>
+      {isLoggedIn ? (
+        <Greeting variant="h4" gutterBottom>
+          Hello, {userName}!
+        </Greeting>
+      ) : (
+        <Greeting variant="h4" gutterBottom>
+          Please log in to view your dashboard.
+        </Greeting>
+      )}
+      {isLoggedIn && (
+        <ProfileCard>
+          <ProfileCardContent>
+            <ProfileTitle variant="h6">Your Profiles:</ProfileTitle>
+            {profiles.map((profile) => (
+              <ProfileButton key={profile.key} variant="contained">
+                {`${profile.name} ${profile.age}`}
+              </ProfileButton>
+            ))}
+          </ProfileCardContent>
+          <CardActions>
+            <ProfileButton variant="contained">Add Profile</ProfileButton>
+          </CardActions>
+        </ProfileCard>
+      )}
+    </Wrapper>
   );
-}
+};
 
 export default UserDashboard;

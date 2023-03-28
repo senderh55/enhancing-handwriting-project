@@ -41,7 +41,6 @@ export const logout = async (token) => {
   }
 };
 
-
 export const createProfile = async (token, profile) => {
   try {
     const response = await axios.post(`${serverURL}/profiles`, profile, {
@@ -62,7 +61,6 @@ export const getProfiles = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(`api.js response for getProfiles: ${response.data}`);
     return response.data;
   } catch (error) {
     throw error.response.data;

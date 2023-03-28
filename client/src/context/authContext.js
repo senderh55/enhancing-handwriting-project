@@ -1,6 +1,6 @@
 import React from "react";
 import * as api from "../utils/api";
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useCallback } from "react";
 
 const AuthContext = createContext();
 
@@ -10,29 +10,44 @@ function AuthProvider(props) {
   const [userName, setUserName] = useState("");
   const [profiles, setProfiles] = useState([]);
 
-  const checkAuth = () => {
-    const token = localStorage.getItem("token");
-    console.log(`checkAuth token: ${token}`);
-    if (token) {
-      setIsLoggedIn(true);
-      setToken(token);
-      setUserName(localStorage.getItem("name"));
-      getProfiles(token);
-    }
-  };
+  const getProfiles = useCallback(async (token) => {
+    // we use useCallback to prevent the function from being recreated on every render and causing an infinite loop
+    const response = await api.getProfiles(token);
+    const userProfiles = response.map((profile) => {
+      return {
+        key: JSON.stringify(profile._id),
+        name: JSON.stringify(profile.name),
+        age: JSON.stringify(profile.age),
+        description: JSON.stringify(profile.description),
+      };
+    });
+    setProfiles(userProfiles);
+  }, []);
 
   useEffect(() => {
-    console.log("authContext.js useEffect");
-    checkAuth();
-  }, []); // FIXME - why it called twice?
+    // this useEffect will run on every render and check if the user is logged in
 
-  const userLoggedIn = (userData) => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        setIsLoggedIn(true);
+        setToken(token);
+        setUserName(localStorage.getItem("name"));
+        await getProfiles(token);
+      }
+    };
+
+    checkAuth();
+  }, [getProfiles]); // we pass getProfiles as a dependency to prevent the useEffect from being recreated on every render and causing an infinite loop
+
+  const userLoggedIn = async (userData) => {
     localStorage.setItem("token", userData.token); // store the token in the browser's local storage
     setToken(userData.token);
     const userFirstName = userData.user.name.split(" ")[0];
     setUserName(userFirstName);
     localStorage.setItem("name", userFirstName); // store the token in the browser's local storage
     setIsLoggedIn(true);
+    await getProfiles(userData.token);
   };
 
   const signup = async (name, email, password) => {
@@ -81,23 +96,11 @@ function AuthProvider(props) {
     }
   };
 
-  const getProfiles = async (token) => {
-    try {
-      console.log(`authContext.js token getProfiles: ${token}`);
-      const response = await api.getProfiles(token);
-      setProfiles(response.data);
-
-      return;
-    } catch (error) {
-      throw error;
-    }
-  };
-
   // Define the context value
   const contextValue = {
     isLoggedIn,
     userName,
-    getProfiles,
+    profiles,
     signup,
     login,
     logout,
