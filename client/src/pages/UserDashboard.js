@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { Button, Grid, Paper } from "@mui/material";
-//import { UserContext } from './UserContext';
+import { AuthContext } from "../context/authContext";
+import { useEffect } from "react";
 
 const DashboardContainer = styled.div`
   margin: 2rem;
@@ -25,14 +26,14 @@ const ButtonContainer = styled(Button)`
 `;
 
 function UserDashboard() {
-  //const { user } = useContext(UserContext);
-
+  const { userName, isLoggedIn } = useContext(AuthContext);
+  console.log("isLoggedIn", isLoggedIn);
   return (
     <DashboardContainer>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <PaperContainer>
-            <h2>Welcome Sender!</h2>
+            <h2>Welcome {userName}!</h2>
             <h4>Select a Profile</h4>
             <Grid container spacing={2}>
               <Grid item xs={4}>

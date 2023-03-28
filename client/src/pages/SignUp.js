@@ -47,7 +47,7 @@ const fadeInUp = {
   },
 };
 
-const Signup = ({ setAuth }) => {
+const Signup = () => {
   return (
     <RootStyle>
       <Container maxWidth="sm">
@@ -68,7 +68,7 @@ const Signup = ({ setAuth }) => {
             </Typography>
           </Divider>
 
-          <SignupForm setAuth={setAuth} />
+          <SignupForm />
 
           <Typography
             component={motion.p}

@@ -12,7 +12,8 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
-import { signup } from "./../utils/api";
+import { AuthContext } from "../context/authContext";
+import { useContext } from "react";
 
 /////////////////////////////////////////////////////////////
 let easing = [0.6, -0.05, 0.01, 0.99];
@@ -26,7 +27,8 @@ const animate = {
   },
 };
 
-const SignupForm = ({ setAuth }) => {
+const SignupForm = () => {
+  const { signup } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +69,7 @@ const SignupForm = ({ setAuth }) => {
         );
         console.log("Signup success:", data);
         // handle successful signup, e.g. redirect user to dashboard page
-        navigate("/", { replace: true });
+        navigate("/userDashboard", { replace: true });
       } catch (error) {
         console.log("Signup error:", error);
         setErrors({ signup: error.message });

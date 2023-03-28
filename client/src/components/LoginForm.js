@@ -30,7 +30,7 @@ const animate = {
   },
 };
 
-const LoginForm = ({ setAuth }) => {
+const LoginForm = () => {
   const { login } = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +52,6 @@ const LoginForm = ({ setAuth }) => {
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         const data = await login(values.email, values.password); // login using the context function
-
         navigate("../UserDashboard", { replace: true });
         console.log("Login success:", data);
       } catch (error) {
