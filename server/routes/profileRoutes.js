@@ -31,6 +31,7 @@ router.get("/profiles", auth, async (req, res) => {
         sort,
       },
     });
+    console.log(req.user.profiles + " " + req.user.profiles.length);
     res.send(req.user.profiles);
   } catch (e) {
     res.status(500).send();

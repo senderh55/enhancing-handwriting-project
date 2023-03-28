@@ -7,12 +7,6 @@ const profileSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    password: {
-      type: String,
-      required: true,
-      trim: true,
-      minLength: 5,
-    },
     age: {
       type: Number,
       default: 0,
