@@ -31,7 +31,7 @@ router.get("/profiles", auth, async (req, res) => {
         sort,
       },
     });
-    console.log(req.user.profiles + " " + req.user.profiles.length);
+
     res.send(req.user.profiles);
   } catch (e) {
     res.status(500).send();
@@ -51,6 +51,7 @@ router.get("/profiles/:id", auth, async (req, res) => {
 
 router.post("/profiles", auth, async (req, res) => {
   //const profile = new profile(req.body);
+  console.log("req.body", req.body);
   const profile = new Profile({ ...req.body, owner: req.user._id }); // all properties of req.body with addition of user id
   try {
     await profile.save();
@@ -62,13 +63,14 @@ router.post("/profiles", auth, async (req, res) => {
 
 router.patch("/profiles/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["description", "completed"]; // FIXME: update this to match our model
-  const isValidOperation = updates.every((update) =>
-    allowedUpdates.includes(update)
-  );
-  if (!isValidOperation) {
-    return res.status(400).send({ error: "Invalid updates!" });
-  }
+  // implement validation of updates (only allow name, age, description, completed)
+  // const allowedUpdates = ["name","age","description", "completed"];
+  // const isValidOperation = updates.every((update) =>
+  //   allowedUpdates.includes(update)
+  // );
+  // if (!isValidOperation) {
+  //   return res.status(400).send({ error: "Invalid updates!" });
+  // }
 
   try {
     const profile = await Profile.findOne({
