@@ -9,14 +9,26 @@ function AuthProvider(props) {
   const [token, setToken] = useState("");
   const [userName, setUserName] = useState("");
   const [profiles, setProfiles] = useState([]);
+  const [selectedProfile, setSelectedProfile] = useState({});
 
+  const getSelectedProfile = useCallback(
+    // useCallback is used to prevent the function from being recreated on every render and causing an infinite loop in the useEffect
+    (profileId) => {
+      const selectedProfile = profiles.find(
+        (profile) => profile.key === profileId // find the profile with the same key as the profileId
+      );
+      setSelectedProfile(selectedProfile);
+    },
+    [profiles]
+  );
+
+  // we use useCallback to prevent the function from being recreated on every render and causing an infinite loop
   const getProfiles = useCallback(async (token) => {
-    // we use useCallback to prevent the function from being recreated on every render and causing an infinite loop
     const response = await api.getProfiles(token);
     const userProfiles = response.map((profile) => {
       return {
         key: JSON.stringify(profile._id),
-        name: JSON.stringify(profile.name),
+        name: JSON.stringify(profile.name).replace(/['"]/g, ""), // remove the quotes from the string
         age: JSON.stringify(profile.age),
         description: JSON.stringify(profile.description),
       };
@@ -112,10 +124,12 @@ function AuthProvider(props) {
     isLoggedIn,
     userName,
     profiles,
+    selectedProfile,
     signup,
     login,
     logout,
     createProfile,
+    getSelectedProfile,
   };
 
   return (

@@ -47,7 +47,7 @@ const SignupForm = () => {
     },
     validationSchema: CreateProfileSchema,
 
-    // FIXME
+
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         const data = await createProfile(

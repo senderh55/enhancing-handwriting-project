@@ -7,8 +7,6 @@ import * as Yup from "yup";
 
 import {
   Box,
-  Checkbox,
-  FormControlLabel,
   IconButton,
   InputAdornment,
   Link,
@@ -61,8 +59,7 @@ const LoginForm = () => {
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } =
-    formik;
+  const { errors, touched, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -132,16 +129,6 @@ const LoginForm = () => {
               justifyContent="space-between"
               sx={{ my: 2 }}
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    {...getFieldProps("remember")}
-                    checked={values.remember}
-                  />
-                }
-                label="Remember me"
-              />
-
               <Link
                 component={RouterLink}
                 variant="subtitle2"

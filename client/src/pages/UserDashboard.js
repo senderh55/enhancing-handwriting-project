@@ -13,10 +13,12 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const ProfileCard = styled(Card)`
-  min-width: 275px;
-  background-color: #2196f3;
-  color: #fff;
-  margin-top: 32px;
+  width: 100%;
+  max-width: 600px;
+  margin: 32px auto;
+  background-color: #fff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
 `;
 
 const ProfileCardContent = styled(CardContent)`
@@ -26,32 +28,48 @@ const ProfileCardContent = styled(CardContent)`
 const ProfileTitle = styled(Typography)`
   font-size: 24px;
   font-weight: bold;
-  margin: 16px 0;
+  margin-bottom: 16px;
 `;
 
 const ProfileButton = styled(Button)`
   margin: 8px;
+  background-color: #2196f3;
+  color: #fff;
+  &:hover {
+    background-color: #1769aa;
+  }
 `;
 
 const UserDashboard = () => {
-  const { isLoggedIn, userName, profiles } = useContext(AuthContext);
+  const { isLoggedIn, userName, profiles, getSelectedProfile } =
+    useContext(AuthContext);
+
   console.log(isLoggedIn, userName, profiles);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    // user is not logged in, redirect to home page
     if (!isLoggedIn) {
       navigate("/");
     }
   }, [isLoggedIn, navigate]);
+
+  const handleProfileButtonClick = (profileKey) => {
+    getSelectedProfile(profileKey);
+    navigate("/profileDashboard");
+  };
 
   return (
     <ProfileCard>
       <ProfileCardContent>
         <ProfileTitle variant="h6">Your Profiles:</ProfileTitle>
         {profiles.map((profile) => (
-          <ProfileButton key={profile.key} variant="contained">
-            {`${profile.name} ${profile.age}`}
+          <ProfileButton
+            key={profile.key}
+            onClick={() => handleProfileButtonClick(profile.key)}
+            variant="contained"
+          >
+            {`name:${profile.name.replace(/['"]/g, "")}, age:${profile.age}`}
           </ProfileButton>
         ))}
       </ProfileCardContent>
