@@ -3,40 +3,40 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+} from "@mui/material";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const Card = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.18);
-  padding: 20px;
-  width: 400px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-`;
-
-const Button = styled.button`
-  background-color: #3f51b5;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 10px;
+const ProfileCard = styled(Card)`
   width: 100%;
-  max-width: 150px;
+  max-width: 600px;
+  margin: 32px auto;
+  background-color: #fff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+`;
+
+const ProfileCardContent = styled(CardContent)`
+  text-align: center;
+`;
+
+const ProfileTitle = styled(Typography)`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+`;
+
+const ProfileButton = styled(Button)`
+  margin: 8px;
+  background-color: #2196f3;
+  color: #fff;
   &:hover {
-    background-color: #2c3e50;
+    background-color: #1769aa;
   }
 `;
 
@@ -53,19 +53,42 @@ const ProfileDashboard = () => {
   }, [isLoggedIn, navigate]);
 
   return (
-    <Container>
-      <Card>
-        <h2>{selectedProfile.name} Dashboard</h2>
-        <ButtonContainer>
-          <Button>Practice</Button>
-          <Button>Show Results</Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <Button>Edit Profile</Button>
-          <Button>Delete Profile</Button>
-        </ButtonContainer>
-      </Card>
-    </Container>
+    <ProfileCard>
+      <ProfileCardContent>
+        <ProfileTitle>{selectedProfile.name} Dashboard</ProfileTitle>
+
+        <CardActions>
+          <ProfileButton
+            variant="contained"
+            component={RouterLink}
+            to="/practice"
+          >
+            Practice
+          </ProfileButton>
+          <ProfileButton
+            variant="contained"
+            component={RouterLink}
+            to="/Results"
+          >
+            Results
+          </ProfileButton>
+          <ProfileButton
+            variant="contained"
+            component={RouterLink}
+            to="/EditProfile"
+          >
+            Edit profile
+          </ProfileButton>
+          <ProfileButton
+            variant="contained"
+            component={RouterLink}
+            to="/practice"
+          >
+            Delete Profile
+          </ProfileButton>
+        </CardActions>
+      </ProfileCardContent>
+    </ProfileCard>
   );
 };
 

@@ -44,7 +44,8 @@ const UserDashboard = () => {
   const { isLoggedIn, userName, profiles, getSelectedProfile } =
     useContext(AuthContext);
 
-  console.log(isLoggedIn, userName, profiles);
+  console.log("userName", userName);
+  console.log("profiles", profiles);
 
   const navigate = useNavigate();
 

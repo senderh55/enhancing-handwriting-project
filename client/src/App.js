@@ -8,7 +8,7 @@ import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
 import CreateProfile from "./pages/CreateProfile";
 import ProfileDashboard from "./pages/ProfileDashboard";
-
+import Practice from "./pages/Practice";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "profileDashboard",
         element: <ProfileDashboard />,
+      },
+      {
+        path: "practice",
+        element: <Practice />,
       },
     ],
   },
