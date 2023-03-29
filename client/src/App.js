@@ -1,11 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import Home from "./pages/Home";
 
 import RootLayout from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
+import CreateProfile from "./pages/CreateProfile";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, path: "/", element: <HomePage /> },
+      { index: true, path: "/", element: <Home /> },
+
       {
         path: "login",
         element: <Login />,
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "userDashboard",
         element: <UserDashboard />,
+      },
+      {
+        path: "createProfile",
+        element: <CreateProfile />,
       },
     ],
   },

@@ -1,18 +1,19 @@
 import React from "react";
 import { Button, Typography } from "@mui/material";
-import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
-const HomePage = () => {
-  // FIXME: This is a hack to get the user to the dashboard if they are logged in and try to go to the home page (i.e. /)
-  // const { isLoggedIn } = React.useContext(AuthContext);
-  // console.log(`HomePage isLoggedIn: ${isLoggedIn}`);
+const Home = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   navigate("/userDashboard", { replace: true });
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    // we use useEffect to check if user is logged in or not and redirect to userDashboard page
+    if (isLoggedIn) {
+      navigate("/userDashboard");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div
@@ -57,4 +58,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

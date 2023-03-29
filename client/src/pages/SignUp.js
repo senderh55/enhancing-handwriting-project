@@ -7,6 +7,9 @@ import GoogleAuth from "../components/GoogleAuth";
 import SignupForm from "../components/SignupForm";
 // import Logo from "../components/Logo";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 //////////////////////////////////
 const RootStyle = styled("div")({
@@ -48,6 +51,16 @@ const fadeInUp = {
 };
 
 const Signup = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // we use useEffect to check if user is logged in or not and redirect to userDashboard page
+    if (isLoggedIn) {
+      navigate("/userDashboard");
+    }
+  }, [isLoggedIn, navigate]);
+
   return (
     <RootStyle>
       <Container maxWidth="sm">

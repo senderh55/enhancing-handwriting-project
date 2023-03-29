@@ -41,7 +41,8 @@ export const logout = async (token) => {
   }
 };
 
-export const createProfile = async (token, profile) => {
+export const createProfile = async (token, name, age, description) => {
+  const profile = { name, age, description };
   try {
     const response = await axios.post(`${serverURL}/profiles`, profile, {
       headers: {

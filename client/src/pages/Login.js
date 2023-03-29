@@ -4,6 +4,9 @@ import { Container, Typography, Link, Box, Divider } from "@mui/material";
 import styled from "@emotion/styled";
 import LoginForm from "../components/LoginForm";
 import GoogleAuth from "../components/GoogleAuth";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 
 import { motion } from "framer-motion";
 
@@ -46,7 +49,17 @@ const fadeInUp = {
   },
 };
 
-const Login = ({ setAuth }) => {
+const Login = () => {
+  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // we use useEffect to check if user is logged in or not and redirect to userDashboard page
+    if (isLoggedIn) {
+      navigate("/userDashboard");
+    }
+  }, [isLoggedIn, navigate]);
+
   return (
     <RootStyle>
       <Container maxWidth="sm">
@@ -56,19 +69,15 @@ const Login = ({ setAuth }) => {
               Login to your account
             </Typography>
           </HeadingStyle>
-
           <Box component={motion.div} {...fadeInUp}>
             <GoogleAuth />
           </Box>
-
           <Divider sx={{ my: 3 }} component={motion.div} {...fadeInUp}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               OR
             </Typography>
           </Divider>
-
-          <LoginForm setAuth={setAuth} />
-
+          <LoginForm />
           <Typography
             component={motion.p}
             {...fadeInUp}

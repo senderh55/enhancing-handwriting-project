@@ -8,16 +8,9 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Greeting = styled(Typography)`
-  margin-top: 32px;
-`;
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const ProfileCard = styled(Card)`
   min-width: 275px;
@@ -43,34 +36,35 @@ const ProfileButton = styled(Button)`
 const UserDashboard = () => {
   const { isLoggedIn, userName, profiles } = useContext(AuthContext);
   console.log(isLoggedIn, userName, profiles);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // user is not logged in, redirect to home page
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
-    <Wrapper>
-      {isLoggedIn ? (
-        <Greeting variant="h4" gutterBottom>
-          Hello, {userName}!
-        </Greeting>
-      ) : (
-        <Greeting variant="h4" gutterBottom>
-          Please log in to view your dashboard.
-        </Greeting>
-      )}
-      {isLoggedIn && (
-        <ProfileCard>
-          <ProfileCardContent>
-            <ProfileTitle variant="h6">Your Profiles:</ProfileTitle>
-            {profiles.map((profile) => (
-              <ProfileButton key={profile.key} variant="contained">
-                {`${profile.name} ${profile.age}`}
-              </ProfileButton>
-            ))}
-          </ProfileCardContent>
-          <CardActions>
-            <ProfileButton variant="contained">Add Profile</ProfileButton>
-          </CardActions>
-        </ProfileCard>
-      )}
-    </Wrapper>
+    <ProfileCard>
+      <ProfileCardContent>
+        <ProfileTitle variant="h6">Your Profiles:</ProfileTitle>
+        {profiles.map((profile) => (
+          <ProfileButton key={profile.key} variant="contained">
+            {`${profile.name} ${profile.age}`}
+          </ProfileButton>
+        ))}
+      </ProfileCardContent>
+      <CardActions>
+        <ProfileButton
+          variant="contained"
+          component={RouterLink}
+          to="/createProfile"
+        >
+          Add Profile
+        </ProfileButton>
+      </CardActions>
+    </ProfileCard>
   );
 };
 

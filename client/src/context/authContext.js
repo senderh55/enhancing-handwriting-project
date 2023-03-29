@@ -96,6 +96,17 @@ function AuthProvider(props) {
     }
   };
 
+  const createProfile = async (name, age, description) => {
+    try {
+      // Make API request to authenticate the user
+      const response = await api.createProfile(token, name, age, description);
+      await getProfiles(token);
+      return response;
+    } catch (error) {
+      // Handle logout errors
+    }
+  };
+
   // Define the context value
   const contextValue = {
     isLoggedIn,
@@ -104,6 +115,7 @@ function AuthProvider(props) {
     signup,
     login,
     logout,
+    createProfile,
   };
 
   return (
