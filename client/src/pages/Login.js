@@ -51,6 +51,7 @@ const fadeInUp = {
 
 const Login = () => {
   const { isLoggedIn } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {

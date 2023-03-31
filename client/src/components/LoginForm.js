@@ -12,11 +12,27 @@ import {
   Link,
   Stack,
   TextField,
+  Snackbar,
 } from "@mui/material";
+
 import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
+// easing animation
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
   opacity: 1,
@@ -40,6 +56,7 @@ const LoginForm = () => {
     password: Yup.string().required("Password is required"),
   });
 
+  // formik form state and handlers for login form submission and validation errors
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -47,14 +64,13 @@ const LoginForm = () => {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
+    onSubmit: async (values, { setErrors }) => {
       try {
-        const data = await login(values.email, values.password); // login using the context function
+        // login is a function from AuthContext that will send a request to the server to login the user, navigate to the userDashboard page when login is successful
+        await login(values.email, values.password);
         navigate("../UserDashboard", { replace: true });
-        console.log("Login success:", data);
       } catch (error) {
-        console.log("Login error:", error);
-        setErrors({ login: error.message });
+        setErrors({ login: error }); // setErrors is a function from Formik, it will set the error message to the login field
       }
     },
   });
@@ -151,6 +167,11 @@ const LoginForm = () => {
           </Box>
         </Box>
       </Form>
+      <StyledSnackbar // this is the error message from backend (not from formik)
+        open={!!errors.login}
+        message={errors.login}
+        severity="error"
+      />
     </FormikProvider>
   );
 };

@@ -13,39 +13,52 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const ProfileCard = styled(Card)`
-  width: 100%;
-  max-width: 600px;
-  margin: 32px auto;
-  background-color: #fff;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 20px;
+  padding: 16px;
   border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ProfileCardContent = styled(CardContent)`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
 `;
 
 const ProfileTitle = styled(Typography)`
-  font-size: 24px;
-  font-weight: bold;
   margin-bottom: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
 `;
 
 const ProfileButton = styled(Button)`
   margin: 8px;
-  background-color: #2196f3;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: none;
+  background-color: #4caf50;
   color: #fff;
   &:hover {
-    background-color: #1769aa;
+    background-color: #388e3c;
+  }
+`;
+
+const ProfileButtonWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  & > * {
+    margin: 8px;
   }
 `;
 
 const UserDashboard = () => {
   const { isLoggedIn, userName, profiles, getSelectedProfile } =
     useContext(AuthContext);
-
-  console.log("userName", userName);
-  console.log("profiles", profiles);
 
   const navigate = useNavigate();
 
@@ -63,16 +76,18 @@ const UserDashboard = () => {
   return (
     <ProfileCard>
       <ProfileCardContent>
-        <ProfileTitle variant="h6">Your Profiles:</ProfileTitle>
-        {profiles.map((profile) => (
-          <ProfileButton
-            key={profile.key}
-            onClick={() => handleProfileButtonClick(profile.key)}
-            variant="contained"
-          >
-            {`name:${profile.name.replace(/['"]/g, "")}, age:${profile.age}`}
-          </ProfileButton>
-        ))}
+        <ProfileTitle>Welcome {userName}, Select Profile</ProfileTitle>
+        <ProfileButtonWrapper>
+          {profiles.map((profile) => (
+            <ProfileButton
+              key={profile.key}
+              onClick={() => handleProfileButtonClick(profile.key)}
+              variant="contained"
+            >
+              {`Name: ${profile.name}, Age: ${profile.age}`}
+            </ProfileButton>
+          ))}
+        </ProfileButtonWrapper>
       </ProfileCardContent>
       <CardActions>
         <ProfileButton
