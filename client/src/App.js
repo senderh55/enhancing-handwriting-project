@@ -9,6 +9,8 @@ import UserDashboard from "./pages/UserDashboard";
 import CreateProfile from "./pages/CreateProfile";
 import ProfileDashboard from "./pages/ProfileDashboard";
 import Practice from "./pages/Practice";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,7 +48,15 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  // load the matirial ui style after rendering the app
+
+  return (
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router}>
+        <RootLayout />
+      </RouterProvider>
+    </ThemeProvider>
+  );
 }
 
 export default App;

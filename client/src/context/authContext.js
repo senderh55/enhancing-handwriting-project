@@ -30,7 +30,7 @@ function AuthProvider(props) {
         key: JSON.stringify(profile._id),
         name: JSON.stringify(profile.name).replace(/['"]/g, ""), // remove the quotes from the string
         age: JSON.stringify(profile.age),
-        description: JSON.stringify(profile.description),
+        description: JSON.stringify(profile.description).replace(/['"]/g, ""),
       };
     });
     setProfiles(userProfiles);
@@ -100,6 +100,7 @@ function AuthProvider(props) {
       setToken("");
       setUserName("");
       setIsLoggedIn(false);
+
       return response;
     } catch (error) {
       // Handle logout errors

@@ -25,10 +25,8 @@ const Home = () => {
         height: "30vh",
       }}
     >
-      <Typography variant="h4">Welcome to my website</Typography>
-      <Typography variant="subtitle1">
-        Please register or login to continue
-      </Typography>
+      <Typography variant="h4">Welcome to ScribbleBoost!</Typography>
+      <Typography variant="h6">Please register or login to continue</Typography>
       <div
         style={{
           display: "flex",

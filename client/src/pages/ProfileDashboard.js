@@ -12,33 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 
-const ProfileCard = styled(Card)`
-  width: 100%;
-  max-width: 600px;
-  margin: 32px auto;
-  background-color: #fff;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-`;
+const ProfileCard = styled(Card)``;
 
-const ProfileCardContent = styled(CardContent)`
-  text-align: center;
-`;
+const ProfileCardContent = styled(CardContent)``;
 
-const ProfileTitle = styled(Typography)`
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
-`;
+const ProfileTitle = styled(Typography)``;
 
-const ProfileButton = styled(Button)`
-  margin: 8px;
-  background-color: #2196f3;
-  color: #fff;
-  &:hover {
-    background-color: #1769aa;
-  }
-`;
+const ProfileButton = styled(Button)``;
 
 const ProfileDashboard = () => {
   const { selectedProfile, isLoggedIn } = useContext(AuthContext);
@@ -55,7 +35,9 @@ const ProfileDashboard = () => {
   return (
     <ProfileCard>
       <ProfileCardContent>
-        <ProfileTitle>{selectedProfile.name} Dashboard</ProfileTitle>
+        <ProfileTitle variant="h5">
+          {selectedProfile.name} Dashboard
+        </ProfileTitle>
 
         <CardActions>
           <ProfileButton

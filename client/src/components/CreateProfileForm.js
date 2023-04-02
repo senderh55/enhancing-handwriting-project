@@ -36,6 +36,10 @@ const SignupForm = () => {
       .typeError("age must be a number")
       .positive("age must be greater than zero")
       .required("age is required"),
+    description: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("description is required"),
   });
 
   const formik = useFormik({
@@ -46,7 +50,6 @@ const SignupForm = () => {
       description: "",
     },
     validationSchema: CreateProfileSchema,
-
 
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {

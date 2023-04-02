@@ -11,50 +11,15 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { ProfileButtonWrapper } from "../theme";
 
-const ProfileCard = styled(Card)`
-  margin: 20px;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-`;
+const ProfileCard = styled(Card)``;
 
-const ProfileCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-`;
+const ProfileCardContent = styled(CardContent)``;
 
-const ProfileTitle = styled(Typography)`
-  margin-bottom: 16px;
-  font-size: 1.2rem;
-  font-weight: 600;
-`;
+const ProfileTitle = styled(Typography)``;
 
-const ProfileButton = styled(Button)`
-  margin: 8px;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 1rem;
-  font-weight: 500;
-  text-transform: none;
-  background-color: #4caf50;
-  color: #fff;
-  &:hover {
-    background-color: #388e3c;
-  }
-`;
-
-const ProfileButtonWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  & > * {
-    margin: 8px;
-  }
-`;
+const ProfileButton = styled(Button)``;
 
 const UserDashboard = () => {
   const { isLoggedIn, userName, profiles, getSelectedProfile } =
@@ -63,6 +28,7 @@ const UserDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // we use useEffect to check if user is logged in or not
     if (!isLoggedIn) {
       navigate("/");
     }
@@ -75,8 +41,15 @@ const UserDashboard = () => {
 
   return (
     <ProfileCard>
+      {profiles.length === 0 && (
+        <ProfileTitle variant="h5" component="h5">
+          Welcome {userName}, No profiles found
+        </ProfileTitle>
+      )}
       <ProfileCardContent>
-        <ProfileTitle>Welcome {userName}, Select Profile</ProfileTitle>
+        <ProfileTitle variant="h5" component="h5">
+          Welcome {userName}, Select Profile
+        </ProfileTitle>
         <ProfileButtonWrapper>
           {profiles.map((profile) => (
             <ProfileButton
@@ -84,7 +57,7 @@ const UserDashboard = () => {
               onClick={() => handleProfileButtonClick(profile.key)}
               variant="contained"
             >
-              {`Name: ${profile.name}, Age: ${profile.age}`}
+              {`Name: ${profile.name}, Age: ${profile.age}, description: ${profile.description}`}
             </ProfileButton>
           ))}
         </ProfileButtonWrapper>
