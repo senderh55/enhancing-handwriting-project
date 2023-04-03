@@ -4,13 +4,8 @@ import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Button, Typography } from "@mui/material";
+import { ProfileButtonWrapper } from "../theme";
 
 const ProfileCard = styled(Card)``;
 
@@ -21,7 +16,8 @@ const ProfileTitle = styled(Typography)``;
 const ProfileButton = styled(Button)``;
 
 const ProfileDashboard = () => {
-  const { selectedProfile, isLoggedIn } = useContext(AuthContext);
+  const { selectedProfile, isLoggedIn, setIsEditingProfile } =
+    useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -32,6 +28,11 @@ const ProfileDashboard = () => {
     }
   }, [isLoggedIn, navigate]);
 
+  const handleEditProfileButtonClick = () => {
+    setIsEditingProfile(true);
+    navigate("/profileOperation");
+  };
+
   return (
     <ProfileCard>
       <ProfileCardContent>
@@ -39,7 +40,7 @@ const ProfileDashboard = () => {
           {selectedProfile.name} Dashboard
         </ProfileTitle>
 
-        <CardActions>
+        <ProfileButtonWrapper>
           <ProfileButton
             variant="contained"
             component={RouterLink}
@@ -55,20 +56,19 @@ const ProfileDashboard = () => {
             Results
           </ProfileButton>
           <ProfileButton
+            onClick={handleEditProfileButtonClick}
             variant="contained"
-            component={RouterLink}
-            to="/EditProfile"
           >
             Edit profile
           </ProfileButton>
           <ProfileButton
             variant="contained"
             component={RouterLink}
-            to="/practice"
+            to="/DeleteProfile"
           >
             Delete Profile
           </ProfileButton>
-        </CardActions>
+        </ProfileButtonWrapper>
       </ProfileCardContent>
     </ProfileCard>
   );

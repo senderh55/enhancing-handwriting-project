@@ -54,6 +54,20 @@ export const createProfile = async (token, name, age, description) => {
   }
 };
 
+export const updateProfile = async (id, token, name, age, description) => {
+  const profile = { name, age, description };
+  try {
+    const response = await axios.patch(`${serverURL}/profiles/${id}`, profile, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export const getProfiles = async (token) => {
   try {
     const response = await axios.get(`${serverURL}/profiles`, {

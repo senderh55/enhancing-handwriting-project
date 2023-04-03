@@ -8,7 +8,6 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { ProfileButtonWrapper } from "../theme";
@@ -22,8 +21,14 @@ const ProfileTitle = styled(Typography)``;
 const ProfileButton = styled(Button)``;
 
 const UserDashboard = () => {
-  const { isLoggedIn, userName, profiles, getSelectedProfile } =
-    useContext(AuthContext);
+  const {
+    isLoggedIn,
+    userName,
+    profiles,
+    getSelectedProfile,
+    setSelectedProfile,
+    setIsEditingProfile,
+  } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -32,20 +37,23 @@ const UserDashboard = () => {
     if (!isLoggedIn) {
       navigate("/");
     }
-  }, [isLoggedIn, navigate]);
+    setSelectedProfile({}); // we set selected profile to empty object because the case we got back to user dashboard from profile dashboard
+  }, [isLoggedIn, navigate, setSelectedProfile]);
 
   const handleProfileButtonClick = (profileKey) => {
     getSelectedProfile(profileKey);
     navigate("/profileDashboard");
   };
 
+  const handleCreateProfileButtonClick = () => {
+    setIsEditingProfile(false);
+    navigate("/profileOperation");
+  };
+
   return (
+    // profile title should be displayed in the middle of the screen
+
     <ProfileCard>
-      {profiles.length === 0 && (
-        <ProfileTitle variant="h5" component="h5">
-          Welcome {userName}, No profiles found
-        </ProfileTitle>
-      )}
       <ProfileCardContent>
         <ProfileTitle variant="h5" component="h5">
           Welcome {userName}, Select Profile
@@ -57,19 +65,20 @@ const UserDashboard = () => {
               onClick={() => handleProfileButtonClick(profile.key)}
               variant="contained"
             >
-              {`Name: ${profile.name}, Age: ${profile.age}, description: ${profile.description}`}
+              {`Name: ${profile.name}, Age: ${profile.age}, Description: ${profile.description}`}
             </ProfileButton>
           ))}
         </ProfileButtonWrapper>
       </ProfileCardContent>
       <CardActions>
-        <ProfileButton
-          variant="contained"
-          component={RouterLink}
-          to="/createProfile"
-        >
-          Add Profile
-        </ProfileButton>
+        <ProfileButtonWrapper>
+          <ProfileButton
+            onClick={handleCreateProfileButtonClick}
+            variant="contained"
+          >
+            Add Profile
+          </ProfileButton>
+        </ProfileButtonWrapper>
       </CardActions>
     </ProfileCard>
   );

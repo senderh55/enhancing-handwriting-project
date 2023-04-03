@@ -3,6 +3,29 @@ import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import styled from "styled-components";
+
+const StyledContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30vh;
+`;
+
+const StyledButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 8px;
+  &:first-of-type {
+    margin-right: 16px;
+  }
+`;
 
 const Home = () => {
   const { isLoggedIn } = useContext(AuthContext);
@@ -16,43 +39,18 @@ const Home = () => {
   }, [isLoggedIn, navigate]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "30vh",
-      }}
-    >
+    <StyledContainer>
       <Typography variant="h4">Welcome to ScribbleBoost!</Typography>
       <Typography variant="h6">Please register or login to continue</Typography>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "16px",
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ margin: "8px" }}
-          href="/signup"
-        >
+      <StyledButtonWrapper>
+        <StyledButton variant="contained" color="primary" href="/signup">
           Register
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          style={{ margin: "8px" }}
-          href="/login"
-        >
+        </StyledButton>
+        <StyledButton variant="contained" color="secondary" href="/login">
           Login
-        </Button>
-      </div>
-    </div>
+        </StyledButton>
+      </StyledButtonWrapper>
+    </StyledContainer>
   );
 };
 

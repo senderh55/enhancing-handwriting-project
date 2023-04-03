@@ -10,6 +10,7 @@ function AuthProvider(props) {
   const [userName, setUserName] = useState("");
   const [profiles, setProfiles] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState({});
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const getSelectedProfile = useCallback(
     // useCallback is used to prevent the function from being recreated on every render and causing an infinite loop in the useEffect
@@ -109,14 +110,23 @@ function AuthProvider(props) {
     }
   };
 
-  const createProfile = async (name, age, description) => {
+  const ProfileFormOperation = async (name, age, description) => {
     try {
-      // Make API request to authenticate the user
-      const response = await api.createProfile(token, name, age, description);
+      // check if the user is editing a profile or creating a new one and make the appropriate API request
+      isEditingProfile
+        ? await api.updateProfile(
+            // selectedProfile.key is the id of the profile that we required for updating in the database, we need to remove the quotes from the string
+            selectedProfile.key.replace(/['"]/g, ""),
+            token,
+            name,
+            age,
+            description
+          )
+        : await api.createProfile(token, name, age, description);
       await getProfiles(token);
-      return response;
     } catch (error) {
-      // Handle logout errors
+      // handle server errors
+      return error;
     }
   };
 
@@ -126,11 +136,14 @@ function AuthProvider(props) {
     userName,
     profiles,
     selectedProfile,
+    isEditingProfile,
     signup,
     login,
     logout,
-    createProfile,
+    ProfileFormOperation,
     getSelectedProfile,
+    setSelectedProfile,
+    setIsEditingProfile,
   };
 
   return (

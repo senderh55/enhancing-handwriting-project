@@ -19,8 +19,9 @@ const animate = {
   },
 };
 
-const SignupForm = () => {
-  const { createProfile } = useContext(AuthContext);
+const ProfileForm = () => {
+  const { ProfileFormOperation, selectedProfile, isEditingProfile } =
+    useContext(AuthContext);
   const navigate = useNavigate();
 
   const CreateProfileSchema = Yup.object().shape({
@@ -42,28 +43,29 @@ const SignupForm = () => {
       .required("description is required"),
   });
 
+  console.log("isEditingProfile:", isEditingProfile);
+  console.log("selectedProfile:", selectedProfile);
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      age: "",
-      description: "",
+      firstName: isEditingProfile ? selectedProfile.name.split(" ")[0] : "",
+      lastName: isEditingProfile ? selectedProfile.name.split(" ")[1] : "",
+      age: isEditingProfile ? selectedProfile.age : "",
+      description: isEditingProfile ? selectedProfile.description : "",
     },
     validationSchema: CreateProfileSchema,
 
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const data = await createProfile(
+        await ProfileFormOperation(
           values.firstName + " " + values.lastName,
           values.age,
           values.description
         );
-        console.log("Create profile success:", data);
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userDashboard", { replace: true });
       } catch (error) {
         console.log("Create profile error:", error);
-        setErrors({ createProfile: error.message });
+        setErrors({ ProfileFormOperation: error.message });
       } finally {
         setSubmitting(false);
       }
@@ -137,7 +139,7 @@ const SignupForm = () => {
               variant="contained"
               loading={isSubmitting}
             >
-              Create Profile
+              {isEditingProfile ? "Update Profile" : "Create Profile"}
             </LoadingButton>
           </Box>
         </Stack>
@@ -146,4 +148,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default ProfileForm;

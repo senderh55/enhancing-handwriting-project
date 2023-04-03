@@ -6,7 +6,8 @@ import ErrorPage from "./pages/Error";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
-import CreateProfile from "./pages/CreateProfile";
+import ProfileOperation from "./pages/ProfileOperation";
+
 import ProfileDashboard from "./pages/ProfileDashboard";
 import Practice from "./pages/Practice";
 import { ThemeProvider } from "@mui/material/styles";
@@ -32,8 +33,8 @@ const router = createBrowserRouter([
         element: <UserDashboard />,
       },
       {
-        path: "createProfile",
-        element: <CreateProfile />,
+        path: "profileOperation",
+        element: <ProfileOperation />,
       },
       {
         path: "profileDashboard",

@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
+import CreateIcon from "@mui/icons-material/Create";
 
 const MainNavigation = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
@@ -35,6 +36,7 @@ const MainNavigation = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          <CreateIcon sx={{ mr: 2 }} />
           <Typography
             variant="h6"
             noWrap
@@ -96,7 +98,7 @@ const MainNavigation = () => {
               textDecoration: "none",
             }}
           >
-            LOGO
+            ScribbleBoost
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
