@@ -10,12 +10,12 @@ import { useState, useEffect, createContext, useCallback } from "react";
 const AuthContext = createContext();
 
 function AuthProvider(props) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
-  const [userName, setUserName] = useState("");
-  const [profiles, setProfiles] = useState([]);
-  const [selectedProfile, setSelectedProfile] = useState({});
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // isLoggedIn is used to check if the user is logged in or not
+  const [token, setToken] = useState(""); // token is used to store the token of the user
+  const [userName, setUserName] = useState(""); // userName is used to store the private name of the user for dashboard greeting
+  const [profiles, setProfiles] = useState([]); // we use an array to store the profiles of the user
+  const [selectedProfile, setSelectedProfile] = useState({}); // we use an object to store the selected profile
+  const [isEditingProfile, setIsEditingProfile] = useState(false); // isEditingProfile is used to check if the user is editing a profile or creating a new one
 
   const getSelectedProfile = useCallback(
     // useCallback is used to prevent the function from being recreated on every render and causing an infinite loop in the useEffect
@@ -33,8 +33,8 @@ function AuthProvider(props) {
     const response = await api.getProfiles(token);
     const userProfiles = response.map((profile) => {
       return {
-        key: JSON.stringify(profile._id).replace(/['"]/g, ""),
-        name: JSON.stringify(profile.name).replace(/['"]/g, ""), // remove the quotes from the string
+        key: JSON.stringify(profile._id).replace(/['"]/g, ""), // remove the quotes from the string
+        name: JSON.stringify(profile.name).replace(/['"]/g, ""),
         age: JSON.stringify(profile.age),
         description: JSON.stringify(profile.description).replace(/['"]/g, ""),
       };

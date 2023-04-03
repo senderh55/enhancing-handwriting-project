@@ -43,8 +43,7 @@ const ProfileForm = () => {
       .required("description is required"),
   });
 
-  console.log("isEditingProfile:", isEditingProfile);
-  console.log("selectedProfile:", selectedProfile);
+  // isEditingProfile is a boolean value from authContext.js that is set to true when the user clicks the edit profile button on the ProfileDashboard component.
   const formik = useFormik({
     initialValues: {
       firstName: isEditingProfile ? selectedProfile.name.split(" ")[0] : "",
@@ -64,7 +63,6 @@ const ProfileForm = () => {
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userDashboard", { replace: true });
       } catch (error) {
-        console.log("Create profile error:", error);
         setErrors({ ProfileFormOperation: error.message });
       } finally {
         setSubmitting(false);
