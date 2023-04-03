@@ -39,6 +39,7 @@ router.get("/profiles", auth, async (req, res) => {
 });
 
 router.get("/profiles/:id", auth, async (req, res) => {
+  //FIXME - not implemented yet in client NOT SURE IF NEEDED
   const _id = req.params.id;
   try {
     const profile = await Profile.findOne({ _id, owner: req.user._id });

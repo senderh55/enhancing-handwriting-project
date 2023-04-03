@@ -49,7 +49,7 @@ router.post("/users/logout", auth, async (req, res) => {
   }
 });
 
-// Log out from all devices
+// Log out from all devices FIXME - not implemented yet in client
 router.post("/users/logoutAll", auth, async (req, res) => {
   try {
     req.user.tokens = [];
@@ -60,12 +60,12 @@ router.post("/users/logoutAll", auth, async (req, res) => {
   }
 });
 
-router.get("/users/me", auth, async (req, res) => {
+router.get("/users/me", auth, async (req, res) => { // FIXME - not implemented yet in client
   // second argument - middleware called auth
   res.send(req.user);
 });
 
-// UPDATE User
+// UPDATE User // FIXME - not implemented yet in client
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "password", "age"];
@@ -87,8 +87,8 @@ router.patch("/users/me", auth, async (req, res) => {
     res.status(400).send(e); // handle validation errors
   }
 });
-
-router.delete("/users/me", auth, async (req, res) => {
+// FIXME - not implemented yet in client
+router.delete("/users/me", auth, async (req, res) => { 
   try {
     // req.user accessible because auth middleware
     await req.user.remove(); // const user = await User.findByIdAndDelete(req.user._id);
