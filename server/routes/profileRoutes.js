@@ -62,15 +62,7 @@ router.post("/profiles", auth, async (req, res) => {
 });
 
 router.patch("/profiles/:id", auth, async (req, res) => {
-  const updates = Object.keys(req.body);
-  // implement validation of updates (only allow name, age, description, completed)
-  // const allowedUpdates = ["name","age","description", "completed"];
-  // const isValidOperation = updates.every((update) =>
-  //   allowedUpdates.includes(update)
-  // );
-  // if (!isValidOperation) {
-  //   return res.status(400).send({ error: "Invalid updates!" });
-  // }
+  const updates = Object.keys(req.body); // returns an array of keys of the object passed in as argument
 
   try {
     const profile = await Profile.findOne({
