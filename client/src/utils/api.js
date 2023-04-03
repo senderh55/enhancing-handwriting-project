@@ -68,6 +68,19 @@ export const updateProfile = async (id, token, name, age, description) => {
   }
 };
 
+export const deleteProfile = async (id, token) => {
+  try {
+    const response = await axios.delete(`${serverURL}/profiles/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export const getProfiles = async (token) => {
   try {
     const response = await axios.get(`${serverURL}/profiles`, {

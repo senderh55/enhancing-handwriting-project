@@ -1,10 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import styled from "styled-components";
+
 import { useContext } from "react";
+
 import { AuthContext } from "../context/authContext";
+
 import { useNavigate } from "react-router-dom";
+
 import { Link as RouterLink } from "react-router-dom";
-import { Card, CardContent, Button, Typography } from "@mui/material";
+
+import {
+  Card,
+  CardContent,
+  Button,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
 import { ProfileButtonWrapper } from "../theme";
 
 const ProfileCard = styled(Card)``;
@@ -16,12 +32,15 @@ const ProfileTitle = styled(Typography)``;
 const ProfileButton = styled(Button)``;
 
 const ProfileDashboard = () => {
-  const { selectedProfile, isLoggedIn, setIsEditingProfile } =
+  const { selectedProfile, isLoggedIn, setIsEditingProfile, deleteProfile } =
     useContext(AuthContext);
+
+  const [confirmDeleteMsg, setConfirmDeleteMsg] = useState(false);
 
   const navigate = useNavigate();
 
   // This useEffect is used to redirect the user to the UserDashboard component if the user is not logged in.
+
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/");
@@ -30,7 +49,22 @@ const ProfileDashboard = () => {
 
   const handleEditProfileButtonClick = () => {
     setIsEditingProfile(true);
+
     navigate("/profileOperation");
+  };
+
+  const handleDeleteProfileButtonClick = () => {
+    setConfirmDeleteMsg(true);
+  };
+
+  const handleCancelDeleteProfile = () => {
+    setConfirmDeleteMsg(false);
+  };
+
+  const handleConfirmDeleteProfile = async () => {
+    await deleteProfile(); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
+    setConfirmDeleteMsg(false);
+    navigate("/");
   };
 
   return (
@@ -48,6 +82,7 @@ const ProfileDashboard = () => {
           >
             Practice
           </ProfileButton>
+
           <ProfileButton
             variant="contained"
             component={RouterLink}
@@ -55,21 +90,41 @@ const ProfileDashboard = () => {
           >
             Results
           </ProfileButton>
+
           <ProfileButton
             onClick={handleEditProfileButtonClick}
             variant="contained"
           >
             Edit profile
           </ProfileButton>
+
           <ProfileButton
+            onClick={handleDeleteProfileButtonClick}
             variant="contained"
-            component={RouterLink}
-            to="/DeleteProfile"
           >
             Delete Profile
           </ProfileButton>
         </ProfileButtonWrapper>
       </ProfileCardContent>
+
+      <Dialog open={confirmDeleteMsg} onClose={handleCancelDeleteProfile}>
+        <DialogTitle>Delete Profile</DialogTitle>
+
+        <DialogContent>
+          <Typography variant="h6" color="red">
+            Are you sure you want to delete the profile? All data will be lost
+            as a result of this action, which cannot be undone.
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCancelDeleteProfile}>Cancel</Button>
+
+          <Button onClick={handleConfirmDeleteProfile} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ProfileCard>
   );
 };

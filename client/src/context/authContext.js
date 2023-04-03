@@ -2,6 +2,11 @@ import React from "react";
 import * as api from "../utils/api";
 import { useState, useEffect, createContext, useCallback } from "react";
 
+/* authContext.js is used to store the state of the application and provide it to the components that need it using the useContext hook and the AuthContext object
+ we use the createContext function to create the AuthContext object
+ we use the AuthProvider component to wrap the components that need access to the state
+ we use the useContext hook to access the state in the components that need it*/
+
 const AuthContext = createContext();
 
 function AuthProvider(props) {
@@ -28,7 +33,7 @@ function AuthProvider(props) {
     const response = await api.getProfiles(token);
     const userProfiles = response.map((profile) => {
       return {
-        key: JSON.stringify(profile._id),
+        key: JSON.stringify(profile._id).replace(/['"]/g, ""),
         name: JSON.stringify(profile.name).replace(/['"]/g, ""), // remove the quotes from the string
         age: JSON.stringify(profile.age),
         description: JSON.stringify(profile.description).replace(/['"]/g, ""),
@@ -116,16 +121,25 @@ function AuthProvider(props) {
       isEditingProfile
         ? await api.updateProfile(
             // selectedProfile.key is the id of the profile that we required for updating in the database, we need to remove the quotes from the string
-            selectedProfile.key.replace(/['"]/g, ""),
+            selectedProfile.key,
             token,
             name,
             age,
             description
           )
         : await api.createProfile(token, name, age, description);
-      await getProfiles(token);
+      await getProfiles(token); // after creating or updating a profile, we need to get the updated list of profiles from the database
     } catch (error) {
       // handle server errors
+      return error;
+    }
+  };
+
+  const deleteProfile = async () => {
+    try {
+      await api.deleteProfile(selectedProfile.key, token);
+      await getProfiles(token); // after deleting a profile, we need to get the updated list of profiles from the database
+    } catch (error) {
       return error;
     }
   };
@@ -144,8 +158,10 @@ function AuthProvider(props) {
     getSelectedProfile,
     setSelectedProfile,
     setIsEditingProfile,
+    deleteProfile,
   };
-
+  // we use the AuthContext.Provider component to wrap the components that need access to the state and pass the contextValue as a prop
+  // props.children is used to render the components that are wrapped by the AuthProvider component
   return (
     <AuthContext.Provider value={contextValue}>
       {props.children}
