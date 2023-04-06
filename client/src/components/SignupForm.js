@@ -8,14 +8,28 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  Snackbar,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
+import styled from "styled-components";
 
-/////////////////////////////////////////////////////////////
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
+
 let easing = [0.6, -0.05, 0.01, 0.99];
 const animate = {
   opacity: 1,
@@ -71,8 +85,8 @@ const SignupForm = () => {
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userDashboard", { replace: true });
       } catch (error) {
-        console.log("Signup error:", error);
-        setErrors({ signup: error.message });
+        // handle error of email already exist, display error message
+        setErrors({ signup: "Email already exist" });
       } finally {
         setSubmitting(false);
       }
@@ -169,6 +183,11 @@ const SignupForm = () => {
           </Box>
         </Stack>
       </Form>
+      <StyledSnackbar // this is the error message from backend (not from formik)
+        open={!!errors.signup}
+        message={errors.signup}
+        severity="error"
+      />
     </FormikProvider>
   );
 };

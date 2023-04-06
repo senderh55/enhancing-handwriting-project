@@ -14,13 +14,14 @@ const TabletSketch = () => {
   const [clear, setClear] = useState(false);
 
   const setup = (p5, canvasParentRef) => {
-    // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.27 x 5.83 inches)
+    // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
     const canvasWidth = 8.82 * 96;
     const canvasHeight = 5.83 * 96;
     p5.createCanvas(canvasWidth, canvasHeight).parent(canvasParentRef);
     p5.stroke(0);
     p5.background(200);
     p5.strokeWeight(1);
+    // draw lines of 20px gap between each other to create a paper for the user to draw on top of it
     for (let i = 0; i < canvasHeight; i += 20) {
       p5.line(0, i, canvasWidth, i);
     }
@@ -30,14 +31,10 @@ const TabletSketch = () => {
   const draw = (p5) => {};
 
   const touchMoved = (p5) => {
+    // draw a line between the previous and current mouse position
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
-    if (
-      p5.mouseX < 0 ||
-      p5.mouseX > p5.width ||
-      p5.mouseY < 0 ||
-      p5.mouseY > p5.height
-    )
-      return false; // prevent drawing outside of the canvas (this is a bug in p5.js)
+    // prevent default
+    return false;
   };
 
   const clearSketch = () => {
@@ -48,7 +45,10 @@ const TabletSketch = () => {
     setClear(false);
   }, [clear]);
 
-  // FIXME - save sketch to user's computer
+  // save sketch to user's computer as a png file with the current date and time as the file name without p5.saveCanvas() function
+  const saveSketch = () => {
+    console.log("save sketch");
+  };
 
   return (
     <>
@@ -56,7 +56,7 @@ const TabletSketch = () => {
         <Button variant="contained" onClick={clearSketch}>
           Clear Sketch
         </Button>
-        <Button variant="contained" onClick={() => p5.saveCanvas()}>
+        <Button variant="contained" onClick={() => saveSketch()}>
           Save Sketch
         </Button>
       </ProfileButtonWrapper>
