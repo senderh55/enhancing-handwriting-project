@@ -3,18 +3,23 @@ import p5 from "p5";
 import Timer from "./../components/Timer";
 import { Button } from "@mui/material";
 import { ProfileButtonWrapper } from "../theme";
+import { AuthContext } from "../context/authContext";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
-  const maxTimeDifference = 1000; // 1 second in milliseconds (ms) between each touchMoved call - user draws on the canvas
+  const maxTimeDifference = 500; // 500 milliseconds (ms) between each touchMoved call - user draws on the canvas
+  const maxDistance = 100; // 100px between each touchMoved call - user draws on the canvas
   const [clear, setClear] = useState(false);
+  const { selectedProfile } = useContext(AuthContext);
 
   // add a variable to keep track of the last time touchMoved was called
 
   let lastTouchMovedTimeRef = useRef(null);
   // add a ref to previousMousePosition - x and y coordinates
-  let previousMouseXPositionRef = useRef(null);
-  let previousMouseYPositionRef = useRef(null);
+  // set the initial value to the top right side of the canvas (hebrew text)
+  let previousMouseXPositionRef = useRef(800); // FIXME: need to change this to be dynamic according to the canvas size (width) intigrate with hebrew organization
+  let previousMouseYPositionRef = useRef(30);
+  let validDrawing = useRef(true); // add a ref to keep track of the validity of the drawing
 
   const setup = (p5, canvasParentRef) => {
     // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
@@ -51,7 +56,7 @@ const TabletSketch = () => {
       // check if the time difference is greater than the max gap
       if (timeDifference > maxTimeDifference) {
         // if it is greater than the max gap, log the time difference
-        console.log("One second pass", timeDifference + "ms");
+        console.log(timeDifference + "ms passed");
         timePassed = true;
       }
       // set the lastTouchMovedTime to the current time
@@ -86,9 +91,13 @@ const TabletSketch = () => {
     // log the distance
 
     // check if the distance is greater than 10px
-    if (distance > 10) {
+    if (distance > maxDistance) {
       // if it is greater than 10px, log the distance
       console.log("Distance between points", distance);
+      // draw red circle as a visual indicator of error and fill it with red color
+      p5.fill(255, 0, 0);
+      p5.circle(currentMousePosition.x, currentMousePosition.y, 15);
+      validDrawing.current = false; // set the validDrawing to false
     }
   };
 
@@ -104,17 +113,27 @@ const TabletSketch = () => {
 
     // call the checkTimeSinceLastTouchMoved function
     let timePassed = checkTimeSinceLastTouchMoved(p5);
+
     if (timePassed) {
-      // if the time passed is greater than 1 second, call the checkDistanceBetweenPoints function
+      // if the time passed is greater than 300 ms, call the checkDistanceBetweenPoints function
       checkDistanceBetweenPoints(p5);
     }
-    saveMousePosition(p5);
+    if (validDrawing.current) saveMousePosition(p5);
+    // FIXME - when user did error, the next valid drawing is not saved
+
     // prevent default
     return false;
   };
 
   const clearSketch = () => {
     setClear(true);
+    // clear time difference between each touchMoved call
+    lastTouchMovedTimeRef.current = null;
+    // clear previous mouse position
+    previousMouseXPositionRef.current = null;
+    previousMouseYPositionRef.current = null;
+    // set validDrawing to true
+    validDrawing.current = true;
   };
 
   useEffect(() => {
