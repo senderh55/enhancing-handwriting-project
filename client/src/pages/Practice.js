@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
-
 import p5 from "p5";
-
 import Timer from "./../components/Timer";
 import { Button } from "@mui/material";
 import { ProfileButtonWrapper } from "../theme";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
-
-  const maxGap = 200; // max gap between every user drawing
-
+  const maxTimeDifference = 1000; // 1 second in milliseconds (ms) between each touchMoved call - user draws on the canvas
   const [clear, setClear] = useState(false);
+
+  // add a variable to keep track of the last time touchMoved was called
+
+  let lastTouchMovedTimeRef = useRef(null);
+  // add a ref to previousMousePosition - x and y coordinates
+  let previousMouseXPositionRef = useRef(null);
+  let previousMouseYPositionRef = useRef(null);
 
   const setup = (p5, canvasParentRef) => {
     // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
@@ -30,9 +33,82 @@ const TabletSketch = () => {
 
   const draw = (p5) => {};
 
+  // function that checks the time since the last touchMoved call and logs it
+  const checkTimeSinceLastTouchMoved = (p5) => {
+    let timePassed = false;
+    // get the current time
+    const currentTime = new Date().getTime();
+    // check if the lastTouchMovedTime is null
+    if (lastTouchMovedTimeRef === null) {
+      // if it is null, set the lastTouchMovedTime to the current time
+      lastTouchMovedTimeRef.current = currentTime;
+    } else {
+      // if it is not null, calculate the time difference between the current time and the lastTouchMovedTime
+      const timeDifference = lastTouchMovedTimeRef.current
+        ? currentTime - lastTouchMovedTimeRef.current
+        : 0;
+
+      // check if the time difference is greater than the max gap
+      if (timeDifference > maxTimeDifference) {
+        // if it is greater than the max gap, log the time difference
+        console.log("One second pass", timeDifference + "ms");
+        timePassed = true;
+      }
+      // set the lastTouchMovedTime to the current time
+
+      lastTouchMovedTimeRef.current = currentTime;
+    }
+
+    return timePassed;
+  };
+
+  const checkDistanceBetweenPoints = (p5) => {
+    // get the current mouse position
+    const currentMousePosition = {
+      x: p5.mouseX,
+      y: p5.mouseY,
+    };
+
+    // calculate the distance between the current and previous mouse position
+    const distance = p5.dist(
+      currentMousePosition.x,
+      currentMousePosition.y,
+      previousMouseXPositionRef.current,
+      previousMouseYPositionRef.current
+    );
+
+    console.log("currentMousePosition", currentMousePosition);
+    console.log("previousMousePosition", {
+      x: previousMouseXPositionRef.current,
+      y: previousMouseYPositionRef.current,
+    });
+    console.log("distance", distance);
+    // log the distance
+
+    // check if the distance is greater than 10px
+    if (distance > 10) {
+      // if it is greater than 10px, log the distance
+      console.log("Distance between points", distance);
+    }
+  };
+
+  const saveMousePosition = (p5) => {
+    // set the previousMousePosition to the current mouse position
+    previousMouseXPositionRef.current = p5.mouseX;
+    previousMouseYPositionRef.current = p5.mouseY;
+  };
+
   const touchMoved = (p5) => {
     // draw a line between the previous and current mouse position
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
+
+    // call the checkTimeSinceLastTouchMoved function
+    let timePassed = checkTimeSinceLastTouchMoved(p5);
+    if (timePassed) {
+      // if the time passed is greater than 1 second, call the checkDistanceBetweenPoints function
+      checkDistanceBetweenPoints(p5);
+    }
+    saveMousePosition(p5);
     // prevent default
     return false;
   };
@@ -72,7 +148,8 @@ const TabletSketch = () => {
   );
 };
 
-const Sketch = ({ setup, draw, touchMoved, canvasRef, clear }) => {
+// react.memo is used to prevent the component from re-rendering when the props are the same
+const Sketch = React.memo(({ setup, draw, touchMoved, canvasRef, clear }) => {
   const sketchRef = useRef(null);
 
   const destroyCanvas = (p5) => {
@@ -86,16 +163,17 @@ const Sketch = ({ setup, draw, touchMoved, canvasRef, clear }) => {
       p.draw = () => draw(p);
       p.touchMoved = () => touchMoved(p);
     });
+
     return () => {
       destroyCanvas(sketchRef.current);
     };
-  }, [setup, draw, touchMoved, canvasRef, clear]);
+  }, [setup, draw, touchMoved, canvasRef]);
 
   useEffect(() => {
     if (clear) {
       sketchRef.current.clear();
     }
-  }, [clear]);
+  }, [sketchRef, clear]);
 
   return (
     <div
@@ -107,6 +185,6 @@ const Sketch = ({ setup, draw, touchMoved, canvasRef, clear }) => {
       }}
     ></div>
   );
-};
+});
 
 export default TabletSketch;
