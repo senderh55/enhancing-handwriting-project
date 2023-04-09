@@ -6,7 +6,11 @@ const cors = require("cors");
 const app = express();
 
 // Enable Cross-Origin Resource Sharing (CORS)
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // allow requests from all origins (for development purposes)
+  })
+);
 
 // Parse incoming request bodies as JSON
 app.use(express.json());
