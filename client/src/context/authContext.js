@@ -157,6 +157,15 @@ function AuthProvider(props) {
     }
   };
 
+  const changePassword = async (oldPassword, newPassword) => {
+    try {
+      await api.changePassword(token, oldPassword, newPassword);
+    } catch (error) {
+      // got an error from the server (wrong old password), throw it to the component
+      throw error;
+    }
+  };
+
   // Define the context value
   const contextValue = {
     isLoggedIn,
@@ -167,6 +176,7 @@ function AuthProvider(props) {
     signup,
     login,
     logout,
+    changePassword,
     ProfileFormOperation,
     getSelectedProfile,
     setSelectedProfile,

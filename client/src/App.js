@@ -10,6 +10,8 @@ import ProfileOperation from "./pages/ProfileOperation";
 
 import ProfileDashboard from "./pages/ProfileDashboard";
 import Practice from "./pages/Practice";
+import ChangePassword from "./pages/ChangePassword";
+
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 const router = createBrowserRouter([
@@ -31,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "userDashboard",
         element: <UserDashboard />,
+      },
+      {
+        path: "changePassword",
+        element: <ChangePassword />,
       },
       {
         path: "profileOperation",

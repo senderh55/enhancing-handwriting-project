@@ -106,3 +106,17 @@ export const deleteUser = async (token) => {
     throw error.response.data;
   }
 };
+
+export const changePassword = async (token, password, newPassword) => {
+  const data = { password, newPassword };
+  try {
+    const response = await axios.patch(`${serverURL}/users/me`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
