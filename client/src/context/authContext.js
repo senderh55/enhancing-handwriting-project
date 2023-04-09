@@ -144,6 +144,19 @@ function AuthProvider(props) {
     }
   };
 
+  const deleteUser = async () => {
+    try {
+      await api.deleteUser(token);
+      localStorage.removeItem("token"); // remove the token from the browser's local storage
+      localStorage.removeItem("name"); // remove the name from the browser's local storage
+      setToken("");
+      setUserName("");
+      setIsLoggedIn(false);
+    } catch (error) {
+      return error;
+    }
+  };
+
   // Define the context value
   const contextValue = {
     isLoggedIn,
@@ -159,6 +172,7 @@ function AuthProvider(props) {
     setSelectedProfile,
     setIsEditingProfile,
     deleteProfile,
+    deleteUser,
   };
   // we use the AuthContext.Provider component to wrap the components that need access to the state and pass the contextValue as a prop
   // props.children is used to render the components that are wrapped by the AuthProvider component

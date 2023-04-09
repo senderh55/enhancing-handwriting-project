@@ -93,3 +93,16 @@ export const getProfiles = async (token) => {
     throw error.response.data;
   }
 };
+
+export const deleteUser = async (token) => {
+  try {
+    const response = await axios.delete(`${serverURL}/users/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};

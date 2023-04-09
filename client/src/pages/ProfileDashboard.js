@@ -67,6 +67,54 @@ const ProfileDashboard = () => {
     navigate("/");
   };
 
+  const practiceButton = (
+    <ProfileButton variant="contained" component={RouterLink} to="/practice">
+      Practice
+    </ProfileButton>
+  );
+  const resultsButton = (
+    <ProfileButton variant="contained" component={RouterLink} to="/Results">
+      Results
+    </ProfileButton>
+  );
+
+  const editProfileButton = (
+    <ProfileButton onClick={handleEditProfileButtonClick} variant="contained">
+      Edit profile
+    </ProfileButton>
+  );
+
+  const deleteProfileButton = (
+    <ProfileButton
+      onClick={handleDeleteProfileButtonClick}
+      variant="contained"
+      color="error"
+    >
+      Delete Profile
+    </ProfileButton>
+  );
+
+  const deleteProfileDialog = (
+    <Dialog open={confirmDeleteMsg} onClose={handleCancelDeleteProfile}>
+      <DialogTitle>Delete Profile</DialogTitle>
+
+      <DialogContent>
+        <Typography variant="h6" color="red">
+          Are you sure you want to delete the profile? All data will be lost as
+          a result of this action, which cannot be undone.
+        </Typography>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={handleCancelDeleteProfile}>Cancel</Button>
+
+        <Button onClick={handleConfirmDeleteProfile} color="secondary">
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   return (
     <ProfileCard>
       <ProfileCardContent>
@@ -75,56 +123,13 @@ const ProfileDashboard = () => {
         </ProfileTitle>
 
         <ProfileButtonWrapper>
-          <ProfileButton
-            variant="contained"
-            component={RouterLink}
-            to="/practice"
-          >
-            Practice
-          </ProfileButton>
-
-          <ProfileButton
-            variant="contained"
-            component={RouterLink}
-            to="/Results"
-          >
-            Results
-          </ProfileButton>
-
-          <ProfileButton
-            onClick={handleEditProfileButtonClick}
-            variant="contained"
-          >
-            Edit profile
-          </ProfileButton>
-
-          <ProfileButton
-            onClick={handleDeleteProfileButtonClick}
-            variant="contained"
-          >
-            Delete Profile
-          </ProfileButton>
+          {practiceButton}
+          {resultsButton}
+          {editProfileButton}
+          {deleteProfileButton}
         </ProfileButtonWrapper>
       </ProfileCardContent>
-
-      <Dialog open={confirmDeleteMsg} onClose={handleCancelDeleteProfile}>
-        <DialogTitle>Delete Profile</DialogTitle>
-
-        <DialogContent>
-          <Typography variant="h6" color="red">
-            Are you sure you want to delete the profile? All data will be lost
-            as a result of this action, which cannot be undone.
-          </Typography>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCancelDeleteProfile}>Cancel</Button>
-
-          <Button onClick={handleConfirmDeleteProfile} color="secondary">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {deleteProfileDialog}
     </ProfileCard>
   );
 };
