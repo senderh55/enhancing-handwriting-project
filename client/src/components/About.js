@@ -6,8 +6,8 @@ const AboutContainer = styled(motion.div)`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin-top: 80px;
-  margin-bottom: 50px;
+  margin-top: 120px;
+  margin-bottom: 40px;
 `;
 
 const CardStyle = styled.div`
@@ -52,7 +52,7 @@ const About = () => {
           and Idan Brauner, supervised by Dr. Anat Dahan and Dr. Navit Roth.
         </AboutContent>
         <AboutContent>
-          We aim to provide occupational therapists with a tool for tracking
+          We aim to provide occupational therapists a tool for tracking
           handwriting practices. By using our system, therapists can provide
           their patients with interactive writing practice while monitoring data
           and changing parameters.

@@ -61,7 +61,7 @@ const Home = () => {
         transition={{ delay: 0.4, duration: 0.8 }}
         fontSize={24}
       >
-        Please register or login to continue
+        Please signup or login to continue
       </Typography>
       <StyledButtonWrapper
         component={motion.div}
@@ -70,7 +70,7 @@ const Home = () => {
         transition={{ delay: 0.6, duration: 0.8 }}
       >
         <StyledButton variant="contained" color="primary" href="/signup">
-          Register
+          Signup
         </StyledButton>
         <StyledButton variant="contained" color="secondary" href="/login">
           Login
