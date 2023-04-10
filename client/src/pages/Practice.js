@@ -149,8 +149,19 @@ const TabletSketch = () => {
   }, [clear]);
 
   // save sketch to user's computer as a png file with the current date and time as the file name without p5.saveCanvas() function
+  // because p5.saveCanvas() function is not supported in this stracture
+  // toDataURL() function is used to convert the canvas to a data url and then a link is created to download the image with profile name and current date and time as the file name
   const saveSketch = () => {
-    console.log("save sketch");
+    console.log("selectedProfile: ", selectedProfile);
+    const canvas = document.getElementById("defaultCanvas0");
+    const img = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    // get the current date and time and use it as the file name
+    let dateString = new Date().toLocaleString().split(",")[0]; // get the date without the time part
+    let fileName = `${selectedProfile.name} Handwriting pratice ${dateString}.png`;
+    link.download = fileName;
+    link.href = img;
+    link.click();
   };
 
   return (
