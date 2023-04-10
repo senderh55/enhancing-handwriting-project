@@ -3,14 +3,18 @@ import { Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import About from "../components/About";
+import Contact from "../components/Contact";
+
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 30vh;
+  height: 70vh;
 `;
 
 const StyledButtonWrapper = styled.div`
@@ -27,6 +31,13 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const names = [
+  { name: "Sender Hodik", email: "senderh55@gmail.com", linkedin: "senderh55" },
+  { name: "Idan Brauner", email: "idann79@gmail.com", linkedin: "???" },
+  { name: "Anat Dahan", email: "anatdhn@braude.ac.il", linkedin: "???" },
+  { name: "Navit Roth", email: "avroth@braude.ac.il", linkedin: "????" },
+];
+
 const Home = () => {
   const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -40,9 +51,24 @@ const Home = () => {
 
   return (
     <StyledContainer>
-      <Typography variant="h4">Welcome to ScribbleBoost!</Typography>
-      <Typography variant="h6">Please register or login to continue</Typography>
-      <StyledButtonWrapper>
+      <About />
+
+      <Typography
+        variant="h6"
+        component={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+        fontSize={24}
+      >
+        Please register or login to continue
+      </Typography>
+      <StyledButtonWrapper
+        component={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+      >
         <StyledButton variant="contained" color="primary" href="/signup">
           Register
         </StyledButton>
@@ -50,6 +76,8 @@ const Home = () => {
           Login
         </StyledButton>
       </StyledButtonWrapper>
+
+      <Contact contacts={names} />
     </StyledContainer>
   );
 };
