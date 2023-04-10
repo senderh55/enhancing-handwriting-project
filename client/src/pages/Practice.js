@@ -4,6 +4,7 @@ import Timer from "./../components/Timer";
 import { Button } from "@mui/material";
 import { ProfileButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
+import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
@@ -21,6 +22,9 @@ const TabletSketch = () => {
   let previousMouseYPositionRef = useRef(30);
   let validDrawing = useRef(true); // add a ref to keep track of the validity of the drawing
 
+  // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
+  let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
+
   const setup = (p5, canvasParentRef) => {
     // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
     const canvasWidth = 8.82 * 96;
@@ -34,6 +38,8 @@ const TabletSketch = () => {
       p5.line(0, i, canvasWidth, i);
     }
     p5.strokeWeight(3);
+    // load the distance error sound
+    distanceErrorSound.current = new Audio(distanceErrorSoundFile);
   };
 
   const draw = (p5) => {};
@@ -98,6 +104,7 @@ const TabletSketch = () => {
       p5.fill(255, 0, 0);
       p5.circle(currentMousePosition.x, currentMousePosition.y, 15);
       validDrawing.current = false; // set the validDrawing to false
+      distanceErrorSound.current.play(); // play the distance error sound
     }
   };
 
@@ -108,6 +115,8 @@ const TabletSketch = () => {
   };
 
   const touchMoved = (p5) => {
+    // play the distance error sound if the drawing is not valid
+
     // draw a line between the previous and current mouse position
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
 
@@ -120,9 +129,8 @@ const TabletSketch = () => {
     }
     if (validDrawing.current) saveMousePosition(p5);
     // FIXME - when user did error, the next valid drawing is not saved
-
     // prevent default
-    return false;
+    else return false;
   };
 
   const clearSketch = () => {
