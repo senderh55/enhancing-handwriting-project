@@ -1,18 +1,22 @@
-# enhancing-handwriting-project
 
-Occupational Therapist's Handwriting Tracking Tool
-This tool is designed to help occupational therapists track their patients' progress with handwriting practice. By using this system, therapists can provide interactive writing practice for their patients while also monitoring their progress through data analytics.
+# ScribbleBoost
 
-Technologies Used
-Front-end: ReactJS
-Back-end: NodeJS
-Database: MongoDB
-UI Framework: MaterialUI
+An adademic final project.
+
+ScribbleBoost is designed to help occupational therapists track their patients' progress with handwriting practice. By using ScribbleBoost, therapists can provide interactive writing practice for their patients while also monitoring their progress through data analytics.
+
+Technologies Used:__
+Front-end: ReactJS__
+Back-end: NodeJS__
+Database: MongoDB__
+UI Framework: MaterialUI__
 Features
 Interactive writing practice exercises
 Real-time tracking of patient progress
 Data analytics to track progress over time
 User-friendly interface designed for occupational therapists
+
+
 Getting Started
 To get started with this tool, follow these steps:
 
