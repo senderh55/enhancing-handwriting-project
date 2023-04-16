@@ -5,6 +5,7 @@ import { Button } from "@mui/material";
 import { ProfileButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
+import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
@@ -12,8 +13,8 @@ const TabletSketch = () => {
   const maxDistance = 100; // 100px between each touchMoved call - user draws on the canvas
   const [clear, setClear] = useState(false);
   const { selectedProfile } = useContext(AuthContext);
-
-  // add a variable to keep track of the last time touchMoved was called
+  const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
+  const rowsYPositions = []; // array to keep track of the y positions of the rows
 
   let lastTouchMovedTimeRef = useRef(null);
   // add a ref to previousMousePosition - x and y coordinates
@@ -24,22 +25,26 @@ const TabletSketch = () => {
 
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
+  let lineDavoationSound = useRef(null); // add a ref to keep track of the line deviation sound
 
   const setup = (p5, canvasParentRef) => {
     // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
     const canvasWidth = 8.82 * 96;
     const canvasHeight = 5.83 * 96;
+
     p5.createCanvas(canvasWidth, canvasHeight).parent(canvasParentRef);
     p5.stroke(0);
-    p5.background(200);
+    p5.background(225);
     p5.strokeWeight(1);
-    // draw lines of 20px gap between each other to create a paper for the user to draw on top of it
-    for (let i = 0; i < canvasHeight; i += 20) {
+    // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
+    for (let i = 0; i < canvasHeight; i += rowHeight) {
       p5.line(0, i, canvasWidth, i);
+      rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
     // load the distance error sound
     distanceErrorSound.current = new Audio(distanceErrorSoundFile);
+    lineDavoationSound.current = new Audio(lineDeviationSoundFile);
   };
 
   const draw = (p5) => {};
@@ -62,7 +67,7 @@ const TabletSketch = () => {
       // check if the time difference is greater than the max gap
       if (timeDifference > maxTimeDifference) {
         // if it is greater than the max gap, log the time difference
-        console.log(timeDifference + "ms passed");
+        console.log(timeDifference + "ms passed since last write");
         timePassed = true;
       }
       // set the lastTouchMovedTime to the current time
@@ -88,23 +93,16 @@ const TabletSketch = () => {
       previousMouseYPositionRef.current
     );
 
-    console.log("currentMousePosition", currentMousePosition);
-    console.log("previousMousePosition", {
-      x: previousMouseXPositionRef.current,
-      y: previousMouseYPositionRef.current,
-    });
-    console.log("distance", distance);
-    // log the distance
-
     // check if the distance is greater than 10px
     if (distance > maxDistance) {
       // if it is greater than 10px, log the distance
-      console.log("Distance between points", distance);
       // draw red circle as a visual indicator of error and fill it with red color
       p5.fill(255, 0, 0);
-      p5.circle(currentMousePosition.x, currentMousePosition.y, 15);
+      p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       validDrawing.current = false; // set the validDrawing to false
       distanceErrorSound.current.play(); // play the distance error sound
+    } else {
+      validDrawing.current = true;
     }
   };
 
@@ -114,12 +112,37 @@ const TabletSketch = () => {
     previousMouseYPositionRef.current = p5.mouseY;
   };
 
+  // check if current drawing not overlaping the x points of the rows from rowsYPositions array
+  const lineDeviationCheck = (p5) => {
+    // function that checks if the current mouse position is not overlaping the x points of the rows from rowsYPositions array with a deviation of
+    const containsNumberWithDeviation = (arr, num, deviation) => {
+      return arr.some(function (element) {
+        return Math.abs(element - num) <= deviation;
+      });
+    };
+
+    // get the current mouse position
+    const currentMousePosition = {
+      x: p5.mouseX,
+      y: p5.mouseY,
+    };
+
+    // check if the current mouse position is not overlaping the x points of the rows from rowsYPositions array
+    if (
+      containsNumberWithDeviation(rowsYPositions, currentMousePosition.y, 0.5)
+    ) {
+      // if it is overlaping, draw a big green rectangle as a visual indicator of error and fill it with green color
+      p5.fill(0, 255, 0);
+      // create a rectangle with the size of 10px x 10px in the current X,Y mouse position
+      p5.rect(currentMousePosition.x, currentMousePosition.y, 10, 10);
+      lineDavoationSound.current.play(); // play the line deviation sound
+    }
+  };
+
   const touchMoved = (p5) => {
-    // play the distance error sound if the drawing is not valid
-
-    // draw a line between the previous and current mouse position
-    p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY);
-
+    lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlaping the x points of the rows from rowsYPositions array
+    p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
+    console.log(validDrawing.current);
     // call the checkTimeSinceLastTouchMoved function
     let timePassed = checkTimeSinceLastTouchMoved(p5);
 
@@ -128,9 +151,8 @@ const TabletSketch = () => {
       checkDistanceBetweenPoints(p5);
     }
     if (validDrawing.current) saveMousePosition(p5);
-    // FIXME - when user did error, the next valid drawing is not saved
     // prevent default
-    else return false;
+    return false;
   };
 
   const clearSketch = () => {
@@ -152,7 +174,6 @@ const TabletSketch = () => {
   // because p5.saveCanvas() function is not supported in this stracture
   // toDataURL() function is used to convert the canvas to a data url and then a link is created to download the image with profile name and current date and time as the file name
   const saveSketch = () => {
-    console.log("selectedProfile: ", selectedProfile);
     const canvas = document.getElementById("defaultCanvas0");
     const img = canvas.toDataURL("image/png");
     const link = document.createElement("a");
