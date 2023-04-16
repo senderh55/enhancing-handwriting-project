@@ -25,7 +25,7 @@ const TabletSketch = () => {
 
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
-  let lineDavoationSound = useRef(null); // add a ref to keep track of the line deviation sound
+  let lineDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
 
   const setup = (p5, canvasParentRef) => {
     // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
@@ -44,7 +44,7 @@ const TabletSketch = () => {
     p5.strokeWeight(3);
     // load the distance error sound
     distanceErrorSound.current = new Audio(distanceErrorSoundFile);
-    lineDavoationSound.current = new Audio(lineDeviationSoundFile);
+    lineDeviationSound.current = new Audio(lineDeviationSoundFile);
   };
 
   const draw = (p5) => {};
