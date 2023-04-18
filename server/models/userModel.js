@@ -34,6 +34,13 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
+    validationCode: {
+      type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     tokens: [
       // server's way to invalidate specific tokens
       {
@@ -60,6 +67,8 @@ userSchema.methods.toJSON = function () {
   const userObject = user.toObject();
   delete userObject.password;
   delete userObject.tokens;
+  delete userObject.validationCode;
+  delete userObject.isVerified;
   return userObject;
 };
 userSchema.methods.generateAuthToken = async function () {
@@ -71,6 +80,16 @@ userSchema.methods.generateAuthToken = async function () {
   await user.save();
 
   return token;
+};
+
+userSchema.methods.createValidationCode = async function () {
+  // methods -> accessible from instances
+  const user = this;
+  const validationCode = Math.floor(100000 + Math.random() * 900000); // 6 digits
+  user.validationCode = validationCode;
+  user.isVerified = false;
+  await user.save();
+  return validationCode;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {

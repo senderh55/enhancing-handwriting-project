@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const email = require("../utils/Email");
 
 // CREATE User
 router.post("/users", async (req, res) => {
@@ -10,11 +11,13 @@ router.post("/users", async (req, res) => {
   try {
     await user.save();
     const token = await user.generateAuthToken();
+    // create validation code and send email
+    const validationCode = await user.createValidationCode();
+    await email.sendWelcomeEmail(user.email, user.name, validationCode);
     res.status(201).send({ user, token });
   } catch (e) {
     let errorMessage = JSON.stringify(e.message);
     res.status(400).send(errorMessage);
-    console.log(errorMessage);
   }
 });
 
@@ -26,7 +29,7 @@ router.post("/users/login", async (req, res) => {
       req.body.password
     );
     const token = await user.generateAuthToken();
-    res.send({ user, token });
+    res.send({ user, token, isVerified: user.isVerified });
   } catch (e) {
     let errorMessage = JSON.stringify(e.message);
     if (e.message === "User not found") res.status(404).send(errorMessage);
@@ -61,12 +64,6 @@ router.post("/users/logoutAll", auth, async (req, res) => {
   }
 });
 
-router.get("/users/me", auth, async (req, res) => {
-  // FIXME - not implemented yet in client
-  // second argument - middleware called auth
-  res.send(req.user);
-});
-
 // UPDATE User - update user's password
 router.patch("/users/me", auth, async (req, res) => {
   // const allowedUpdates = ["name", "email", "password", "age"];
@@ -96,6 +93,32 @@ router.patch("/users/me", auth, async (req, res) => {
     req.user.password = req.body.password.newPassword; // update password in DB with new password
     await req.user.save(); // .save() automatically runs our validators by default
     res.send(req.user);
+  } catch (e) {
+    res.status(400).send(e); // handle validation errors
+  }
+});
+
+// validate user's email
+router.patch("/users/validate", async (req, res) => {
+  try {
+    // find user by email and validation code
+    const user = await User.findOne({
+      email: req.body.email,
+    });
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    const { validationCode } = req.body;
+    if (!validationCode)
+      return res.status(400).send({ error: "Validation code is required" });
+    const isMatch = user.validationCode === validationCode;
+    if (!isMatch) {
+      return res.status(401).send({ error: "Incorrect validation code" });
+    }
+    user.isVerified = true;
+    await user.save();
+    res.send(user);
   } catch (e) {
     res.status(400).send(e); // handle validation errors
   }
