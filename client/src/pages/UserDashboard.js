@@ -40,6 +40,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     // we use useEffect to check if user is logged in or not
+    console.log("isLoggedIn: ", isLoggedIn);
     if (!isLoggedIn) {
       navigate("/");
     }

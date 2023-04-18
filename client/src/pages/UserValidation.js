@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
+import { AuthContext } from "../context/authContext";
 
 import UserValidationForm from "../components/UserValidationForm";
 //////////////////////////////////
 
 const UserValidatation = () => {
+  const { userEmail } = useContext(AuthContext);
   return (
     <RootStyle>
       <Container maxWidth="sm">
@@ -19,7 +21,8 @@ const UserValidatation = () => {
               sx={{ mb: 5 }}
             >
               <Typography sx={{ color: "text.secondary", mb: 5 }}>
-                Please enter validation code that was sent to your email
+                Please enter verification code that was sent to the following
+                email: {userEmail}
               </Typography>
             </HeadingStyle>
 

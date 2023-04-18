@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Form, FormikProvider, useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, TextField } from "@mui/material";
@@ -8,6 +8,8 @@ import styled from "styled-components";
 import { Snackbar } from "@mui/material";
 import sendFill from "@mui/icons-material/Send";
 import { Icon } from "@iconify/react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
 
 const StyledSnackbar = styled(Snackbar)`
   && {
@@ -28,16 +30,24 @@ const UserValidationSchema = Yup.object().shape({
 });
 
 const UserValidationForm = () => {
+  const navigate = useNavigate();
+  const { userEmailValidation } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
       validationCode: "",
     },
     validationSchema: UserValidationSchema,
-    onSubmit: async (values, { setErrors }) => {
+
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        console.log("values", values);
+        await userEmailValidation(values.validationCode);
+        // handle successful signup, e.g. redirect user to dashboard page
+        navigate("/login", { replace: true });
       } catch (error) {
-        console.log("error", error);
+        // handle error from backend
+        setErrors({ userValidation: error.error });
+      } finally {
+        setSubmitting(false);
       }
     },
   });
@@ -85,6 +95,11 @@ const UserValidationForm = () => {
           </LoadingButton>
         </Box>
       </Form>
+      <StyledSnackbar // this is the error message from backend (not from formik)
+        open={!!errors.userValidation}
+        message={errors.userValidation}
+        severity="error"
+      />
     </FormikProvider>
   );
 };

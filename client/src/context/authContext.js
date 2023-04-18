@@ -17,6 +17,7 @@ function AuthProvider(props) {
   const [selectedProfile, setSelectedProfile] = useState({}); // we use an object to store the selected profile
   const [isEditingProfile, setIsEditingProfile] = useState(false); // isEditingProfile is used to check if the user is editing a profile or creating a new one
 
+  const [userEmail, setUserEmail] = useState(""); // userEmail is used to store the email address of the user
   const getSelectedProfile = useCallback(
     // useCallback is used to prevent the function from being recreated on every render and causing an infinite loop in the useEffect
     (profileId) => {
@@ -59,19 +60,27 @@ function AuthProvider(props) {
   }, [getProfiles]); // we pass getProfiles as a dependency to prevent the useEffect from being recreated on every render and causing an infinite loop
 
   const userLoggedIn = async (userData) => {
-    localStorage.setItem("token", userData.token); // store the token in the browser's local storage
-    setToken(userData.token);
     const userFirstName = userData.user.name.split(" ")[0];
     setUserName(userFirstName);
     localStorage.setItem("name", userFirstName); // store the token in the browser's local storage
+    setUserEmail(userData.user.email);
+    localStorage.setItem("token", userData.token); // store the token in the browser's local storage
+    setToken(userData.token);
     setIsLoggedIn(true);
     await getProfiles(userData.token);
+  };
+
+  const userSignedUp = async (userData) => {
+    const userFirstName = userData.user.name.split(" ")[0];
+    setUserName(userFirstName);
+    localStorage.setItem("name", userFirstName); // store the token in the browser's local storage
+    setUserEmail(userData.user.email);
   };
 
   const signup = async (name, email, password) => {
     try {
       const newUser = await api.signup(name, email, password);
-
+      await userSignedUp(newUser);
       return newUser;
     } catch (error) {
       throw error;
@@ -82,18 +91,28 @@ function AuthProvider(props) {
     try {
       // Make API request to authenticate the user
       const response = await api.login(email, password);
-
+      setUserEmail(email);
+      if (!response.isVerified) {
+        setUserEmail(email);
+        return false; // if the user has not validated their email address, return false
+      }
       // Check if the response contains a token
       if (!response.token) {
         throw new Error("Authentication failed");
       }
+      await userLoggedIn(response);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-      userLoggedIn(response);
-
+  const userEmailValidation = async (code) => {
+    try {
+      // Make API request to authenticate the user
+      const response = await api.userEmailValidation(userEmail, code);
       return response;
     } catch (error) {
-      // Handle login errors FIXME
-
       throw error;
     }
   };
@@ -146,8 +165,8 @@ function AuthProvider(props) {
 
   const deleteUser = async () => {
     try {
-      await api.deleteUser(token);
       logout();
+      await api.deleteUser(token);
     } catch (error) {
       return error;
     }
@@ -169,8 +188,10 @@ function AuthProvider(props) {
     profiles,
     selectedProfile,
     isEditingProfile,
+    userEmail,
     signup,
     login,
+    userEmailValidation,
     logout,
     changePassword,
     ProfileFormOperation,

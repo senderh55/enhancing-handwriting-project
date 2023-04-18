@@ -7,7 +7,6 @@ export const login = async (email, password) => {
   try {
     const data = { email, password };
     const response = await axios.post(`${serverURL}/users/login`, data);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -16,7 +15,6 @@ export const login = async (email, password) => {
 
 export const signup = async (name, email, password) => {
   const data = { name, email, password };
-  console.log(name, email, password);
   try {
     const response = await axios.post(`${serverURL}/users`, data);
     return response.data;
@@ -25,11 +23,13 @@ export const signup = async (name, email, password) => {
   }
 };
 
-export const validateUser = async (validationCode) => {
+export const userEmailValidation = async (email, validationCode) => {
   try {
-    const response = await axios.patch(
-      `${serverURL}/users/validate/${validationCode}`
-    );
+    const response = await axios.patch(`${serverURL}/users/validate/`, {
+      email,
+      validationCode,
+    });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error.response.data;
