@@ -23,29 +23,29 @@ const StyledSnackbar = styled(Snackbar)`
   }
 `;
 
-const UserValidationSchema = Yup.object().shape({
-  validationCode: Yup.string()
-    .required("Validation code is required")
-    .length(6, "Validation code must be exactly 6 digits"),
+const UserVerificationSchema = Yup.object().shape({
+  verificationCode: Yup.string()
+    .required("Verification code is required")
+    .length(6, "Verification code must be exactly 6 digits"),
 });
 
-const UserValidationForm = () => {
+const UserVerificationForm = () => {
   const navigate = useNavigate();
-  const { userEmailValidation } = useContext(AuthContext);
+  const { userEmailVerification } = useContext(AuthContext);
   const formik = useFormik({
     initialValues: {
-      validationCode: "",
+      verificationCode: "",
     },
-    validationSchema: UserValidationSchema,
+    verificationSchema: UserVerificationSchema,
 
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        await userEmailValidation(values.validationCode);
+        await userEmailVerification(values.verificationCode);
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/login", { replace: true });
       } catch (error) {
         // handle error from backend
-        setErrors({ userValidation: error.error });
+        setErrors({ userVerification: error.error });
       } finally {
         setSubmitting(false);
       }
@@ -76,10 +76,12 @@ const UserValidationForm = () => {
               fullWidth
               autoComplete="off"
               type="text"
-              label="Validation code"
-              {...getFieldProps("validationCode")}
-              error={Boolean(touched.validationCode && errors.validationCode)}
-              helperText={touched.validationCode && errors.validationCode}
+              label="Verification code"
+              {...getFieldProps("verificationCode")}
+              error={Boolean(
+                touched.verificationCode && errors.verificationCode
+              )}
+              helperText={touched.verificationCode && errors.verificationCode}
             />
           </Box>
           <LoadingButton
@@ -96,12 +98,12 @@ const UserValidationForm = () => {
         </Box>
       </Form>
       <StyledSnackbar // this is the error message from backend (not from formik)
-        open={!!errors.userValidation}
-        message={errors.userValidation}
+        open={!!errors.userVerification}
+        message={errors.userVerification}
         severity="error"
       />
     </FormikProvider>
   );
 };
 
-export default UserValidationForm;
+export default UserVerificationForm;

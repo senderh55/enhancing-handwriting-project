@@ -83,7 +83,7 @@ const SignupForm = () => {
         );
         console.log("Signup success:", data);
         // handle successful signup, e.g. redirect user to dashboard page
-        navigate("/userValidation", { replace: true });
+        navigate("/userVerification", { replace: true });
       } catch (error) {
         // handle error of email already exist, display error message
         setErrors({ signup: "Email already exist" });

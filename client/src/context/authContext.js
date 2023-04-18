@@ -107,10 +107,10 @@ function AuthProvider(props) {
     }
   };
 
-  const userEmailValidation = async (code) => {
+  const userEmailVerification = async (code) => {
     try {
       // Make API request to authenticate the user
-      const response = await api.userEmailValidation(userEmail, code);
+      const response = await api.userEmailVerification(userEmail, code);
       return response;
     } catch (error) {
       throw error;
@@ -191,7 +191,7 @@ function AuthProvider(props) {
     userEmail,
     signup,
     login,
-    userEmailValidation,
+    userEmailVerification,
     logout,
     changePassword,
     ProfileFormOperation,

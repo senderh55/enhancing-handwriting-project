@@ -23,13 +23,15 @@ export const signup = async (name, email, password) => {
   }
 };
 
-export const userEmailValidation = async (email, validationCode) => {
+export const userEmailVerification = async (email, verificationCode) => {
   try {
-    const response = await axios.patch(`${serverURL}/users/validate/`, {
-      email,
-      validationCode,
-    });
-    console.log(response.data);
+    const response = await axios.patch(
+      `${serverURL}/users/emailVerification/`,
+      {
+        email,
+        verificationCode,
+      }
+    );
     return response.data;
   } catch (error) {
     throw error.response.data;

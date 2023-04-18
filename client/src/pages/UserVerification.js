@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
 import { AuthContext } from "../context/authContext";
 
-import UserValidationForm from "../components/UserValidationForm";
+import UserVerificationForm from "../components/UserVerificationForm";
 //////////////////////////////////
 
-const UserValidatation = () => {
+const UserVerification = () => {
   const { userEmail } = useContext(AuthContext);
   return (
     <RootStyle>
@@ -26,7 +26,7 @@ const UserValidatation = () => {
               </Typography>
             </HeadingStyle>
 
-            <UserValidationForm />
+            <UserVerificationForm />
           </motion.div>
         </ContentStyle>
       </Container>
@@ -34,4 +34,4 @@ const UserValidatation = () => {
   );
 };
 
-export default UserValidatation;
+export default UserVerification;
