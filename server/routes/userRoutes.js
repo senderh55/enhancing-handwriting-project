@@ -11,9 +11,9 @@ router.post("/users", async (req, res) => {
   try {
     await user.save();
     const token = await user.generateAuthToken();
-    // create validation code and send email
-    const validationCode = await user.createValidationCode();
-    await email.sendWelcomeEmail(user.email, user.name, validationCode);
+    // create verification code and send email
+    const verificationCode = await user.createVerificationCode();
+    await email.sendWelcomeEmail(user.email, user.name, verificationCode);
     res.status(201).send({ user, token });
   } catch (e) {
     let errorMessage = JSON.stringify(e.message);
@@ -98,10 +98,10 @@ router.patch("/users/me", auth, async (req, res) => {
   }
 });
 
-// validate user's email
-router.patch("/users/validate", async (req, res) => {
+// verify user's email
+router.patch("/users/emailVerification", async (req, res) => {
   try {
-    // find user by email and validation code
+    // find user by email and verification code
     const user = await User.findOne({
       email: req.body.email,
     });
@@ -109,18 +109,18 @@ router.patch("/users/validate", async (req, res) => {
     if (!user) {
       return res.status(404).send({ error: "User not found" });
     }
-    const { validationCode } = req.body;
-    if (!validationCode)
-      return res.status(400).send({ error: "Validation code is required" });
-    const isMatch = user.validationCode === validationCode;
+    const { verificationCode } = req.body;
+    if (!verificationCode)
+      return res.status(400).send({ error: "Verification code is required" });
+    const isMatch = user.verificationCode === verificationCode;
     if (!isMatch) {
-      return res.status(401).send({ error: "Incorrect validation code" });
+      return res.status(401).send({ error: "Incorrect verification code" });
     }
     user.isVerified = true;
     await user.save();
     res.send(user);
   } catch (e) {
-    res.status(400).send(e); // handle validation errors
+    res.status(400).send(e); // handle verification errors
   }
 });
 

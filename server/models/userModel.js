@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    validationCode: {
+    verificationCode: {
       type: String,
     },
     isVerified: {
@@ -67,7 +67,7 @@ userSchema.methods.toJSON = function () {
   const userObject = user.toObject();
   delete userObject.password;
   delete userObject.tokens;
-  delete userObject.validationCode;
+  delete userObject.verificationCode;
   delete userObject.isVerified;
   return userObject;
 };
@@ -82,14 +82,14 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.methods.createValidationCode = async function () {
+userSchema.methods.createVerificationCode = async function () {
   // methods -> accessible from instances
   const user = this;
-  const validationCode = Math.floor(100000 + Math.random() * 900000); // 6 digits
-  user.validationCode = validationCode;
+  const verificationCode = Math.floor(100000 + Math.random() * 900000); // 6 digits
+  user.verificationCode = verificationCode;
   user.isVerified = false;
   await user.save();
-  return validationCode;
+  return verificationCode;
 };
 
 userSchema.statics.findByCredentials = async (email, password) => {
