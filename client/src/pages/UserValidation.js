@@ -1,27 +1,13 @@
 import React from "react";
 
 import { Container, Typography } from "@mui/material";
-
-import { useNavigate } from "react-router-dom";
-import { useEffect, useContext } from "react";
-import { AuthContext } from "../context/authContext";
 import { motion } from "framer-motion";
-import ChangePasswordForm from "../components/ChangePasswordForm";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
 
+import UserValidationForm from "../components/UserValidationForm";
 //////////////////////////////////
 
-const ChangePassword = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, [isLoggedIn, navigate]);
-
+const UserValidatation = () => {
   return (
     <RootStyle>
       <Container maxWidth="sm">
@@ -33,11 +19,11 @@ const ChangePassword = () => {
               sx={{ mb: 5 }}
             >
               <Typography sx={{ color: "text.secondary", mb: 5 }}>
-                Change Password
+                Please enter validation code that was sent to your email
               </Typography>
             </HeadingStyle>
 
-            <ChangePasswordForm />
+            <UserValidationForm />
           </motion.div>
         </ContentStyle>
       </Container>
@@ -45,4 +31,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default UserValidatation;

@@ -12,7 +12,7 @@ import ProfileDashboard from "./pages/ProfileDashboard";
 import Practice from "./pages/Practice";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
-
+import UserValidation from "./pages/UserValidation";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 const router = createBrowserRouter([
@@ -26,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "userValidation",
+        element: <UserValidation />,
       },
       {
         path: "signup",

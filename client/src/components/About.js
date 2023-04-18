@@ -5,9 +5,9 @@ const AboutContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin-top: 120px;
-  margin-bottom: 40px;
+  height: 800vh;
+  margin-top: 220px;
+  margin-bottom: 10px;
 `;
 
 const CardStyle = styled.div`

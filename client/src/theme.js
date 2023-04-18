@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import { red } from "@mui/material/colors";
 import styled from "styled-components";
+import Box from "@mui/material/Box";
 // this is the main theme for the app and the components, solution to the problem of the theme not being applied to the components when rendering the app
 // implement the theme in the app.js file and then use the components in the pages with themeProvider
 const theme = createTheme({
@@ -126,5 +127,43 @@ export const ProfileButtonWrapper = styled.div`
     margin: 8px;
   }
 `;
+export const RootStyle = styled("div")({
+  background: "rgb(249, 250, 251)",
+  height: "100vh",
+  display: "grid",
+  placeItems: "center",
+});
+
+export const HeadingStyle = styled(Box)({
+  textAlign: "center",
+});
+
+export const ContentStyle = styled("div")({
+  maxWidth: 480,
+  padding: 25,
+  margin: "auto",
+  display: "flex",
+  justifyContent: "center",
+  flexDirection: "column",
+  background: "#fff",
+});
+
+let easing = [0.6, -0.05, 0.01, 0.99];
+
+export const fadeInUp = {
+  initial: {
+    y: 60,
+    opacity: 0,
+    transition: { duration: 0.6, ease: easing },
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: easing,
+    },
+  },
+};
 
 export default theme;

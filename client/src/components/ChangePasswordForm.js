@@ -18,7 +18,6 @@ import eyeFill from "@iconify/icons-eva/eye-fill";
 import eyeOffFill from "@iconify/icons-eva/eye-off-fill";
 import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 
 const StyledSnackbar = styled(Snackbar)`
   && {

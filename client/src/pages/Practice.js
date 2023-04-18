@@ -135,14 +135,14 @@ const TabletSketch = () => {
       p5.fill(0, 255, 0);
       // create a rectangle with the size of 10px x 10px in the current X,Y mouse position
       p5.rect(currentMousePosition.x, currentMousePosition.y, 10, 10);
-      lineDavoationSound.current.play(); // play the line deviation sound
+      lineDeviationSound.current.play(); // play the line deviation sound
     }
   };
 
   const touchMoved = (p5) => {
     lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlaping the x points of the rows from rowsYPositions array
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
-    console.log(validDrawing.current);
+
     // call the checkTimeSinceLastTouchMoved function
     let timePassed = checkTimeSinceLastTouchMoved(p5);
 

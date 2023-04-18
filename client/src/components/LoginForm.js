@@ -68,6 +68,7 @@ const LoginForm = () => {
       try {
         // login is a function from AuthContext that will send a request to the server to login the user, navigate to the userDashboard page when login is successful
         await login(values.email, values.password);
+
         navigate("../UserDashboard", { replace: true });
       } catch (error) {
         setErrors({ login: error }); // setErrors is a function from Formik, it will set the error message to the login field

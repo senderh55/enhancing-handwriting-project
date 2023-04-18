@@ -70,9 +70,9 @@ function AuthProvider(props) {
 
   const signup = async (name, email, password) => {
     try {
-      const response = await api.signup(name, email, password);
-      userLoggedIn(response);
-      return response;
+      const newUser = await api.signup(name, email, password);
+
+      return newUser;
     } catch (error) {
       throw error;
     }
@@ -87,6 +87,7 @@ function AuthProvider(props) {
       if (!response.token) {
         throw new Error("Authentication failed");
       }
+
       userLoggedIn(response);
 
       return response;
@@ -106,7 +107,6 @@ function AuthProvider(props) {
       setToken("");
       setUserName("");
       setIsLoggedIn(false);
-
       return response;
     } catch (error) {
       // Handle logout errors
@@ -147,11 +147,7 @@ function AuthProvider(props) {
   const deleteUser = async () => {
     try {
       await api.deleteUser(token);
-      localStorage.removeItem("token"); // remove the token from the browser's local storage
-      localStorage.removeItem("name"); // remove the name from the browser's local storage
-      setToken("");
-      setUserName("");
-      setIsLoggedIn(false);
+      logout();
     } catch (error) {
       return error;
     }
