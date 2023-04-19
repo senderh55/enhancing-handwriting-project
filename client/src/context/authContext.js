@@ -52,6 +52,7 @@ function AuthProvider(props) {
         setIsLoggedIn(true);
         setToken(token);
         setUserName(localStorage.getItem("name"));
+        setUserEmail(localStorage.getItem("userEmail"));
         await getProfiles(token);
       }
     };
@@ -75,6 +76,7 @@ function AuthProvider(props) {
     setUserName(userFirstName);
     localStorage.setItem("name", userFirstName); // store the token in the browser's local storage
     setUserEmail(userData.user.email);
+    localStorage.setItem("userEmail", userData.user.email); // store the user email in the browser's local storage
   };
 
   const signup = async (name, email, password) => {
@@ -107,12 +109,25 @@ function AuthProvider(props) {
     }
   };
 
+  // send the verification code to the server to verify the user's email address
   const userEmailVerification = async (code) => {
     try {
-      // Make API request to authenticate the user
-      const response = await api.userEmailVerification(userEmail, code);
+      // get the user email from the browser's local storage if the user email is not available in the state (this happens when the user refreshes the page)
+      const mail = userEmail ? userEmail : localStorage.getItem("userEmail");
+      const response = await api.userEmailVerification(mail, code);
       return response;
     } catch (error) {
+      throw error;
+    }
+  };
+
+  // genarate and resend new verification code to the user's email address
+  const resendVerificationCode = async (email) => {
+    try {
+      const response = await api.resendVerificationCode(email);
+      return response;
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   };
@@ -122,6 +137,7 @@ function AuthProvider(props) {
       // Make API request to authenticate the user
       const response = await api.logout(token);
       localStorage.removeItem("token"); // remove the token from the browser's local storage
+      localStorage.removeItem("userEmail"); // remove the user email from the browser's local storage
       localStorage.removeItem("name"); // remove the name from the browser's local storage
       setToken("");
       setUserName("");
@@ -200,6 +216,7 @@ function AuthProvider(props) {
     setIsEditingProfile,
     deleteProfile,
     deleteUser,
+    resendVerificationCode,
   };
   // we use the AuthContext.Provider component to wrap the components that need access to the state and pass the contextValue as a prop
   // props.children is used to render the components that are wrapped by the AuthProvider component

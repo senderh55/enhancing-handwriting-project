@@ -135,3 +135,19 @@ export const changePassword = async (token, password, newPassword) => {
     throw error.response.data;
   }
 };
+
+// create GET request for user verification code
+export const resendVerificationCode = async (email) => {
+  try {
+    const response = await axios.patch(
+      `${serverURL}/users/resendVerificationCode`,
+      {
+        email,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
