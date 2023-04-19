@@ -16,6 +16,7 @@ function AuthProvider(props) {
   const [profiles, setProfiles] = useState([]); // we use an array to store the profiles of the user
   const [selectedProfile, setSelectedProfile] = useState({}); // we use an object to store the selected profile
   const [isEditingProfile, setIsEditingProfile] = useState(false); // isEditingProfile is used to check if the user is editing a profile or creating a new one
+  const [userIsVerified, setUserIsVerified] = useState(false); // userIsVerified is used to check if the user is verified or not
 
   const [userEmail, setUserEmail] = useState(""); // userEmail is used to store the email address of the user
   const getSelectedProfile = useCallback(
@@ -115,6 +116,7 @@ function AuthProvider(props) {
       // get the user email from the browser's local storage if the user email is not available in the state (this happens when the user refreshes the page)
       const mail = userEmail ? userEmail : localStorage.getItem("userEmail");
       const response = await api.userEmailVerification(mail, code);
+      setUserIsVerified(true); // if the user's email address is verified, set the userIsVerified state to true to alert the user that their email address is verified
       return response;
     } catch (error) {
       throw error;
@@ -182,6 +184,7 @@ function AuthProvider(props) {
   const deleteUser = async () => {
     try {
       logout();
+      setUserIsVerified(false); // prevent other users to login with unverified email address
       await api.deleteUser(token);
     } catch (error) {
       return error;
@@ -205,6 +208,7 @@ function AuthProvider(props) {
     selectedProfile,
     isEditingProfile,
     userEmail,
+    userIsVerified,
     signup,
     login,
     userEmailVerification,

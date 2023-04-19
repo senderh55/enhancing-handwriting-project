@@ -1,22 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Container, Typography, Link, Box, Divider } from "@mui/material";
-import styled from "@emotion/styled";
+
 import LoginForm from "../components/LoginForm";
 import GoogleAuth from "../components/GoogleAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
+import Snackbar from "@mui/material/Snackbar";
 
 import { motion } from "framer-motion";
 
 //////////////////////////////////
 
 const Login = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-
+  const { isLoggedIn, userIsVerified } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
   useEffect(() => {
     // we use useEffect to check if user is logged in or not and redirect to userDashboard page
@@ -24,6 +25,16 @@ const Login = () => {
       navigate("/userDashboard");
     }
   }, [isLoggedIn, navigate]);
+
+  useEffect(() => {
+    if (userIsVerified) {
+      setIsSnackbarOpen(true);
+    }
+  }, [userIsVerified]);
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarOpen(false);
+  };
 
   return (
     <RootStyle>
@@ -57,6 +68,12 @@ const Login = () => {
           </Typography>
         </ContentStyle>
       </Container>
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={8000}
+        onClose={handleSnackbarClose}
+        message="User verified successfully! You can now login to your account."
+      />
     </RootStyle>
   );
 };
