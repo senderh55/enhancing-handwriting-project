@@ -17,7 +17,7 @@ function AuthProvider(props) {
   const [selectedProfile, setSelectedProfile] = useState({}); // we use an object to store the selected profile
   const [isEditingProfile, setIsEditingProfile] = useState(false); // isEditingProfile is used to check if the user is editing a profile or creating a new one
   const [userIsVerified, setUserIsVerified] = useState(false); // userIsVerified is used to check if the user is verified or not
-
+  const [IsPasswordReset, setIsPasswordReset] = useState(false); // IsPasswordReset is used to check if the user just reset his password or not
   const [userEmail, setUserEmail] = useState(""); // userEmail is used to store the email address of the user
   const getSelectedProfile = useCallback(
     // useCallback is used to prevent the function from being recreated on every render and causing an infinite loop in the useEffect
@@ -61,6 +61,7 @@ function AuthProvider(props) {
     checkAuth();
   }, [getProfiles]); // we pass getProfiles as a dependency to prevent the useEffect from being recreated on every render and causing an infinite loop
 
+  // this function is used to store the user's data in the state and the browser's local storage
   const userLoggedIn = async (userData) => {
     const userFirstName = userData.user.name.split(" ")[0];
     setUserName(userFirstName);
@@ -94,15 +95,18 @@ function AuthProvider(props) {
     try {
       // Make API request to authenticate the user
       const response = await api.login(email, password);
+      // if we got a response, the user exist and the password is correct
+      // now we need to check if the user has verified their email address
       setUserEmail(email);
+      localStorage.setItem("userEmail", email); // store the user email in the browser's local storage for verification
       if (!response.isVerified) {
-        setUserEmail(email);
         return false; // if the user has not validated their email address, return false
       }
       // Check if the response contains a token
       if (!response.token) {
         throw new Error("Authentication failed");
       }
+
       await userLoggedIn(response);
       return true;
     } catch (error) {
@@ -144,6 +148,8 @@ function AuthProvider(props) {
       setToken("");
       setUserName("");
       setIsLoggedIn(false);
+      setSelectedProfile(null);
+      setIsPasswordReset(false);
       return response;
     } catch (error) {
       // Handle logout errors
@@ -194,8 +200,19 @@ function AuthProvider(props) {
   const changePassword = async (oldPassword, newPassword) => {
     try {
       await api.changePassword(token, oldPassword, newPassword);
+      setIsPasswordReset(true);
     } catch (error) {
       // got an error from the server (wrong old password), throw it to the component
+      throw error;
+    }
+  };
+
+  const resetPassword = async (newPassword, verificationCode, email) => {
+    try {
+      await api.resetPassword(newPassword, verificationCode, email);
+      setIsPasswordReset(true); // set the IsPasswordReset state to true to alert the user that their password has been reset (pages/login.js)
+    } catch (error) {
+      // got an error from the server (wrong verification code), throw it to the component
       throw error;
     }
   };
@@ -209,6 +226,7 @@ function AuthProvider(props) {
     isEditingProfile,
     userEmail,
     userIsVerified,
+    IsPasswordReset,
     signup,
     login,
     userEmailVerification,
@@ -221,6 +239,7 @@ function AuthProvider(props) {
     deleteProfile,
     deleteUser,
     resendVerificationCode,
+    resetPassword,
   };
   // we use the AuthContext.Provider component to wrap the components that need access to the state and pass the contextValue as a prop
   // props.children is used to render the components that are wrapped by the AuthProvider component

@@ -136,6 +136,20 @@ export const changePassword = async (token, password, newPassword) => {
   }
 };
 
+export const resetPassword = async (newPassword, verificationCode, email) => {
+  const data = { email, verificationCode, newPassword };
+  try {
+    const response = await axios.patch(
+      `${serverURL}/users/resetPassword`,
+      data
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 // create GET request for user verification code
 export const resendVerificationCode = async (email, forgotPassword) => {
   // forgotPassword is a boolean value that indicates if the user is requesting a new verification code because they forgot their password

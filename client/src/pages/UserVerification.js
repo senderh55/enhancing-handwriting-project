@@ -14,7 +14,6 @@ const UserVerification = () => {
 
   // get the user email from the local storage (solution to the problem of refreshing the page)
   const userEmail = localStorage.getItem("userEmail"); // get the user email from the local storage
-  console.log(userEmail);
 
   useEffect(() => {
     if (!userEmail) {
@@ -23,7 +22,6 @@ const UserVerification = () => {
   }, [userEmail, navigate]);
 
   const handleResendVerificationButton = () => {
-    console.log(userEmail);
     resendVerificationCode(userEmail);
     setIsSnackbarOpen(true); // set the state to open the Snackbar
   };
@@ -64,7 +62,7 @@ const UserVerification = () => {
             </Typography>
             <Snackbar
               open={isSnackbarOpen}
-              autoHideDuration={6000}
+              autoHideDuration={3000}
               onClose={handleSnackbarClose}
               message="Verification email sent!"
             />

@@ -34,7 +34,7 @@ const animate = {
   },
 };
 
-const ForgotPasswordEmailForm = () => {
+const ForgotPasswordEmailForm = (props) => {
   const { resendVerificationCode } = useContext(AuthContext);
   const ForgotPasswordEmailSchema = Yup.object().shape({
     email: Yup.string()
@@ -52,7 +52,10 @@ const ForgotPasswordEmailForm = () => {
       try {
         // true argument is to indicate that this is a forgot password email
         await resendVerificationCode(values.email, true);
+        props.setEmail(values.email); // pass the email to parent component (ForgotPassword.js)
+        props.setIsEmailSent(true); // tell parent component that email is sent and replace the form with verification code and password form
       } catch (error) {
+        console.log(error);
         setErrors({ sendEmail: "Email not exist" });
       } finally {
         setSubmitting(false);

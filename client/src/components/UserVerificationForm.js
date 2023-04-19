@@ -99,6 +99,7 @@ const UserVerificationForm = () => {
       </Form>
       <StyledSnackbar // this is the error message from backend (not from formik)
         open={!!errors.userVerification}
+        autoHideDuration={3000}
         message={errors.userVerification}
         severity="error"
       />

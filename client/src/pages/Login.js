@@ -15,9 +15,12 @@ import { motion } from "framer-motion";
 //////////////////////////////////
 
 const Login = () => {
-  const { isLoggedIn, userIsVerified } = useContext(AuthContext);
+  const { isLoggedIn, userIsVerified, IsPasswordReset } =
+    useContext(AuthContext);
   const navigate = useNavigate();
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [isVerifiedSnackbarOpen, setIsVerifiedSnackbarOpen] = useState(false);
+  const [IsPasswordResetSnackbarOpen, setIsPasswordResetSnackbarOpen] =
+    useState(false);
 
   useEffect(() => {
     // we use useEffect to check if user is logged in or not and redirect to userDashboard page
@@ -26,15 +29,45 @@ const Login = () => {
     }
   }, [isLoggedIn, navigate]);
 
+  // when we enter the login page, we check if the user is just verified or just reset the password
+  // if so, we show a snackbar message to the user to notify him
   useEffect(() => {
     if (userIsVerified) {
-      setIsSnackbarOpen(true);
+      setIsVerifiedSnackbarOpen(true);
     }
   }, [userIsVerified]);
 
-  const handleSnackbarClose = () => {
-    setIsSnackbarOpen(false);
+  useEffect(() => {
+    if (IsPasswordReset) {
+      setIsPasswordResetSnackbarOpen(true);
+    }
+  }, [IsPasswordReset]);
+
+  const handleVerifiedSnackbarClose = () => {
+    setIsVerifiedSnackbarOpen(false);
   };
+
+  const verifiedSnackBarMessage = (
+    <Snackbar
+      open={isVerifiedSnackbarOpen}
+      autoHideDuration={8000}
+      onClose={handleVerifiedSnackbarClose}
+      message="User verified successfully! You can now login to your account."
+    />
+  );
+
+  const handleResetSnackbarClose = () => {
+    setIsPasswordResetSnackbarOpen(false);
+  };
+
+  const resetPasswordSnackBarMessage = (
+    <Snackbar
+      open={IsPasswordResetSnackbarOpen}
+      autoHideDuration={8000}
+      onClose={handleResetSnackbarClose}
+      message="The password has been successfully reset! You can now login to your account."
+    />
+  );
 
   return (
     <RootStyle>
@@ -68,12 +101,8 @@ const Login = () => {
           </Typography>
         </ContentStyle>
       </Container>
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={8000}
-        onClose={handleSnackbarClose}
-        message="User verified successfully! You can now login to your account."
-      />
+      {verifiedSnackBarMessage}
+      {resetPasswordSnackBarMessage}
     </RootStyle>
   );
 };
