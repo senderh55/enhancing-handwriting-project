@@ -137,10 +137,42 @@ router.patch("/users/resendVerificationCode", async (req, res) => {
     }
     // create verification code and send email
     const verificationCode = await user.createVerificationCode();
-    await email.sendWelcomeEmail(user.email, user.name, verificationCode);
+    if (req.body.forgotPassword)
+      await email.sendResetPasswordEmail(
+        user.email,
+        user.name,
+        verificationCode
+      );
+    else await email.sendWelcomeEmail(user.email, user.name, verificationCode);
     res.send(user);
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+router.patch("/users/resetPassword", async (req, res) => {
+  try {
+    const user = await User.findOne({
+      email: req.body.email,
+    });
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const { verificationCode } = req.body;
+    if (!verificationCode)
+      return res.status(400).send({ error: "Verification code is required" });
+    const isMatch = user.verificationCode === verificationCode;
+    if (!isMatch) {
+      return res.status(401).send({ error: "Incorrect verification Code" });
+    }
+
+    user.password = req.body.newPassword; // the password is hashed in the User model before saving to DB
+    await user.save(); // .save() automatically runs our validators by default
+    res.sendStatus(200);
+  } catch (e) {
+    console.log("error", e.message);
+    res.status(400).send(e); // handle validation errors
   }
 });
 

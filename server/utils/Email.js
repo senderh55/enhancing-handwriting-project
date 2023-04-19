@@ -45,7 +45,7 @@ const sendResetPasswordEmail = async (email, name, verificationCode) => {
       subject: "Reset your password",
       text: `Hello, ${name}!!
       Please reset your password by sumbitting the following code: ${verificationCode}
-      Thank you for joining us!`,
+      `,
     });
   } catch (err) {
     console.log(`Error sendResetPasswordEmail email.js: ${err}`);
