@@ -124,6 +124,26 @@ router.patch("/users/emailVerification", async (req, res) => {
   }
 });
 
+// resend verification code
+router.patch("/users/resendVerificationCode", async (req, res) => {
+  try {
+    // find user by email and verification code
+    const user = await User.findOne({
+      email: req.body.email,
+    });
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    // create verification code and send email
+    const verificationCode = await user.createVerificationCode();
+    await email.sendWelcomeEmail(user.email, user.name, verificationCode);
+    res.send(user);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
 router.delete("/users/me", auth, async (req, res) => {
   try {
     // req.user accessible because auth middleware
