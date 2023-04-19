@@ -137,12 +137,14 @@ export const changePassword = async (token, password, newPassword) => {
 };
 
 // create GET request for user verification code
-export const resendVerificationCode = async (email) => {
+export const resendVerificationCode = async (email, forgotPassword) => {
+  // forgotPassword is a boolean value that indicates if the user is requesting a new verification code because they forgot their password
   try {
     const response = await axios.patch(
       `${serverURL}/users/resendVerificationCode`,
       {
         email,
+        forgotPassword,
       }
     );
 

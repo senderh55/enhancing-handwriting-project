@@ -124,9 +124,9 @@ function AuthProvider(props) {
   };
 
   // genarate and resend new verification code to the user's email address
-  const resendVerificationCode = async (email) => {
+  const resendVerificationCode = async (email, forgotPassword = false) => {
     try {
-      const response = await api.resendVerificationCode(email);
+      const response = await api.resendVerificationCode(email, forgotPassword);
       return response;
     } catch (error) {
       console.log(error);

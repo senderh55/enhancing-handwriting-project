@@ -1,31 +1,24 @@
-import React, { useState } from "react";
-import { Container, Typography, TextField, Button } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Container, Typography, Snackbar } from "@mui/material";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
+import { AuthContext } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
+import ForgotPasswordEmailForm from "../components/ForgotPasswordEmailForm";
 
 const ForgotPassword = () => {
+  const [sendEmailButtonClicked, setSendEmailButtonClicked] = useState(false);
   const [email, setEmail] = useState("");
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      // Send forgot password request here
-      // sendEmail(email, "Forgot Password", "Forgot Password");
-      setSuccess(true);
-      setError(null);
-    } catch (error) {
-      setSuccess(false);
-      setError(error.message);
+  // FIXME
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
+    setIsSnackbarOpen(false);
   };
 
   return (
@@ -38,53 +31,34 @@ const ForgotPassword = () => {
               variants={fadeInUp}
               sx={{ mb: 5 }}
             >
-              <Typography sx={{ color: "text.secondary", mb: 5 }}>
-                Forgot Password
-              </Typography>
+              {!sendEmailButtonClicked && (
+                <>
+                  <Typography sx={{ color: "text.secondary", mb: 5 }}>
+                    Password forgotten? Please enter your e-mail address{" "}
+                  </Typography>
+
+                  <ForgotPasswordEmailForm
+                    onSubmit={setSendEmailButtonClicked}
+                  />
+                </>
+              )}
             </HeadingStyle>
 
-            {success ? (
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                A password reset link has been sent to your email address.
+            {sendEmailButtonClicked && (
+              <Typography sx={{ color: "text.secondary", mb: 5 }}>
+                Please enter the verification code that was sent to your email
+                address
               </Typography>
-            ) : (
-              <>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                  Enter your email address below to receive a password reset
-                  link.
-                </Typography>
-
-                <form onSubmit={handleSubmit}>
-                  <TextField
-                    required
-                    fullWidth
-                    type="email"
-                    label="Email address"
-                    value={email}
-                    onChange={handleEmailChange}
-                    sx={{ mb: 2 }}
-                  />
-
-                  {error && (
-                    <Typography variant="body2" color="error">
-                      {error}
-                    </Typography>
-                  )}
-
-                  <Button type="submit" variant="contained">
-                    Send
-                  </Button>
-                </form>
-              </>
             )}
-
-            <Button
-              variant="text"
-              onClick={() => navigate("/login")}
-              sx={{ mt: 2 }}
-            >
-              Back to login
-            </Button>
+            {error && (
+              <Typography sx={{ color: "red", mt: 2 }}>{error}</Typography>
+            )}
+            <Snackbar
+              open={isSnackbarOpen}
+              autoHideDuration={6000}
+              onClose={handleSnackbarClose}
+              message={`A password reset email has been sent to ${email}`}
+            />
           </motion.div>
         </ContentStyle>
       </Container>
