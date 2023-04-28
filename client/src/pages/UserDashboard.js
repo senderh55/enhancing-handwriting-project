@@ -14,15 +14,14 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ProfileButtonWrapper } from "../theme";
+import { ProfileButtonWrapper, ProfileButton } from "../theme";
+import Logo from "../components/Logo";
 
 const ProfileCard = styled(Card)``;
 
 const ProfileCardContent = styled(CardContent)``;
 
 const ProfileTitle = styled(Typography)``;
-
-const ProfileButton = styled(Button)``;
 
 const UserDashboard = () => {
   const {
@@ -71,16 +70,13 @@ const UserDashboard = () => {
   };
 
   const changePasswordButton = (
-    <ProfileButton
-      onClick={() => navigate("/changePassword")}
-      variant="contained"
-    >
+    <Button onClick={() => navigate("/changePassword")} variant="contained">
       Change Password
-    </ProfileButton>
+    </Button>
   );
 
   const addProfileButton = (
-    <ProfileButton
+    <Button
       onClick={handleCreateProfileButtonClick}
       variant="contained"
       // make the button in the left side of the screen and green
@@ -88,12 +84,12 @@ const UserDashboard = () => {
       color="success"
     >
       Add Profile
-    </ProfileButton>
+    </Button>
   );
 
   // create RED color button for delete user account button and will be in the other side of the screen
   const deleteUserAccountButton = (
-    <ProfileButton
+    <Button
       onClick={handleDeleteUserButtonClick}
       variant="contained"
       // make the button in the right side of the screen
@@ -102,7 +98,7 @@ const UserDashboard = () => {
       color="error"
     >
       Delete User Account
-    </ProfileButton>
+    </Button>
   );
 
   const deleteUserDialog = (
@@ -126,15 +122,13 @@ const UserDashboard = () => {
     </Dialog>
   );
 
-  return (
-    // profile title should be displayed in the middle of the screen
-
+  const userInformation = (
     <ProfileCard>
       <ProfileCardContent>
         <ProfileTitle variant="h5" component="h5">
           Welcome {userName}, Select Profile
         </ProfileTitle>
-        <ProfileButtonWrapper>
+        <ProfileButtonWrapper style={{ marginTop: "10px" }}>
           {profiles.map((profile) => (
             <ProfileButton
               key={profile.key}
@@ -146,13 +140,21 @@ const UserDashboard = () => {
           ))}
         </ProfileButtonWrapper>
       </ProfileCardContent>
-      <CardActions>
+      <CardActions style={{ marginTop: "100px" }}>
         {addProfileButton}
         {changePasswordButton}
         {deleteUserAccountButton}
       </CardActions>
       {deleteUserDialog}
     </ProfileCard>
+  );
+
+  return (
+    // profile title should be displayed in the middle of the screen
+    <>
+      {userInformation}
+      <Logo />
+    </>
   );
 };
 

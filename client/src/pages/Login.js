@@ -9,6 +9,7 @@ import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
 import Snackbar from "@mui/material/Snackbar";
+import Logo from "../components/Logo";
 
 import { motion } from "framer-motion";
 
@@ -74,6 +75,7 @@ const Login = () => {
       <Container maxWidth="sm">
         <ContentStyle>
           <HeadingStyle component={motion.div} {...fadeInUp}>
+            <Logo />
             <Typography sx={{ color: "text.secondary", mb: 5 }}>
               Login to your account
             </Typography>

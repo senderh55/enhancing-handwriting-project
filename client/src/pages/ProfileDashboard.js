@@ -8,8 +8,6 @@ import { AuthContext } from "../context/authContext";
 
 import { useNavigate } from "react-router-dom";
 
-import { Link as RouterLink } from "react-router-dom";
-
 import {
   Card,
   CardContent,
@@ -21,15 +19,14 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { ProfileButtonWrapper } from "../theme";
+import { ProfileButtonWrapper, ProfileButton } from "../theme";
+import Logo from "../components/Logo";
 
 const ProfileCard = styled(Card)``;
 
 const ProfileCardContent = styled(CardContent)``;
 
 const ProfileTitle = styled(Typography)``;
-
-const ProfileButton = styled(Button)``;
 
 const ProfileDashboard = () => {
   const { selectedProfile, isLoggedIn, setIsEditingProfile, deleteProfile } =
@@ -68,14 +65,12 @@ const ProfileDashboard = () => {
   };
 
   const practiceButton = (
-    <ProfileButton variant="contained" component={RouterLink} to="/practice">
+    <ProfileButton onClick={() => navigate("/practice")}>
       Practice
     </ProfileButton>
   );
   const resultsButton = (
-    <ProfileButton variant="contained" component={RouterLink} to="/Results">
-      Results
-    </ProfileButton>
+    <ProfileButton onClick={() => navigate("/results")}>Results</ProfileButton>
   );
 
   const editProfileButton = (
@@ -115,14 +110,14 @@ const ProfileDashboard = () => {
     </Dialog>
   );
 
-  return (
-    <ProfileCard>
+  const ProfileButtons = (
+    <ProfileCard style={{ marginTop: "10px" }}>
       <ProfileCardContent>
         <ProfileTitle variant="h5">
           {selectedProfile.name} Dashboard
         </ProfileTitle>
 
-        <ProfileButtonWrapper>
+        <ProfileButtonWrapper style={{ marginTop: "10px" }}>
           {practiceButton}
           {resultsButton}
           {editProfileButton}
@@ -131,6 +126,13 @@ const ProfileDashboard = () => {
       </ProfileCardContent>
       {deleteProfileDialog}
     </ProfileCard>
+  );
+
+  return (
+    <>
+      {ProfileButtons}
+      <Logo />
+    </>
   );
 };
 

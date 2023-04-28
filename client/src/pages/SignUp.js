@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
+import Logo from "../components/Logo";
 
 //////////////////////////////////
 
@@ -29,6 +30,7 @@ const Signup = () => {
       <Container maxWidth="sm">
         <ContentStyle>
           <HeadingStyle component={motion.div} {...fadeInUp}>
+            <Logo />
             <Typography sx={{ color: "text.secondary", mb: 5 }}>
               Please enter your details below.
             </Typography>
