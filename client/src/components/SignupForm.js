@@ -88,8 +88,15 @@ const SignupForm = () => {
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userVerification", { replace: true });
       } catch (error) {
-        // handle error of email already exist, display error message
-        setErrors({ signup: "Email already exist" });
+        // FIXME to be refactored to a error codes and messages
+        if (
+          // server error
+          error.message ===
+          "Cannot read properties of undefined (reading 'data')"
+        ) {
+          error.message = "Something went wrong, please try again";
+        } else error.message = "Email already exist";
+        setErrors({ signup: error.message });
       } finally {
         setSubmitting(false);
       }
