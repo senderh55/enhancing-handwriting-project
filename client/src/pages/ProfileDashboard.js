@@ -79,6 +79,17 @@ const ProfileDashboard = () => {
     </ProfileButton>
   );
 
+  const backToUserDashboardButton = (
+    <Button
+      onClick={() => navigate("/userdashboard")}
+      variant="contained"
+      sx={{ marginLeft: "10px", marginTop: "70px", marginBottom: "10px" }}
+      color="success"
+    >
+      Back to User Dashboard
+    </Button>
+  );
+
   const deleteProfileButton = (
     <ProfileButton
       onClick={handleDeleteProfileButtonClick}
@@ -125,6 +136,7 @@ const ProfileDashboard = () => {
         </ProfileButtonWrapper>
       </ProfileCardContent>
       {deleteProfileDialog}
+      {backToUserDashboardButton}
     </ProfileCard>
   );
 

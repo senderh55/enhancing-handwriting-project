@@ -148,8 +148,9 @@ function AuthProvider(props) {
       setToken("");
       setUserName("");
       setIsLoggedIn(false);
-      setSelectedProfile(null);
+      setSelectedProfile({ key: "", name: "", age: "", description: "" });
       setIsPasswordReset(false);
+      setProfiles([]);
       return response;
     } catch (error) {
       // Handle logout errors

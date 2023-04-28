@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-
+import Logo from "../components/Logo";
 const AboutContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 800vh;
-  margin-top: 220px;
+  margin-top: 520px;
   margin-bottom: 10px;
 `;
 
@@ -47,6 +47,7 @@ const About = () => {
     >
       <CardStyle>
         <AboutTitle>Welcome to ScribbleBoost!</AboutTitle>
+        <Logo />
         <AboutContent>
           ScribbleBoost is an academic final project developed by Sender Hodik
           and Idan Brauner, supervised by Dr. Anat Dahan and Dr. Navit Roth.
