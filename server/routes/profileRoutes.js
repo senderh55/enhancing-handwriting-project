@@ -38,18 +38,6 @@ router.get("/profiles", auth, async (req, res) => {
   }
 });
 
-router.get("/profiles/:id", auth, async (req, res) => {
-  //FIXME - not implemented yet in client NOT SURE IF NEEDED
-  const _id = req.params.id;
-  try {
-    const profile = await Profile.findOne({ _id, owner: req.user._id });
-    if (!profile) return res.status(404).send();
-    res.send(profile);
-  } catch (e) {
-    res.status(500).send();
-  }
-});
-
 router.post("/profiles", auth, async (req, res) => {
   //const profile = new profile(req.body);
   console.log("req.body", req.body);
