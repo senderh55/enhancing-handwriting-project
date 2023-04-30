@@ -74,8 +74,8 @@ const LoginForm = () => {
           navigate("../UserVerification", { replace: true });
         }
       } catch (error) {
-        // FIXME - need to add error if server or network is down
-        setErrors({ login: error }); // setErrors is a function from Formik, it will set the error message to the login field
+        // if there is an error, set the error message to the login field
+        setErrors({ login: error.message });
       }
     },
   });

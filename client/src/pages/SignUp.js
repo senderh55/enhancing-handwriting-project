@@ -1,8 +1,7 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Container, Typography, Link, Box, Divider } from "@mui/material";
+import { Container, Typography, Link } from "@mui/material";
 
-import GoogleAuth from "../components/GoogleAuth";
 import SignupForm from "../components/SignupForm";
 // import Logo from "../components/Logo";
 import { motion } from "framer-motion";
@@ -35,16 +34,6 @@ const Signup = () => {
               Please enter your details below.
             </Typography>
           </HeadingStyle>
-
-          <Box component={motion.div} {...fadeInUp}>
-            <GoogleAuth />
-          </Box>
-
-          <Divider sx={{ my: 3 }} component={motion.div} {...fadeInUp}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              OR
-            </Typography>
-          </Divider>
 
           <SignupForm />
 

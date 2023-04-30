@@ -61,7 +61,7 @@ const ForgotPasswordVerificationForm = (props) => {
         await resetPassword(values.newPassword, values.verificationCode, email);
         navigate("/login", { replace: true });
       } catch (error) {
-        setErrors({ resetPassword: error.error });
+        setErrors({ resetPassword: error.message });
       }
     },
   });

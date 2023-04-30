@@ -87,7 +87,7 @@ function AuthProvider(props) {
       await userSignedUp(newUser);
       return newUser;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -106,11 +106,10 @@ function AuthProvider(props) {
       if (!response.token) {
         throw new Error("Authentication failed");
       }
-
       await userLoggedIn(response);
       return true;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -123,7 +122,7 @@ function AuthProvider(props) {
       setUserIsVerified(true); // if the user's email address is verified, set the userIsVerified state to true to alert the user that their email address is verified
       return response;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -133,8 +132,7 @@ function AuthProvider(props) {
       const response = await api.resendVerificationCode(email, forgotPassword);
       return response;
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -153,9 +151,7 @@ function AuthProvider(props) {
       setProfiles([]);
       return response;
     } catch (error) {
-      // Handle logout errors
-
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -213,8 +209,7 @@ function AuthProvider(props) {
       await api.resetPassword(newPassword, verificationCode, email);
       setIsPasswordReset(true); // set the IsPasswordReset state to true to alert the user that their password has been reset (pages/login.js)
     } catch (error) {
-      // got an error from the server (wrong verification code), throw it to the component
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 

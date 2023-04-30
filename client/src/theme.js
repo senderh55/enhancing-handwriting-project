@@ -152,7 +152,6 @@ export const HeadingStyle = styled(Box)({
 });
 
 export const ContentStyle = styled("div")({
-  maxWidth: 480,
   padding: 25,
   margin: "auto",
   display: "flex",

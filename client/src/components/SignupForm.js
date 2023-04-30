@@ -88,14 +88,7 @@ const SignupForm = () => {
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userVerification", { replace: true });
       } catch (error) {
-        // FIXME to be refactored to a error codes and messages
-        if (
-          // server error
-          error.message ===
-          "Cannot read properties of undefined (reading 'data')"
-        ) {
-          error.message = "Something went wrong, please try again";
-        } else error.message = "Email already exist";
+        // set error message using formik setErrors that came from authContext->signup function (that came from api.js->signup function that came from backend)
         setErrors({ signup: error.message });
       } finally {
         setSubmitting(false);

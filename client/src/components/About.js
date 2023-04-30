@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import Logo from "../components/Logo";
+
 const AboutContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 800vh;
-  margin-top: 520px;
+  margin-top: 420px;
   margin-bottom: 10px;
 `;
 

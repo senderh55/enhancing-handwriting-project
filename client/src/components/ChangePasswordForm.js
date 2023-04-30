@@ -77,7 +77,7 @@ const ChangePasswordForm = () => {
         await changePassword(values);
         logout(); // log user out after changing password to force them to login with new password
       } catch (error) {
-        setErrors({ changePassword: error.error }); // set error message to be displayed in snackbar
+        setErrors({ changePassword: error.message }); // set error message to be displayed in snackbar
         // error.error is the error message returned from the server
       }
     },

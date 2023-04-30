@@ -44,8 +44,7 @@ const UserVerificationForm = () => {
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/login", { replace: true });
       } catch (error) {
-        // handle error from backend
-        setErrors({ userVerification: error.error });
+        setErrors({ userVerification: error.message });
       } finally {
         setSubmitting(false);
       }
