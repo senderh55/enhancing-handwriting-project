@@ -1,11 +1,30 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import p5 from "p5";
 import Timer from "./../components/Timer";
-import { Button } from "@mui/material";
+
 import { ProfileButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
+import { ProfileButton } from "../theme";
+import styled from "styled-components";
+import { Button } from "@mui/material";
+
+const StyledButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const StyledButton = styled(Button)`
+  margin: 5px;
+  &:first-of-type {
+    margin-right: 5px;
+  }
+  font-size: 1.5rem;
+  padding: 10px 20px;
+`;
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
@@ -188,12 +207,12 @@ const TabletSketch = () => {
   return (
     <>
       <ProfileButtonWrapper>
-        <Button variant="contained" onClick={clearSketch}>
+        <ProfileButton variant="contained" onClick={clearSketch}>
           Clear Sketch
-        </Button>
-        <Button variant="contained" onClick={() => saveSketch()}>
+        </ProfileButton>
+        <ProfileButton variant="contained" onClick={() => saveSketch()}>
           Save Sketch
-        </Button>
+        </ProfileButton>
       </ProfileButtonWrapper>
       <Sketch
         setup={setup}
@@ -203,6 +222,18 @@ const TabletSketch = () => {
         clear={clear}
       />
       <Timer />
+      <StyledButtonWrapper>
+        <StyledButton
+          variant="contained"
+          color="secondary"
+          style={{
+            fontSize: "1.5rem",
+            padding: "10px 60px",
+          }}
+        >
+          Done practice
+        </StyledButton>
+      </StyledButtonWrapper>
     </>
   );
 };
