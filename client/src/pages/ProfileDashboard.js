@@ -21,6 +21,19 @@ import {
 
 import { ProfileButtonWrapper, ProfileButton } from "../theme";
 import Logo from "../components/Logo";
+import Snackbar from "@mui/material/Snackbar";
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
 
 const ProfileCard = styled(Card)``;
 
@@ -33,6 +46,7 @@ const ProfileDashboard = () => {
     useContext(AuthContext);
 
   const [confirmDeleteMsg, setConfirmDeleteMsg] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -59,9 +73,14 @@ const ProfileDashboard = () => {
   };
 
   const handleConfirmDeleteProfile = async () => {
-    await deleteProfile(); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
-    setConfirmDeleteMsg(false);
-    navigate("/");
+    try {
+      await deleteProfile(); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
+      setConfirmDeleteMsg(false);
+      navigate("/");
+    } catch (err) {
+      setSnackbarOpen(true);
+      console.log(err);
+    }
   };
 
   const practiceButton = (
@@ -144,6 +163,12 @@ const ProfileDashboard = () => {
     <>
       {ProfileButtons}
       <Logo />
+      <StyledSnackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={"An error occurred. Please try again later."}
+      />
     </>
   );
 };

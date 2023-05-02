@@ -73,7 +73,7 @@ export const logout = async (token) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -87,7 +87,7 @@ export const createProfile = async (token, name, age, description) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -101,7 +101,7 @@ export const updateProfile = async (id, token, name, age, description) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -114,7 +114,7 @@ export const deleteProfile = async (id, token) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -140,12 +140,13 @@ export const deleteUser = async (token) => {
     });
     return response.data;
   } catch (error) {
-    throw error;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
 export const changePassword = async (token, password, newPassword) => {
   const data = { password, newPassword };
+
   try {
     const response = await axios.patch(`${serverURL}/users/me`, data, {
       headers: {
@@ -154,12 +155,7 @@ export const changePassword = async (token, password, newPassword) => {
     });
     return response.data;
   } catch (error) {
-    switch (error.response.status) {
-      case 401:
-        throw new Error("Incorrect password");
-      default:
-        throw new Error("Something went wrong, please try again later");
-    }
+    throw new Error("Something went wrong, please try again later");
   }
 };
 

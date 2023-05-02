@@ -170,8 +170,9 @@ function AuthProvider(props) {
         : await api.createProfile(token, name, age, description);
       await getProfiles(token); // after creating or updating a profile, we need to get the updated list of profiles from the database
     } catch (error) {
+      console.log(error.message);
       // handle server errors
-      return error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -180,7 +181,7 @@ function AuthProvider(props) {
       await api.deleteProfile(selectedProfile.key, token);
       await getProfiles(token); // after deleting a profile, we need to get the updated list of profiles from the database
     } catch (error) {
-      return error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -190,7 +191,7 @@ function AuthProvider(props) {
       setUserIsVerified(false); // prevent other users to login with unverified email address
       await api.deleteUser(token);
     } catch (error) {
-      return error;
+      throw error;
     }
   };
 
@@ -199,8 +200,7 @@ function AuthProvider(props) {
       await api.changePassword(token, oldPassword, newPassword);
       setIsPasswordReset(true);
     } catch (error) {
-      // got an error from the server (wrong old password), throw it to the component
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 

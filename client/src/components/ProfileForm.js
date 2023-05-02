@@ -6,6 +6,8 @@ import { LoadingButton } from "@mui/lab";
 import { motion } from "framer-motion";
 import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
+import styled from "styled-components";
+import Snackbar from "@mui/material/Snackbar";
 
 /////////////////////////////////////////////////////////////
 let easing = [0.6, -0.05, 0.01, 0.99];
@@ -18,6 +20,19 @@ const animate = {
     delay: 0.16,
   },
 };
+
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
 
 const ProfileForm = () => {
   const { ProfileFormOperation, selectedProfile, isEditingProfile } =
@@ -145,6 +160,11 @@ const ProfileForm = () => {
           </Box>
         </Stack>
       </Form>
+      <StyledSnackbar // this is the error message from backend (not from formik)
+        open={!!errors.ProfileFormOperation}
+        message={errors.ProfileFormOperation}
+        severity="error"
+      />
     </FormikProvider>
   );
 };

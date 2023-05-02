@@ -60,9 +60,13 @@ const UserDashboard = () => {
   };
 
   const handleConfirmDeleteUser = async () => {
-    await deleteUser(); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
-    setConfirmDeleteMsg(false);
-    navigate("/");
+    try {
+      await deleteUser();
+      setConfirmDeleteMsg(false); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
+      navigate("/");
+    } catch (err) {
+      navigate("/error");
+    }
   };
 
   const handleDeleteUserButtonClick = () => {
