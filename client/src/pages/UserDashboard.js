@@ -16,6 +16,19 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ProfileButtonWrapper, ProfileButton } from "../theme";
 import Logo from "../components/Logo";
+import Snackbar from "@mui/material/Snackbar";
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
 
 const ProfileCard = styled(Card)``;
 
@@ -34,6 +47,7 @@ const UserDashboard = () => {
     deleteUser,
   } = useContext(AuthContext);
   const [confirmDeleteMsg, setConfirmDeleteMsg] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -65,7 +79,8 @@ const UserDashboard = () => {
       setConfirmDeleteMsg(false); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
       navigate("/");
     } catch (err) {
-      navigate("/error");
+      setSnackbarOpen(true);
+      console.log(err);
     }
   };
 
@@ -158,6 +173,12 @@ const UserDashboard = () => {
     <>
       {userInformation}
       <Logo />
+      <StyledSnackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={"An error occurred. Please try again later."}
+      />
     </>
   );
 };
