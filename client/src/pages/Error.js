@@ -18,7 +18,7 @@ export default function Error() {
           <Grid xs={6}>
             <Typography variant="h1">404</Typography>
             <Typography variant="h6">
-              Something went wrong. Please try again later. 
+              Something went wrong. Please try again later.
             </Typography>
             <Button variant="contained" component={RouterLink} to="/">
               Back Home

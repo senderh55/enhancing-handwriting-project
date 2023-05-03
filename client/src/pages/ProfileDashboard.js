@@ -50,8 +50,7 @@ const ProfileDashboard = () => {
 
   const navigate = useNavigate();
 
-  // This useEffect is used to redirect the user to the UserDashboard component if the user is not logged in.
-
+  // This useEffect is used to redirect the user to the home page if the user is not logged in.
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/");
