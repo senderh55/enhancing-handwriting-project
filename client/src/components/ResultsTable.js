@@ -22,34 +22,37 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
-function createData(name, calories, fat, carbs, protein) {
+function createData(
+  practiceDate,
+  practiceTime,
+  writingTime,
+  maxDistance,
+  lineDeviations,
+  distanceDeviations
+) {
   return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    practiceDate,
+    practiceTime,
+    writingTime,
+    maxDistance,
+    lineDeviations,
+    distanceDeviations,
   };
 }
 
 // FOR EXAMPLE ONLY
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
+  createData("2010-12-2", "09:44", "01:44", 67, 5, 3),
+  createData("2014-10-2", "12:24", "02:44", 51, 2, 5),
+  createData("2019-10-2", "02:14", "05:44", 24, 3, 1),
+  createData("2025-10-2", "02:42", "04:44", 24, 13, 3),
+  createData("2011-10-2", "02:44", "02:44", 49, 22, 6),
+  createData("2010-10-2", "04:44", "02:44", 87, 9, 22),
+  createData("2015-11-2", "03:44", "02:44", 37, 7, 1),
 ];
 
 function descendingComparator(a, b, orderBy) {
+  console.log(a[orderBy], b[orderBy]);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -83,34 +86,40 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
+    id: "practiceDate",
     numeric: false,
     disablePadding: true,
     label: "Date",
   },
   {
-    id: "calories",
+    id: "practiceTime",
     numeric: true,
     disablePadding: false,
     label: "Pratice time",
   },
   {
-    id: "fat",
+    id: "writingTime",
     numeric: true,
     disablePadding: false,
     label: "Writing time",
   },
   {
-    id: "carbs",
+    id: "maxDistance",
     numeric: true,
     disablePadding: false,
     label: "Max distance",
   },
   {
-    id: "protein",
+    id: "lineDeviations",
     numeric: true,
     disablePadding: false,
     label: "Line deviations",
+  },
+  {
+    id: "distanceDeviations",
+    numeric: true,
+    disablePadding: false,
+    label: "Distance deviations",
   },
 ];
 
@@ -177,7 +186,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, profileName } = props;
+  const { numSelected } = props;
 
   return (
     <Toolbar
@@ -202,16 +211,7 @@ function EnhancedTableToolbar(props) {
         >
           {numSelected} selected
         </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {profileName} Results
-        </Typography>
-      )}
+      ) : null}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -236,12 +236,11 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
+  const [orderBy, setOrderBy] = React.useState("practiceTime");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { profile } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -309,10 +308,7 @@ export default function EnhancedTable(props) {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          profileName={profile.name}
-        />
+        <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -329,17 +325,17 @@ export default function EnhancedTable(props) {
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
+                const isItemSelected = isSelected(row.practiceDate);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event) => handleClick(event, row.practiceDate)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.name}
+                    key={row.practiceDate}
                     selected={isItemSelected}
                     sx={{ cursor: "pointer" }}
                   >
@@ -358,12 +354,15 @@ export default function EnhancedTable(props) {
                       scope="row"
                       padding="none"
                     >
-                      {row.name}
+                      {row.practiceDate}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="right">{row.practiceTime}</TableCell>
+                    <TableCell align="right">{row.writingTime}</TableCell>
+                    <TableCell align="right">{row.maxDistance}</TableCell>
+                    <TableCell align="right">{row.lineDeviations}</TableCell>
+                    <TableCell align="right">
+                      {row.distanceDeviations}
+                    </TableCell>
                   </TableRow>
                 );
               })}
