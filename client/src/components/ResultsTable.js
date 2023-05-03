@@ -23,6 +23,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
 function createData(
+  practiceID,
   practiceDate,
   practiceTime,
   writingTime,
@@ -31,6 +32,7 @@ function createData(
   distanceDeviations
 ) {
   return {
+    practiceID,
     practiceDate,
     practiceTime,
     writingTime,
@@ -42,17 +44,18 @@ function createData(
 
 // FOR EXAMPLE ONLY
 const rows = [
-  createData("2010-12-2", "09:44", "01:44", 67, 5, 3),
-  createData("2014-10-2", "12:24", "02:44", 51, 2, 5),
-  createData("2019-10-2", "02:14", "05:44", 24, 3, 1),
-  createData("2025-10-2", "02:42", "04:44", 24, 13, 3),
-  createData("2011-10-2", "02:44", "02:44", 49, 22, 6),
-  createData("2010-10-2", "04:44", "02:44", 87, 9, 22),
-  createData("2015-11-2", "03:44", "02:44", 37, 7, 1),
+  createData(1, "2010-12-2", "09:44", "01:44", 67, 5, 3),
+  createData(2, "2014-10-2", "12:24", "02:44", 51, 2, 5),
+  createData(3, "2019-10-2", "02:14", "05:44", 24, 3, 1),
+  createData(4, "2025-10-2", "02:42", "04:44", 24, 13, 3),
+  createData(5, "2011-10-2", "02:44", "02:44", 49, 22, 6),
+  createData(6, "2010-10-2", "04:44", "02:44", 87, 9, 22),
+  createData(7, "2015-11-2", "03:44", "02:44", 37, 7, 1),
 ];
 
+console.log(rows[1]);
+
 function descendingComparator(a, b, orderBy) {
-  console.log(a[orderBy], b[orderBy]);
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -186,8 +189,19 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, selected, setSelected, setPracticeData, practiceData } =
+    props;
+  const handleDelete = () => {
+    // find the selected row and delete it
 
+    const newRows = practiceData.filter(
+      (row) => !selected.includes(row.practiceID)
+    );
+    setSelected([]);
+
+    setPracticeData(newRows);
+    // update the table
+  };
   return (
     <Toolbar
       sx={{
@@ -215,7 +229,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -241,6 +255,7 @@ export default function EnhancedTable(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [practiceData, setPracticeData] = React.useState(rows);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -250,19 +265,19 @@ export default function EnhancedTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = practiceData.map((n) => n.practiceID);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -294,21 +309,27 @@ export default function EnhancedTable(props) {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - practiceData.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(practiceData, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage, practiceData]
   );
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          selected={selected}
+          setSelected={setSelected}
+          practiceData={practiceData}
+          setPracticeData={setPracticeData}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -321,17 +342,17 @@ export default function EnhancedTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={practiceData.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.practiceDate);
+                const isItemSelected = isSelected(row.practiceID);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.practiceDate)}
+                    onClick={(event) => handleClick(event, row.practiceID)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -381,7 +402,7 @@ export default function EnhancedTable(props) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={practiceData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
