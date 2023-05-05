@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import p5 from "p5";
-import Timer from "./../components/Timer";
+import Timer from "../components/Timer";
 import { Button } from "@mui/material";
 import { ProfileButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
+import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
+
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
@@ -15,6 +17,11 @@ const TabletSketch = () => {
   const { selectedProfile } = useContext(AuthContext);
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
+  const pickLine =0; // line start picker
+      // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
+      //changed from the setup to global
+  const canvasWidth = 8.82 * 96;
+  const canvasHeight = 5.83 * 96;
 
   let lastTouchMovedTimeRef = useRef(null);
   // add a ref to previousMousePosition - x and y coordinates
@@ -26,25 +33,26 @@ const TabletSketch = () => {
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
   let lineDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
+  let lineSameDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
 
   const setup = (p5, canvasParentRef) => {
-    // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
-    const canvasWidth = 8.82 * 96;
-    const canvasHeight = 5.83 * 96;
+    
 
     p5.createCanvas(canvasWidth, canvasHeight).parent(canvasParentRef);
     p5.stroke(0);
     p5.background(225);
     p5.strokeWeight(1);
     // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
-    for (let i = 0; i < canvasHeight; i += rowHeight) {
-      p5.line(0, i, canvasWidth, i);
+    for (let i = pickLine; i < canvasHeight; i += rowHeight) {
+      p5.line(pickLine, i, canvasWidth, i);
       rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
     // load the distance error sound
     distanceErrorSound.current = new Audio(distanceErrorSoundFile);
     lineDeviationSound.current = new Audio(lineDeviationSoundFile);
+    lineSameDeviationSound.current = new Audio(sameLineDeviationFile);
+
   };
 
   const draw = (p5) => {};
@@ -85,32 +93,64 @@ const TabletSketch = () => {
       y: p5.mouseY,
     };
 
-    // calculate the distance between the current and previous mouse position
-    const distance = p5.dist(
-      currentMousePosition.x,
-      currentMousePosition.y,
-      previousMouseXPositionRef.current,
-      previousMouseYPositionRef.current
-    );
+    // calculate the distance between the current and previous mouse position ///idan
+    const wrongLinedistance = () => {
+      if(!inCanvas(p5)) {
+        return false;
+      }
+      else return(
+        ((Math.floor(currentMousePosition.y / rowHeight)) !== 
+        ((Math.floor(previousMouseYPositionRef.current / rowHeight)))))
+      };
+      
+    
+    console.log(currentMousePosition.x + "\n");
+    console.log(currentMousePosition.y + "\n");
 
-    // check if the distance is greater than 10px
-    if (distance > maxDistance) {
-      // if it is greater than 10px, log the distance
+
+    // idan change
+    const sameLineDist = p5.dist(
+      currentMousePosition.x,
+      0,
+      previousMouseXPositionRef.current,
+      0
+      );
+
+      //idan change
+    if (wrongLinedistance()) {
+      p5.fill(0, 0, 255);
+      p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
+      //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
+      lineSameDeviationSound.current.play(); // play the distance error sound
+    }
+ // check if the distance is greater than maxDistance
+    else if ((sameLineDist > maxDistance) && inCanvas(p5)) {
+      // if it is greater than 100px, log the distance
       // draw red circle as a visual indicator of error and fill it with red color
       p5.fill(255, 0, 0);
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
-      validDrawing.current = false; // set the validDrawing to false
-      distanceErrorSound.current.play(); // play the distance error sound
-    } else {
-      validDrawing.current = true;
-    }
+      //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
+      lineDeviationSound.current.play(); // play the distance error sound
+    } 
+
+    validDrawing.current = true;
+
   };
 
+  //idan change
+const inCanvas =(p5) =>{
+  return ((p5.mouseX >=0 &&  p5.mouseY >= 0) && (p5.mouseX < canvasWidth &&  p5.mouseY < canvasHeight));
+};
+
+//idan change
   const saveMousePosition = (p5) => {
     // set the previousMousePosition to the current mouse position
-    previousMouseXPositionRef.current = p5.mouseX;
-    previousMouseYPositionRef.current = p5.mouseY;
-  };
+    if(inCanvas(p5)) {
+      console.log("!!!");
+      previousMouseXPositionRef.current = p5.mouseX;
+      previousMouseYPositionRef.current = p5.mouseY;
+  }
+};
 
   // check if current drawing not overlaping the x points of the rows from rowsYPositions array
   const lineDeviationCheck = (p5) => {
@@ -163,7 +203,7 @@ const TabletSketch = () => {
     previousMouseXPositionRef.current = null;
     previousMouseYPositionRef.current = null;
     // set validDrawing to true
-    validDrawing.current = true;
+    //validDrawing.current = true;
   };
 
   useEffect(() => {
