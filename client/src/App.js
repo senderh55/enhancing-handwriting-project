@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import RootLayout from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
+import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
 import ProfileOperation from "./pages/ProfileOperation";
 
