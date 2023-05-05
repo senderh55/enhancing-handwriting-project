@@ -14,15 +14,27 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ProfileButtonWrapper } from "../theme";
+import { ProfileButtonWrapper, ProfileButton } from "../theme";
+import Logo from "../components/Logo";
+import Snackbar from "@mui/material/Snackbar";
+const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
 
 const ProfileCard = styled(Card)``;
 
 const ProfileCardContent = styled(CardContent)``;
 
 const ProfileTitle = styled(Typography)``;
-
-const ProfileButton = styled(Button)``;
 
 const UserDashboard = () => {
   const {
@@ -35,6 +47,7 @@ const UserDashboard = () => {
     deleteUser,
   } = useContext(AuthContext);
   const [confirmDeleteMsg, setConfirmDeleteMsg] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -61,9 +74,14 @@ const UserDashboard = () => {
   };
 
   const handleConfirmDeleteUser = async () => {
-    await deleteUser(); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
-    setConfirmDeleteMsg(false);
-    navigate("/");
+    try {
+      await deleteUser();
+      setConfirmDeleteMsg(false); // we use await to prevent the user from being redirected before the deleteProfile function has finished executing
+      navigate("/");
+    } catch (err) {
+      setSnackbarOpen(true);
+      console.log(err);
+    }
   };
 
   const handleDeleteUserButtonClick = () => {
@@ -71,16 +89,13 @@ const UserDashboard = () => {
   };
 
   const changePasswordButton = (
-    <ProfileButton
-      onClick={() => navigate("/changePassword")}
-      variant="contained"
-    >
+    <Button onClick={() => navigate("/changePassword")} variant="contained">
       Change Password
-    </ProfileButton>
+    </Button>
   );
 
   const addProfileButton = (
-    <ProfileButton
+    <Button
       onClick={handleCreateProfileButtonClick}
       variant="contained"
       // make the button in the left side of the screen and green
@@ -88,12 +103,12 @@ const UserDashboard = () => {
       color="success"
     >
       Add Profile
-    </ProfileButton>
+    </Button>
   );
 
   // create RED color button for delete user account button and will be in the other side of the screen
   const deleteUserAccountButton = (
-    <ProfileButton
+    <Button
       onClick={handleDeleteUserButtonClick}
       variant="contained"
       // make the button in the right side of the screen
@@ -102,7 +117,7 @@ const UserDashboard = () => {
       color="error"
     >
       Delete User Account
-    </ProfileButton>
+    </Button>
   );
 
   const deleteUserDialog = (
@@ -126,15 +141,13 @@ const UserDashboard = () => {
     </Dialog>
   );
 
-  return (
-    // profile title should be displayed in the middle of the screen
-
+  const userInformation = (
     <ProfileCard>
       <ProfileCardContent>
         <ProfileTitle variant="h5" component="h5">
           Welcome {userName}, Select Profile
         </ProfileTitle>
-        <ProfileButtonWrapper>
+        <ProfileButtonWrapper style={{ marginTop: "10px" }}>
           {profiles.map((profile) => (
             <ProfileButton
               key={profile.key}
@@ -146,13 +159,27 @@ const UserDashboard = () => {
           ))}
         </ProfileButtonWrapper>
       </ProfileCardContent>
-      <CardActions>
+      <CardActions style={{ marginTop: "100px" }}>
         {addProfileButton}
         {changePasswordButton}
         {deleteUserAccountButton}
       </CardActions>
       {deleteUserDialog}
     </ProfileCard>
+  );
+
+  return (
+    // profile title should be displayed in the middle of the screen
+    <>
+      {userInformation}
+      <Logo />
+      <StyledSnackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={"An error occurred. Please try again later."}
+      />
+    </>
   );
 };
 

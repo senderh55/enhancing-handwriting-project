@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Container, Typography, Link, Box, Divider } from "@mui/material";
+import { Container, Typography, Link } from "@mui/material";
 
 import LoginForm from "../components/LoginForm";
-import GoogleAuth from "../components/GoogleAuth";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
 import Snackbar from "@mui/material/Snackbar";
+import Logo from "../components/Logo";
 
 import { motion } from "framer-motion";
 
@@ -74,18 +74,12 @@ const Login = () => {
       <Container maxWidth="sm">
         <ContentStyle>
           <HeadingStyle component={motion.div} {...fadeInUp}>
+            <Logo />
             <Typography sx={{ color: "text.secondary", mb: 5 }}>
               Login to your account
             </Typography>
           </HeadingStyle>
-          <Box component={motion.div} {...fadeInUp}>
-            <GoogleAuth />
-          </Box>
-          <Divider sx={{ my: 3 }} component={motion.div} {...fadeInUp}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              OR
-            </Typography>
-          </Divider>
+
           <LoginForm />
           <Typography
             component={motion.p}

@@ -75,18 +75,21 @@ const SignupForm = () => {
     validationSchema: SignupSchema,
 
     onSubmit: async (values, { setSubmitting, setErrors }) => {
+      // profileName is a string that is created by combining the firstName and lastName values from the formik form.
+      const valueName = values.firstName + " " + values.lastName;
+      // The profileName string is then split into an array of strings, each string is capitalized, and then the array is joined back into a string.
+      const userName = valueName
+        .split(" ")
+        .map((name) => name.charAt(0).toUpperCase() + name.slice(1))
+        .join(" ");
       try {
-        const data = await signup(
-          values.firstName + " " + values.lastName,
-          values.email,
-          values.password
-        );
+        const data = await signup(userName, values.email, values.password);
         console.log("Signup success:", data);
         // handle successful signup, e.g. redirect user to dashboard page
         navigate("/userVerification", { replace: true });
       } catch (error) {
-        // handle error of email already exist, display error message
-        setErrors({ signup: "Email already exist" });
+        // set error message using formik setErrors that came from authContext->signup function (that came from api.js->signup function that came from backend)
+        setErrors({ signup: error.message });
       } finally {
         setSubmitting(false);
       }

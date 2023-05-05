@@ -87,7 +87,7 @@ function AuthProvider(props) {
       await userSignedUp(newUser);
       return newUser;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -106,11 +106,10 @@ function AuthProvider(props) {
       if (!response.token) {
         throw new Error("Authentication failed");
       }
-
       await userLoggedIn(response);
       return true;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -123,7 +122,7 @@ function AuthProvider(props) {
       setUserIsVerified(true); // if the user's email address is verified, set the userIsVerified state to true to alert the user that their email address is verified
       return response;
     } catch (error) {
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -133,8 +132,7 @@ function AuthProvider(props) {
       const response = await api.resendVerificationCode(email, forgotPassword);
       return response;
     } catch (error) {
-      console.log(error);
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -148,13 +146,12 @@ function AuthProvider(props) {
       setToken("");
       setUserName("");
       setIsLoggedIn(false);
-      setSelectedProfile(null);
+      setSelectedProfile({ key: "", name: "", age: "", description: "" });
       setIsPasswordReset(false);
+      setProfiles([]);
       return response;
     } catch (error) {
-      // Handle logout errors
-
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -173,8 +170,9 @@ function AuthProvider(props) {
         : await api.createProfile(token, name, age, description);
       await getProfiles(token); // after creating or updating a profile, we need to get the updated list of profiles from the database
     } catch (error) {
+      console.log(error.message);
       // handle server errors
-      return error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -183,7 +181,7 @@ function AuthProvider(props) {
       await api.deleteProfile(selectedProfile.key, token);
       await getProfiles(token); // after deleting a profile, we need to get the updated list of profiles from the database
     } catch (error) {
-      return error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -193,7 +191,7 @@ function AuthProvider(props) {
       setUserIsVerified(false); // prevent other users to login with unverified email address
       await api.deleteUser(token);
     } catch (error) {
-      return error;
+      throw error;
     }
   };
 
@@ -202,8 +200,7 @@ function AuthProvider(props) {
       await api.changePassword(token, oldPassword, newPassword);
       setIsPasswordReset(true);
     } catch (error) {
-      // got an error from the server (wrong old password), throw it to the component
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 
@@ -212,8 +209,7 @@ function AuthProvider(props) {
       await api.resetPassword(newPassword, verificationCode, email);
       setIsPasswordReset(true); // set the IsPasswordReset state to true to alert the user that their password has been reset (pages/login.js)
     } catch (error) {
-      // got an error from the server (wrong verification code), throw it to the component
-      throw error;
+      throw new Error(`${error.message}`);
     }
   };
 

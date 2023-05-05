@@ -7,6 +7,10 @@ import EmailIcon from "@mui/icons-material/Email";
 const Container = styled(motion.div)`
   display: flex;
   align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  flex-direction: row;
 `;
 
 const Link = styled(motion.a)`
@@ -22,7 +26,7 @@ const Icon = styled.span`
 `;
 
 const Text = styled.span`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: normal;
   color: #555;
   line-height: 1.5;
@@ -30,8 +34,9 @@ const Text = styled.span`
   margin-right: 10px;
   margin-left: 10px;
 `;
+
 const ContentTitle = styled.h1`
-  font-size: 36px;
+  font-size: 28px;
   font-weight: bold;
   color: #333;
   margin-bottom: 16px;
@@ -51,30 +56,33 @@ const Contact = ({ contacts }) => {
   return (
     <>
       <ContentTitle>Contact Us</ContentTitle>
-      {contacts.map((contact) => (
-        <Container
-          key={contact.email}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <Link
-            href={`https://www.linkedin.com/in/${contact.linkedin}`}
-            variants={linkVariants}
+      <Container>
+        {contacts.map((contact) => (
+          <Container
+            style={{ marginRight: "110" }}
+            key={contact.email}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            <Icon>
-              <LinkedInIcon />
-            </Icon>
-            <Text>{contact.name}</Text>
-          </Link>
-          <Link href={`mailto:${contact.email}`} variants={linkVariants}>
-            <Icon>
-              <EmailIcon />
-            </Icon>
-            <Text>{contact.email}</Text>
-          </Link>
-        </Container>
-      ))}
+            <Link
+              href={`https://www.linkedin.com/in/${contact.linkedin}`}
+              variants={linkVariants}
+            >
+              <Icon>
+                <LinkedInIcon />
+              </Icon>
+              <Text>{contact.name}</Text>
+            </Link>
+            <Link href={`mailto:${contact.email}`} variants={linkVariants}>
+              <Icon>
+                <EmailIcon />
+              </Icon>
+              <Text>{contact.email}</Text>
+            </Link>
+          </Container>
+        ))}
+      </Container>
     </>
   );
 };

@@ -9,7 +9,16 @@ export const login = async (email, password) => {
     const response = await axios.post(`${serverURL}/users/login`, data);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    // check error code and handle accordingly
+
+    switch (error.response.status) {
+      case 401:
+        throw new Error("Incorrect email or password");
+      case 404:
+        throw new Error("User not found");
+      default:
+        throw new Error("Something went wrong, please try again later");
+    }
   }
 };
 
@@ -19,7 +28,13 @@ export const signup = async (name, email, password) => {
     const response = await axios.post(`${serverURL}/users`, data);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    // check error code and handle accordingly
+    switch (error.response.status) {
+      case 400:
+        throw new Error("Email already in use");
+      default:
+        throw new Error("Something went wrong, please try again later");
+    }
   }
 };
 
@@ -34,7 +49,14 @@ export const userEmailVerification = async (email, verificationCode) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    switch (error.response.status) {
+      case 400:
+        throw new Error("Please enter a valid verification code");
+      case 401:
+        throw new Error("Incorrect verification code");
+      default:
+        throw new Error("Something went wrong, please try again later");
+    }
   }
 };
 
@@ -51,7 +73,7 @@ export const logout = async (token) => {
     );
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -65,7 +87,7 @@ export const createProfile = async (token, name, age, description) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -79,7 +101,7 @@ export const updateProfile = async (id, token, name, age, description) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -92,7 +114,7 @@ export const deleteProfile = async (id, token) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -105,7 +127,7 @@ export const getProfiles = async (token) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw error;
   }
 };
 
@@ -118,12 +140,13 @@ export const deleteUser = async (token) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
 export const changePassword = async (token, password, newPassword) => {
   const data = { password, newPassword };
+
   try {
     const response = await axios.patch(`${serverURL}/users/me`, data, {
       headers: {
@@ -132,7 +155,7 @@ export const changePassword = async (token, password, newPassword) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw new Error("Something went wrong, please try again later");
   }
 };
 
@@ -143,10 +166,17 @@ export const resetPassword = async (newPassword, verificationCode, email) => {
       `${serverURL}/users/resetPassword`,
       data
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.log(error.response.status);
+    switch (error.response.status) {
+      case 400:
+        throw new Error("Please enter a valid verification code");
+      case 401:
+        throw new Error("Incorrect verification code");
+      default:
+        throw new Error("Something went wrong, please try again later");
+    }
   }
 };
 
@@ -164,6 +194,13 @@ export const resendVerificationCode = async (email, forgotPassword) => {
 
     return response.data;
   } catch (error) {
-    throw error;
+    switch (error.response.status) {
+      case 404:
+        throw new Error("User not found");
+      default:
+        throw new Error("Something went wrong, please try again later");
+
+      // check error code and handle accordingly
+    }
   }
 };

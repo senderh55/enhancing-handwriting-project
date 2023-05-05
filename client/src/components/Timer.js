@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography } from "@mui/material";
-import { ProfileButtonWrapper } from "../theme";
+import { Typography } from "@mui/material";
+import { ProfileButtonWrapper, ProfileButton } from "../theme";
 
 const Timer = () => {
   const [time, setTime] = useState(0);
@@ -32,15 +32,15 @@ const Timer = () => {
   return (
     <div>
       <ProfileButtonWrapper>
-        <Button variant="contained" onClick={handleStart}>
+        <ProfileButton variant="contained" onClick={handleStart}>
           Start Timer
-        </Button>
-        <Button variant="contained" onClick={handleStop}>
+        </ProfileButton>
+        <ProfileButton variant="contained" onClick={handleStop}>
           Stop Timer
-        </Button>
-        <Button variant="contained" onClick={handleReset}>
+        </ProfileButton>
+        <ProfileButton variant="contained" onClick={handleReset}>
           Reset Timer
-        </Button>
+        </ProfileButton>
       </ProfileButtonWrapper>
       <Typography variant="h4" gutterBottom>
         {formatTime(time)}

@@ -127,6 +127,19 @@ export const ProfileButtonWrapper = styled.div`
     margin: 8px;
   }
 `;
+
+export const ProfileButton = styled.button`
+  background-color: #e6e9f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+
 export const RootStyle = styled("div")({
   background: "rgb(249, 250, 251)",
   height: "100vh",
@@ -139,7 +152,6 @@ export const HeadingStyle = styled(Box)({
 });
 
 export const ContentStyle = styled("div")({
-  maxWidth: 480,
   padding: 25,
   margin: "auto",
   display: "flex",

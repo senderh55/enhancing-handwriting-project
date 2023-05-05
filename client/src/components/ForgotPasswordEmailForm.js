@@ -55,8 +55,7 @@ const ForgotPasswordEmailForm = (props) => {
         props.setEmail(values.email); // pass the email to parent component (ForgotPassword.js)
         props.setIsEmailSent(true); // tell parent component that email is sent and replace the form with verification code and password form
       } catch (error) {
-        console.log(error);
-        setErrors({ sendEmail: "Email not exist" });
+        setErrors({ sendEmail: error.message });
       } finally {
         setSubmitting(false);
       }

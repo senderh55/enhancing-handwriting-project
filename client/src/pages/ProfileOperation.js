@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
-
+import Logo from "../components/Logo";
 //////////////////////////////////
 
 const ProfileOperation = () => {
@@ -41,6 +41,7 @@ const ProfileOperation = () => {
             sx={{ mt: 3 }}
           ></Typography>
         </ContentStyle>
+        <Logo />
       </Container>
     </RootStyle>
   );

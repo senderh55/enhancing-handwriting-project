@@ -8,6 +8,7 @@ import { AuthContext } from "../context/authContext";
 import { motion } from "framer-motion";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import { RootStyle, HeadingStyle, ContentStyle, fadeInUp } from "../theme";
+import Logo from "../components/Logo";
 
 //////////////////////////////////
 
@@ -40,6 +41,7 @@ const ChangePassword = () => {
             <ChangePasswordForm />
           </motion.div>
         </ContentStyle>
+        <Logo />
       </Container>
     </RootStyle>
   );

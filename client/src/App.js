@@ -13,6 +13,8 @@ import Practice from "./pages/Practice";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import UserVerification from "./pages/UserVerification";
+import Results from "./pages/Results";
+import Error from "./pages/Error";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 const router = createBrowserRouter([
@@ -58,6 +60,14 @@ const router = createBrowserRouter([
       {
         path: "practice",
         element: <Practice />,
+      },
+      {
+        path: "results",
+        element: <Results />,
+      },
+      {
+        path: "error",
+        element: <Error />,
       },
     ],
   },
