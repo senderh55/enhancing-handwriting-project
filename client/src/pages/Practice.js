@@ -39,6 +39,8 @@ const TabletSketch = () => {
   const { selectedProfile } = useContext(AuthContext);
   const [maxDistance, setMaxDistance] = useState(100);
   const [startingLine, setStartingLine] = useState(0);
+  const [practiceTime, setPracticeTime] = useState(0);
+  const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
 
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
@@ -216,7 +218,6 @@ const TabletSketch = () => {
       checkDistanceBetweenPoints(p5);
     }
     if (validDrawing.current) saveMousePosition(p5);
-
     // prevent default
     return false;
   };
@@ -251,6 +252,11 @@ const TabletSketch = () => {
     link.click();
   };
 
+  const donePractice = () => {
+    // set the practice time to the current time
+    setPracticeDone(true); // set the practiceDone to true, To stop the timer, among other things
+  };
+
   const clearSketchButton = (
     <ProfileButton variant="contained" onClick={clearSketch}>
       Clear Sketch
@@ -267,6 +273,7 @@ const TabletSketch = () => {
     <StyledButtonWrapper>
       <StyledButton
         variant="contained"
+        onClick={() => donePractice()}
         color="secondary"
         style={{
           fontSize: "1.5rem",
@@ -278,6 +285,22 @@ const TabletSketch = () => {
     </StyledButtonWrapper>
   );
 
+  const inputForm = (
+    <PracticeInputForm
+      setMaxDistance={setMaxDistance}
+      setStartingLine={setStartingLine}
+    />
+  );
+  const sketch = (
+    <Sketch
+      setup={setup}
+      draw={draw}
+      touchMoved={touchMoved}
+      canvasRef={canvasRef}
+      clear={clear}
+    />
+  );
+
   return (
     <>
       <PracticeButtonWrapper>
@@ -285,21 +308,12 @@ const TabletSketch = () => {
         {saveSketchButton}
       </PracticeButtonWrapper>
       <PracticeButtonWrapper>
-        <PracticeInputForm
-          setMaxDistance={setMaxDistance}
-          setStartingLine={setStartingLine}
-        />
-        <Sketch
-          setup={setup}
-          draw={draw}
-          touchMoved={touchMoved}
-          canvasRef={canvasRef}
-          clear={clear}
-        />
+        {inputForm}
+        {sketch}
         <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
       </PracticeButtonWrapper>
 
-      <Timer />
+      <Timer setPracticeTime={setPracticeTime} practiceDone={practiceDone} />
       {donePracticeButton}
     </>
   );

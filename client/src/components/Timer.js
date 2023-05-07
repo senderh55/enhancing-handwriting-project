@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import { ProfileButtonWrapper, ProfileButton } from "../theme";
 
-const Timer = () => {
+const Timer = ({ setPracticeTime, practiceDone }) => {
   const [time, setTime] = useState(0);
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] = useState(true);
+
+  useEffect(() => {
+    if (practiceDone) {
+      setRunning(false);
+      setPracticeTime(formatTime(time));
+    }
+  }, [practiceDone, time, setPracticeTime]);
 
   useEffect(() => {
     let intervalId;
@@ -15,9 +22,13 @@ const Timer = () => {
   }, [running]);
 
   const handleStart = () => setRunning(true);
-  const handleStop = () => setRunning(false);
-  const handleReset = () => {
+  const handleStop = () => {
     setRunning(false);
+    setPracticeTime(formatTime(time)); // setPracticeTime is a prop passed from Practice.js, which is a parent component of Timer.js
+    // we send the time to Practice.js, which will send it to the backend
+  };
+  const handleReset = () => {
+    setRunning(true);
     setTime(0);
   };
 

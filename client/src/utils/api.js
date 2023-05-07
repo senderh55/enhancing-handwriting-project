@@ -204,3 +204,37 @@ export const resendVerificationCode = async (email, forgotPassword) => {
     }
   }
 };
+
+export const createPracticeData = async (id, token, data) => {
+  const {
+    date,
+    practiceTime,
+    writingTime,
+    maxDistance,
+    lineDeviation,
+    distanceDeviation,
+  } = data;
+
+  try {
+    const response = await axios.post(
+      `${serverURL}/profile/${id}/results`,
+      {
+        date,
+        practiceTime,
+        writingTime,
+        maxDistance,
+        lineDeviation,
+        distanceDeviation,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later");
+  }
+};

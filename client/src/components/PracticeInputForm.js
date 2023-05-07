@@ -40,7 +40,7 @@ const PracticeInputForm = ({ setStartingLine, setMaxDistance }) => {
 
     onSubmit: async (values) => {
       // update parameters in the parent component -> practice.js
-      setStartingLine(values.startingLine - 1);
+      setStartingLine(values.startingLine - 1); // -1 because the row number starts from 0
       setMaxDistance(values.maxDistance);
     },
   });
