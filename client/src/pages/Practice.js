@@ -4,7 +4,7 @@ import p5 from "p5";
 import { Button } from "@mui/material";
 import Timer from "./../components/Timer";
 import PracticeInputForm from "./../components/PracticeInputForm";
-
+import PracticeInfo from "./../components/PracticeInfo";
 import { PracticeButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
@@ -51,8 +51,8 @@ const TabletSketch = () => {
   let lastTouchMovedTimeRef = useRef(null);
   // add a ref to previousMousePosition - x and y coordinates
   // set the initial value to the top right side of the canvas (hebrew text)
-  let previousMouseXPositionRef = useRef(800); // FIXME: need to change this to be dynamic according to the canvas size (width) intigrate with hebrew organization
-  let previousMouseYPositionRef = useRef(30);
+  let previousMouseXPositionRef = useRef(0); // FIXME: need to change this to be dynamic according to the canvas size (width) intigrate with hebrew organization
+  let previousMouseYPositionRef = useRef(0);
   let validDrawing = useRef(true); // add a ref to keep track of the validity of the drawing
 
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
@@ -205,7 +205,6 @@ const TabletSketch = () => {
   };
 
   const touchMoved = (p5) => {
-    console.log(startingLine, maxDistance);
     lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlaping the x points of the rows from rowsYPositions array
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
 
@@ -217,6 +216,7 @@ const TabletSketch = () => {
       checkDistanceBetweenPoints(p5);
     }
     if (validDrawing.current) saveMousePosition(p5);
+
     // prevent default
     return false;
   };
@@ -296,6 +296,7 @@ const TabletSketch = () => {
           canvasRef={canvasRef}
           clear={clear}
         />
+        <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
       </PracticeButtonWrapper>
 
       <Timer />

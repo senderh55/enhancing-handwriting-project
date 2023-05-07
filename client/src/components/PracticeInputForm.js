@@ -22,12 +22,12 @@ const PracticeInputForm = ({ setStartingLine, setMaxDistance }) => {
       .typeError("Starting Line must be a number")
       .positive("Starting Line must be greater than zero")
       .required("Starting Line is required")
-      .max(15, "Too Long!"), // ACCORDING TO NUMBER OF ROWS
+      .max(18, "Please select valid row"), // ACCORDING TO NUMBER OF ROWS
     maxDistance: Yup.number()
-      .typeError("max Distance must be a number")
-      .positive("max Distance must be greater than zero")
-      .required("max Distance is required")
-      .max(1000, "Too Long!"), // ACCORDING TO WIDTH OF THE CANVAS
+      .typeError("Max Distance must be a number")
+      .positive("Max Distance must be greater than zero")
+      .required("Max Distance is required")
+      .max(1000, "Please select valid disatnce"), // ACCORDING TO WIDTH OF THE CANVAS
   });
 
   // isEditingProfile is a boolean value from authContext.js that is set to true when the user clicks the edit profile button on the ProfileDashboard component.
@@ -39,9 +39,9 @@ const PracticeInputForm = ({ setStartingLine, setMaxDistance }) => {
     validationSchema: CreatePracticeInputSchema,
 
     onSubmit: async (values) => {
-      setStartingLine(values.startingLine);
+      // update parameters in the parent component -> practice.js
+      setStartingLine(values.startingLine - 1);
       setMaxDistance(values.maxDistance);
-      console.log("values", values);
     },
   });
 
