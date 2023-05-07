@@ -128,6 +128,17 @@ export const ProfileButtonWrapper = styled.div`
   }
 `;
 
+// Define the styled-component outside of the theme object
+export const PracticeButtonWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  & > * {
+    margin: 5px;
+  }
+`;
+
 export const ProfileButton = styled.button`
   background-color: #e6e9f2;
   border: 1px solid #ccc;

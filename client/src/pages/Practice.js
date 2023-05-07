@@ -3,8 +3,9 @@ import p5 from "p5";
 
 import { Button } from "@mui/material";
 import Timer from "./../components/Timer";
+import PracticeInputForm from "./../components/PracticeInputForm";
 
-import { ProfileButtonWrapper } from "../theme";
+import { PracticeButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
@@ -13,7 +14,6 @@ import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 
 import { ProfileButton } from "../theme";
 import styled from "styled-components";
-import { Button } from "@mui/material";
 
 const StyledButtonWrapper = styled.div`
   display: flex;
@@ -31,18 +31,20 @@ const StyledButton = styled(Button)`
   padding: 10px 20px;
 `;
 
-
 const TabletSketch = () => {
   const canvasRef = useRef(null);
   const maxTimeDifference = 500; // 500 milliseconds (ms) between each touchMoved call - user draws on the canvas
-  const maxDistance = 100; // 100px between each touchMoved call - user draws on the canvas
+
   const [clear, setClear] = useState(false);
   const { selectedProfile } = useContext(AuthContext);
+  const [maxDistance, setMaxDistance] = useState(100);
+  const [startingLine, setStartingLine] = useState(0);
+
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
-  const pickLine =0; // line start picker
-      // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
-      //changed from the setup to global
+
+  // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
+  //changed from the setup to global
   const canvasWidth = 8.82 * 96;
   const canvasHeight = 5.83 * 96;
 
@@ -59,15 +61,13 @@ const TabletSketch = () => {
   let lineSameDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
 
   const setup = (p5, canvasParentRef) => {
-    
-
     p5.createCanvas(canvasWidth, canvasHeight).parent(canvasParentRef);
     p5.stroke(0);
     p5.background(225);
     p5.strokeWeight(1);
     // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
-    for (let i = pickLine; i < canvasHeight; i += rowHeight) {
-      p5.line(pickLine, i, canvasWidth, i);
+    for (let i = startingLine; i < canvasHeight; i += rowHeight) {
+      p5.line(startingLine, i, canvasWidth, i);
       rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
@@ -75,7 +75,6 @@ const TabletSketch = () => {
     distanceErrorSound.current = new Audio(distanceErrorSoundFile);
     lineDeviationSound.current = new Audio(lineDeviationSoundFile);
     lineSameDeviationSound.current = new Audio(sameLineDeviationFile);
-
   };
 
   const draw = (p5) => {};
@@ -118,18 +117,17 @@ const TabletSketch = () => {
 
     // calculate the distance between the current and previous mouse position ///idan
     const wrongLinedistance = () => {
-      if(!inCanvas(p5)) {
+      if (!inCanvas(p5)) {
         return false;
-      }
-      else return(
-        ((Math.floor(currentMousePosition.y / rowHeight)) !== 
-        ((Math.floor(previousMouseYPositionRef.current / rowHeight)))))
-      };
-      
-    
+      } else
+        return (
+          Math.floor(currentMousePosition.y / rowHeight) !==
+          Math.floor(previousMouseYPositionRef.current / rowHeight)
+        );
+    };
+
     console.log(currentMousePosition.x + "\n");
     console.log(currentMousePosition.y + "\n");
-
 
     // idan change
     const sameLineDist = p5.dist(
@@ -137,43 +135,47 @@ const TabletSketch = () => {
       0,
       previousMouseXPositionRef.current,
       0
-      );
+    );
 
-      //idan change
+    //idan change
     if (wrongLinedistance()) {
       p5.fill(0, 0, 255);
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineSameDeviationSound.current.play(); // play the distance error sound
     }
- // check if the distance is greater than maxDistance
-    else if ((sameLineDist > maxDistance) && inCanvas(p5)) {
+    // check if the distance is greater than maxDistance
+    else if (sameLineDist > maxDistance && inCanvas(p5)) {
       // if it is greater than 100px, log the distance
       // draw red circle as a visual indicator of error and fill it with red color
       p5.fill(255, 0, 0);
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineDeviationSound.current.play(); // play the distance error sound
-    } 
+    }
 
     validDrawing.current = true;
-
   };
 
   //idan change
-const inCanvas =(p5) =>{
-  return ((p5.mouseX >=0 &&  p5.mouseY >= 0) && (p5.mouseX < canvasWidth &&  p5.mouseY < canvasHeight));
-};
+  const inCanvas = (p5) => {
+    return (
+      p5.mouseX >= 0 &&
+      p5.mouseY >= 0 &&
+      p5.mouseX < canvasWidth &&
+      p5.mouseY < canvasHeight
+    );
+  };
 
-//idan change
+  //idan change
   const saveMousePosition = (p5) => {
     // set the previousMousePosition to the current mouse position
-    if(inCanvas(p5)) {
+    if (inCanvas(p5)) {
       console.log("!!!");
       previousMouseXPositionRef.current = p5.mouseX;
       previousMouseYPositionRef.current = p5.mouseY;
-  }
-};
+    }
+  };
 
   // check if current drawing not overlaping the x points of the rows from rowsYPositions array
   const lineDeviationCheck = (p5) => {
@@ -203,6 +205,7 @@ const inCanvas =(p5) =>{
   };
 
   const touchMoved = (p5) => {
+    console.log(startingLine, maxDistance);
     lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlaping the x points of the rows from rowsYPositions array
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
 
@@ -248,36 +251,55 @@ const inCanvas =(p5) =>{
     link.click();
   };
 
+  const clearSketchButton = (
+    <ProfileButton variant="contained" onClick={clearSketch}>
+      Clear Sketch
+    </ProfileButton>
+  );
+
+  const saveSketchButton = (
+    <ProfileButton variant="contained" onClick={() => saveSketch()}>
+      Save Sketch
+    </ProfileButton>
+  );
+
+  const donePracticeButton = (
+    <StyledButtonWrapper>
+      <StyledButton
+        variant="contained"
+        color="secondary"
+        style={{
+          fontSize: "1.5rem",
+          padding: "10px 60px",
+        }}
+      >
+        Done practice
+      </StyledButton>
+    </StyledButtonWrapper>
+  );
+
   return (
     <>
-      <ProfileButtonWrapper>
-        <ProfileButton variant="contained" onClick={clearSketch}>
-          Clear Sketch
-        </ProfileButton>
-        <ProfileButton variant="contained" onClick={() => saveSketch()}>
-          Save Sketch
-        </ProfileButton>
-      </ProfileButtonWrapper>
-      <Sketch
-        setup={setup}
-        draw={draw}
-        touchMoved={touchMoved}
-        canvasRef={canvasRef}
-        clear={clear}
-      />
+      <PracticeButtonWrapper>
+        {clearSketchButton}
+        {saveSketchButton}
+      </PracticeButtonWrapper>
+      <PracticeButtonWrapper>
+        <PracticeInputForm
+          setMaxDistance={setMaxDistance}
+          setStartingLine={setStartingLine}
+        />
+        <Sketch
+          setup={setup}
+          draw={draw}
+          touchMoved={touchMoved}
+          canvasRef={canvasRef}
+          clear={clear}
+        />
+      </PracticeButtonWrapper>
+
       <Timer />
-      <StyledButtonWrapper>
-        <StyledButton
-          variant="contained"
-          color="secondary"
-          style={{
-            fontSize: "1.5rem",
-            padding: "10px 60px",
-          }}
-        >
-          Done practice
-        </StyledButton>
-      </StyledButtonWrapper>
+      {donePracticeButton}
     </>
   );
 };
