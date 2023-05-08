@@ -5,13 +5,14 @@ import { ProfileButtonWrapper, ProfileButton } from "../theme";
 const Timer = ({ setPracticeTime, practiceDone }) => {
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(true);
+  const [timerPracticeDone, setTimerPracticeDone] = useState(0);
 
   useEffect(() => {
     if (practiceDone) {
       setRunning(false);
-      setPracticeTime(formatTime(time));
+      setPracticeTime(timerPracticeDone);
     }
-  }, [practiceDone, time, setPracticeTime]);
+  }, [practiceDone, time, setPracticeTime, timerPracticeDone]);
 
   useEffect(() => {
     let intervalId;
@@ -24,7 +25,7 @@ const Timer = ({ setPracticeTime, practiceDone }) => {
   const handleStart = () => setRunning(true);
   const handleStop = () => {
     setRunning(false);
-    setPracticeTime(formatTime(time)); // setPracticeTime is a prop passed from Practice.js, which is a parent component of Timer.js
+    setTimerPracticeDone(formatTime(time)); // setPracticeTime is a prop passed from Practice.js, which is a parent component of Timer.js
     // we send the time to Practice.js, which will send it to the backend
   };
   const handleReset = () => {
@@ -60,4 +61,4 @@ const Timer = ({ setPracticeTime, practiceDone }) => {
   );
 };
 
-export default Timer;
+export default React.memo(Timer);
