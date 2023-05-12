@@ -25,15 +25,16 @@ import * as api from "../utils/api";
 const rows = [];
 const getResults = async (profileKey) => {
   try {
+    const practiceArr = [];
     console.log(profileKey);
     const pracicesData = await api.getPracticeData(profileKey);
     pracicesData.forEach((practice) => {
-      console.log(practice);
+      practiceArr.push(practice);
       rows.push(practice);
     });
-    console.log(rows);
+    console.log(practiceArr);
 
-    return pracicesData;
+    return practiceArr;
   } catch (error) {
     throw error;
   }
@@ -246,7 +247,9 @@ export default function EnhancedTable(props) {
 
   const { profileKey } = props;
   React.useEffect(() => {
-    console.log(getResults(profileKey));
+    getResults(profileKey).then((res) => {
+      setPracticeData(res);
+    });
   }, [profileKey]);
 
   const handleRequestSort = (event, property) => {
