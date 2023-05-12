@@ -237,3 +237,14 @@ export const sendPracticeData = async (id, practiceData) => {
     throw new Error("Something went wrong, please try again later");
   }
 };
+
+export const updatePracticeData = async (id, practiceData) => {
+  try {
+    const response = await axios.patch(`${serverURL}/profiles/${id}/results`, {
+      practiceResults: practiceData,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later");
+  }
+};

@@ -176,14 +176,24 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, selected, setSelected, setPracticeData, practiceData } =
-    props;
+  const {
+    profileKey,
+    numSelected,
+    selected,
+    setSelected,
+    setPracticeData,
+    practiceData,
+  } = props;
   const handleDelete = () => {
-    // find the selected row and delete it
-
     const newRows = practiceData.filter(
       (row) => !selected.includes(row.practiceID)
     );
+    try {
+      api.updatePracticeData(profileKey, newRows);
+    } catch (error) {
+      console.log(error);
+    }
+
     setSelected([]);
 
     setPracticeData(newRows);
@@ -319,6 +329,7 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
+          profileKey={profileKey}
           numSelected={selected.length}
           selected={selected}
           setSelected={setSelected}
