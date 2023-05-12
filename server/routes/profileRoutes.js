@@ -105,8 +105,6 @@ router.get("/profiles/:id/results", async (req, res) => {
 
 router.post("/profiles/:id/results", async (req, res) => {
   try {
-    console.log("req.body", req.body);
-    console.log("req.params.id", req.params.id);
     const profile = await Profile.findOne({
       _id: req.params.id,
     });
@@ -114,6 +112,8 @@ router.post("/profiles/:id/results", async (req, res) => {
     if (!profile) {
       res.status(404).send();
     }
+    // numberOfPractices is the number of practices the user has done so far
+    // used for practiceID
     profile.numberOfPractices++;
 
     const newPracticeResult = {
@@ -135,6 +135,32 @@ router.post("/profiles/:id/results", async (req, res) => {
   } catch (e) {
     console.log("e", e);
     res.status(500).send();
+  }
+});
+
+router.patch("/profiles/:id/results", async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      _id: req.params.id,
+    });
+
+    if (!profile) {
+      res.status(404).send();
+    }
+    console.log("req.body.practiceResults", req.body);
+    console.log(
+      "req.body.practiceResults.length",
+      req.body.practiceResults.length
+    );
+    profile.practiceResults = req.body.practiceResults;
+
+    if (!profile) return res.status(404).send();
+
+    await profile.save();
+
+    res.send(profile);
+  } catch (e) {
+    res.status(400).send(e); // handling validation
   }
 });
 
