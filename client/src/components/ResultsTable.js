@@ -21,39 +21,23 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
+import * as api from "../utils/api";
+const rows = [];
+const getResults = async (profileKey) => {
+  try {
+    console.log(profileKey);
+    const pracicesData = await api.getPracticeData(profileKey);
+    pracicesData.forEach((practice) => {
+      console.log(practice);
+      rows.push(practice);
+    });
+    console.log(rows);
 
-function createData(
-  practiceID,
-  practiceDate,
-  practiceTime,
-  maxDistance,
-  lineDeviations,
-  wrongLineWriting,
-  distanceDeviations
-) {
-  return {
-    practiceID,
-    practiceDate,
-    practiceTime,
-    maxDistance,
-    lineDeviations,
-    wrongLineWriting,
-    distanceDeviations,
-  };
-}
-
-// FOR EXAMPLE ONLY
-const rows = [
-  createData(1, "2010-12-2", "09:44", "01:44", 67, 5, 3),
-  createData(2, "2014-10-2", "12:24", "02:44", 51, 2, 5),
-  createData(3, "2019-10-2", "02:14", "05:44", 24, 3, 1),
-  createData(4, "2025-10-2", "02:42", "04:44", 24, 13, 3),
-  createData(5, "2011-10-2", "02:44", "02:44", 49, 22, 6),
-  createData(6, "2010-10-2", "04:44", "02:44", 87, 9, 22),
-  createData(7, "2015-11-2", "03:44", "02:44", 37, 7, 1),
-];
-
-console.log(rows[1]);
+    return pracicesData;
+  } catch (error) {
+    throw error;
+  }
+};
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -91,39 +75,39 @@ const headCells = [
   {
     id: "practiceDate",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Date",
   },
   {
     id: "practiceTime",
     numeric: true,
-    disablePadding: false,
+    disablePadding: true,
     label: "Pratice time",
   },
 
   {
     id: "maxDistance",
     numeric: true,
-    disablePadding: false,
+    disablePadding: true,
     label: "Max distance",
   },
   {
     id: "lineDeviations",
     numeric: true,
-    disablePadding: false,
+    disablePadding: true,
     label: "Line deviations",
   },
 
   {
-    id: "wrongLineWriting",
+    id: "wrongLineWritings",
     numeric: true,
-    disablePadding: false,
+    disablePadding: true,
     label: "Wrong line writing",
   },
   {
     id: "distanceDeviations",
     numeric: true,
-    disablePadding: false,
+    disablePadding: true,
     label: "Distance deviations",
   },
 ];
@@ -257,7 +241,13 @@ export default function EnhancedTable(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
   const [practiceData, setPracticeData] = React.useState(rows);
+
+  const { profileKey } = props;
+  React.useEffect(() => {
+    console.log(getResults(profileKey));
+  }, [profileKey]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -358,7 +348,7 @@ export default function EnhancedTable(props) {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.practiceDate}
+                    key={row.practiceID}
                     selected={isItemSelected}
                     sx={{ cursor: "pointer" }}
                   >
@@ -371,18 +361,12 @@ export default function EnhancedTable(props) {
                         }}
                       />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.practiceDate}
-                    </TableCell>
+
+                    <TableCell align="left">{row.practiceDate}</TableCell>
                     <TableCell align="right">{row.practiceTime}</TableCell>
                     <TableCell align="right">{row.maxDistance}</TableCell>
                     <TableCell align="right">{row.lineDeviations}</TableCell>
-                    <TableCell align="right">{row.wrongLineWriting}</TableCell>
+                    <TableCell align="right">{row.wrongLineWritings}</TableCell>
                     <TableCell align="right">
                       {row.distanceDeviations}
                     </TableCell>

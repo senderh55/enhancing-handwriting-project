@@ -168,7 +168,6 @@ export const resetPassword = async (newPassword, verificationCode, email) => {
     );
     return response.data;
   } catch (error) {
-    console.log(error.response.status);
     switch (error.response.status) {
       case 400:
         throw new Error("Please enter a valid verification code");
@@ -207,7 +206,17 @@ export const resendVerificationCode = async (email, forgotPassword) => {
 
 // create function that return date in this format: YYYY-MM-DD
 
-export const sendPracticeData = async (id, token, data) => {
+export const getPracticeData = async (id) => {
+  try {
+    console.log(id);
+    const response = await axios.get(`${serverURL}/profiles/${id}/results`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later");
+  }
+};
+
+export const sendPracticeData = async (id, practiceData) => {
   const getTodayDate = () => {
     const today = new Date();
     const date = `${today.getFullYear()}-${
@@ -216,34 +225,14 @@ export const sendPracticeData = async (id, token, data) => {
     return date;
   };
   let practiceDate = getTodayDate();
-
-  const {
-    practiceTime,
-    maxDistance,
-    lineDeviation,
-    wrongLineWriting,
-    distanceDeviation,
-  } = data;
-  console.log(data);
+  const data = { practiceDate, practiceData };
   try {
     const response = await axios.post(
-      `${serverURL}/profile/${id}/results`,
-      {
-        practiceDate,
-        practiceTime,
-        maxDistance,
-        lineDeviation,
-        wrongLineWriting,
-        distanceDeviation,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `${serverURL}/profiles/${id}/results`,
+      data
     );
 
-    return response.data;
+    return response;
   } catch (error) {
     throw new Error("Something went wrong, please try again later");
   }

@@ -14,6 +14,7 @@ import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 
 import { ProfileButton } from "../theme";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const StyledButtonWrapper = styled.div`
   display: flex;
@@ -35,12 +36,12 @@ const TabletSketch = () => {
   const canvasRef = useRef(null);
 
   const [clear, setClear] = useState(false);
-  const { selectedProfile, token } = useContext(AuthContext);
+  const { selectedProfile } = useContext(AuthContext);
+
   const [maxDistance, setMaxDistance] = useState(100);
   const [startingLine, setStartingLine] = useState(0);
   const [practiceTime, setPracticeTime] = useState(`00:00`);
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
-
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
 
@@ -256,12 +257,14 @@ const TabletSketch = () => {
     link.href = img;
     link.click();
   };
-
+  const navigate = useNavigate();
   useEffect(() => {
+    console.log(selectedProfile.key);
     const sendResults = async () => {
+      console.log(selectedProfile.key);
       // set the practiceDone to true, To stop the timer, among other things
       let lineDeviationErrorsConuter = lineDeviationErrors.current;
-      let distanceDeviationErrorsCouter = distanceDeviationErrors.current;
+      let distanceDeviationErrorsCounter = distanceDeviationErrors.current;
       let wrongLineErrorsCounter = wrongLineErrors.current;
       console.log(practiceTime);
       const practiceData = {
@@ -269,11 +272,14 @@ const TabletSketch = () => {
         maxDistance,
         lineDeviationErrorsConuter,
         wrongLineErrorsCounter,
-        distanceDeviationErrorsCouter,
+        distanceDeviationErrorsCounter,
       };
+
       // set the practice time to the current time
       try {
-        await api.sendPracticeData(selectedProfile.id, token, practiceData);
+        console.log(practiceData);
+        await api.sendPracticeData(selectedProfile.key, practiceData);
+        navigate("/results");
       } catch (error) {
         console.log(error);
       }
@@ -283,7 +289,7 @@ const TabletSketch = () => {
     if (practiceDone && practiceTime !== "00:00") {
       sendResults();
     }
-  }, [practiceDone, practiceTime, maxDistance, selectedProfile.id, token]);
+  }, [practiceDone, practiceTime, maxDistance, selectedProfile, navigate]);
 
   const clearSketchButton = (
     <ProfileButton variant="contained" onClick={clearSketch}>

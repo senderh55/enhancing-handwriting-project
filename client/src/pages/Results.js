@@ -31,7 +31,7 @@ const Results = () => {
   return (
     <>
       {profileGreetings}
-      <ResultsTable profile={selectedProfile} />
+      <ResultsTable profileKey={selectedProfile.key} />
     </>
   );
 };
