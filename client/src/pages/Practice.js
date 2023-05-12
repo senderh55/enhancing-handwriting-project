@@ -235,6 +235,9 @@ const TabletSketch = () => {
     // clear previous mouse position
     previousMouseXPositionRef.current = null;
     previousMouseYPositionRef.current = null;
+    lineDeviationErrors.current = 0;
+    distanceDeviationErrors.current = 0;
+    wrongLineErrors.current = 0;
     // set validDrawing to true
     //validDrawing.current = true;
   };
