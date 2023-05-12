@@ -87,4 +87,55 @@ router.delete("/profiles/:id", auth, async (req, res) => {
   }
 });
 
+router.get("/profiles/:id/results", async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      _id: req.params.id,
+    });
+
+    if (!profile) {
+      res.status(404).send();
+    }
+
+    res.send(profile.practiceResults);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
+router.post("/profiles/:id/results", async (req, res) => {
+  try {
+    console.log("req.body", req.body);
+    console.log("req.params.id", req.params.id);
+    const profile = await Profile.findOne({
+      _id: req.params.id,
+    });
+
+    if (!profile) {
+      res.status(404).send();
+    }
+    profile.numberOfPractices++;
+
+    const newPracticeResult = {
+      practiceID: profile.numberOfPractices,
+      practiceDate: req.body.practiceDate,
+      practiceTime: req.body.practiceData.practiceTime,
+      maxDistance: req.body.practiceData.maxDistance,
+      lineDeviations: req.body.practiceData.lineDeviationErrorsConuter,
+      wrongLineWritings: req.body.practiceData.wrongLineErrorsCounter,
+      distanceDeviations: req.body.practiceData.distanceDeviationErrorsCounter,
+    };
+
+    console.log("newPracticeResult", newPracticeResult);
+
+    profile.practiceResults = profile.practiceResults.concat(newPracticeResult);
+
+    await profile.save();
+    res.send(profile.practiceResults);
+  } catch (e) {
+    console.log("e", e);
+    res.status(500).send();
+  }
+});
+
 module.exports = router;
