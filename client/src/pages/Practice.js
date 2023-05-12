@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import p5 from "p5";
-
+import * as api from "../utils/api";
 import { Button } from "@mui/material";
 import Timer from "./../components/Timer";
 import PracticeInputForm from "./../components/PracticeInputForm";
@@ -33,14 +33,14 @@ const StyledButton = styled(Button)`
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
-  const maxTimeDifference = 500; // 500 milliseconds (ms) between each touchMoved call - user draws on the canvas
 
   const [clear, setClear] = useState(false);
-  const { selectedProfile } = useContext(AuthContext);
+  const { selectedProfile, token } = useContext(AuthContext);
   const [maxDistance, setMaxDistance] = useState(100);
   const [startingLine, setStartingLine] = useState(0);
-  const [practiceTime, setPracticeTime] = useState(0);
+  const [practiceTime, setPracticeTime] = useState(`00:00`);
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
+  const [writingTime, setWritingTime] = useState(`00:00`); // add a state to keep track of the writing time
 
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
@@ -56,7 +56,8 @@ const TabletSketch = () => {
   let previousMouseXPositionRef = useRef(0); // FIXME: need to change this to be dynamic according to the canvas size (width) intigrate with hebrew organization
   let previousMouseYPositionRef = useRef(0);
   let validDrawing = useRef(true); // add a ref to keep track of the validity of the drawing
-
+  let lineDeviationErrors = useRef(0); // add a ref to keep track of the line deviation
+  let distanceDeviationErrors = useRef(0); // add a ref to keep track of the distance deviation
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
   let lineDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
@@ -97,7 +98,7 @@ const TabletSketch = () => {
         : 0;
 
       // check if the time difference is greater than the max gap
-      if (timeDifference > maxTimeDifference) {
+      if (timeDifference > maxDistance) {
         // if it is greater than the max gap, log the time difference
         console.log(timeDifference + "ms passed since last write");
         timePassed = true;
@@ -145,6 +146,7 @@ const TabletSketch = () => {
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineSameDeviationSound.current.play(); // play the distance error sound
+      lineDeviationErrors.current++;
     }
     // check if the distance is greater than maxDistance
     else if (sameLineDist > maxDistance && inCanvas(p5)) {
@@ -154,6 +156,7 @@ const TabletSketch = () => {
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineDeviationSound.current.play(); // play the distance error sound
+      distanceDeviationErrors.current++;
     }
 
     validDrawing.current = true;
@@ -203,6 +206,7 @@ const TabletSketch = () => {
       // create a rectangle with the size of 10px x 10px in the current X,Y mouse position
       p5.rect(currentMousePosition.x, currentMousePosition.y, 10, 10);
       lineDeviationSound.current.play(); // play the line deviation sound
+      lineDeviationErrors.current++; // increment the lineDeviationErrors counter
     }
   };
 
@@ -252,10 +256,39 @@ const TabletSketch = () => {
     link.click();
   };
 
-  const donePractice = () => {
-    // set the practice time to the current time
-    setPracticeDone(true); // set the practiceDone to true, To stop the timer, among other things
-  };
+  useEffect(() => {
+    const sendResults = async () => {
+      // set the practiceDone to true, To stop the timer, among other things
+      let lineDeviationErrorsConuter = lineDeviationErrors.current;
+      let distanceDeviationErrorsCouter = distanceDeviationErrors.current;
+      console.log(practiceTime);
+      const practiceData = {
+        practiceTime,
+        writingTime,
+        maxDistance,
+        lineDeviationErrorsConuter,
+        distanceDeviationErrorsCouter,
+      };
+      // set the practice time to the current time
+      try {
+        await api.sendPracticeData(selectedProfile.id, token, practiceData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // Call the sendResults function only when the practiceDone state changes to true.
+    if (practiceDone && practiceTime !== "00:00") {
+      sendResults();
+    }
+  }, [
+    practiceDone,
+    practiceTime,
+    maxDistance,
+    selectedProfile.id,
+    token,
+    writingTime,
+  ]);
 
   const clearSketchButton = (
     <ProfileButton variant="contained" onClick={clearSketch}>
@@ -273,7 +306,7 @@ const TabletSketch = () => {
     <StyledButtonWrapper>
       <StyledButton
         variant="contained"
-        onClick={() => donePractice()}
+        onClick={() => setPracticeDone(true)}
         color="secondary"
         style={{
           fontSize: "1.5rem",
@@ -330,6 +363,7 @@ const Sketch = React.memo(({ setup, draw, touchMoved, canvasRef, clear }) => {
   useEffect(() => {
     new p5((p) => {
       sketchRef.current = p;
+
       p.setup = () => setup(p, canvasRef.current);
       p.draw = () => draw(p);
       p.touchMoved = () => touchMoved(p);

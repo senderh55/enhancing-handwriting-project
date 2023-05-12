@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import { ProfileButtonWrapper, ProfileButton } from "../theme";
 
-const Timer = ({ setPracticeTime, practiceDone }) => {
+const Timer = ({ setPracticeTime, practiceDone, practiceTime }) => {
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(true);
   const [timerPracticeDone, setTimerPracticeDone] = useState(0);
@@ -10,9 +10,9 @@ const Timer = ({ setPracticeTime, practiceDone }) => {
   useEffect(() => {
     if (practiceDone) {
       setRunning(false);
-      setPracticeTime(timerPracticeDone);
+      setPracticeTime(formatTime(time));
     }
-  }, [practiceDone, time, setPracticeTime, timerPracticeDone]);
+  }, [practiceDone, time, setPracticeTime, timerPracticeDone, practiceTime]);
 
   useEffect(() => {
     let intervalId;
@@ -22,12 +22,19 @@ const Timer = ({ setPracticeTime, practiceDone }) => {
     return () => clearInterval(intervalId);
   }, [running]);
 
+  useEffect(() => {
+    setTimerPracticeDone(time);
+  }, [time]);
+
   const handleStart = () => setRunning(true);
   const handleStop = () => {
     setRunning(false);
-    setTimerPracticeDone(formatTime(time)); // setPracticeTime is a prop passed from Practice.js, which is a parent component of Timer.js
-    // we send the time to Practice.js, which will send it to the backend
+    const timerPracticeDone = formatTime(time);
+    setTimerPracticeDone(timerPracticeDone, () => {
+      setPracticeTime(timerPracticeDone);
+    });
   };
+
   const handleReset = () => {
     setRunning(true);
     setTime(0);
@@ -61,4 +68,4 @@ const Timer = ({ setPracticeTime, practiceDone }) => {
   );
 };
 
-export default React.memo(Timer);
+export default Timer;

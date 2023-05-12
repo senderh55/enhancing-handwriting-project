@@ -205,21 +205,31 @@ export const resendVerificationCode = async (email, forgotPassword) => {
   }
 };
 
-export const createPracticeData = async (id, token, data) => {
+// create function that return date in this format: YYYY-MM-DD
+
+export const sendPracticeData = async (id, token, data) => {
+  const getTodayDate = () => {
+    const today = new Date();
+    const date = `${today.getFullYear()}-${
+      today.getMonth() + 1
+    }-${today.getDate()}`;
+    return date;
+  };
+  let practiceDate = getTodayDate();
+
   const {
-    date,
     practiceTime,
     writingTime,
     maxDistance,
     lineDeviation,
     distanceDeviation,
   } = data;
-
+  console.log(data);
   try {
     const response = await axios.post(
       `${serverURL}/profile/${id}/results`,
       {
-        date,
+        practiceDate,
         practiceTime,
         writingTime,
         maxDistance,
