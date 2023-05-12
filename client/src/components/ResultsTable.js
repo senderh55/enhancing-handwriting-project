@@ -26,18 +26,18 @@ function createData(
   practiceID,
   practiceDate,
   practiceTime,
-  writingTime,
   maxDistance,
   lineDeviations,
+  wrongLineWriting,
   distanceDeviations
 ) {
   return {
     practiceID,
     practiceDate,
     practiceTime,
-    writingTime,
     maxDistance,
     lineDeviations,
+    wrongLineWriting,
     distanceDeviations,
   };
 }
@@ -100,12 +100,7 @@ const headCells = [
     disablePadding: false,
     label: "Pratice time",
   },
-  {
-    id: "writingTime",
-    numeric: true,
-    disablePadding: false,
-    label: "Writing time",
-  },
+
   {
     id: "maxDistance",
     numeric: true,
@@ -117,6 +112,13 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Line deviations",
+  },
+
+  {
+    id: "wrongLineWriting",
+    numeric: true,
+    disablePadding: false,
+    label: "Wrong line writing",
   },
   {
     id: "distanceDeviations",
@@ -378,9 +380,9 @@ export default function EnhancedTable(props) {
                       {row.practiceDate}
                     </TableCell>
                     <TableCell align="right">{row.practiceTime}</TableCell>
-                    <TableCell align="right">{row.writingTime}</TableCell>
                     <TableCell align="right">{row.maxDistance}</TableCell>
                     <TableCell align="right">{row.lineDeviations}</TableCell>
+                    <TableCell align="right">{row.wrongLineWriting}</TableCell>
                     <TableCell align="right">
                       {row.distanceDeviations}
                     </TableCell>

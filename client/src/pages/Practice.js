@@ -40,7 +40,6 @@ const TabletSketch = () => {
   const [startingLine, setStartingLine] = useState(0);
   const [practiceTime, setPracticeTime] = useState(`00:00`);
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
-  const [writingTime, setWritingTime] = useState(`00:00`); // add a state to keep track of the writing time
 
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
@@ -58,6 +57,8 @@ const TabletSketch = () => {
   let validDrawing = useRef(true); // add a ref to keep track of the validity of the drawing
   let lineDeviationErrors = useRef(0); // add a ref to keep track of the line deviation
   let distanceDeviationErrors = useRef(0); // add a ref to keep track of the distance deviation
+  let wrongLineErrors = useRef(0); // add a ref to keep track of the wrong line errors
+
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
   let lineDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
@@ -146,7 +147,7 @@ const TabletSketch = () => {
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
       //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineSameDeviationSound.current.play(); // play the distance error sound
-      lineDeviationErrors.current++;
+      wrongLineErrors.current++;
     }
     // check if the distance is greater than maxDistance
     else if (sameLineDist > maxDistance && inCanvas(p5)) {
@@ -261,12 +262,13 @@ const TabletSketch = () => {
       // set the practiceDone to true, To stop the timer, among other things
       let lineDeviationErrorsConuter = lineDeviationErrors.current;
       let distanceDeviationErrorsCouter = distanceDeviationErrors.current;
+      let wrongLineErrorsCounter = wrongLineErrors.current;
       console.log(practiceTime);
       const practiceData = {
         practiceTime,
-        writingTime,
         maxDistance,
         lineDeviationErrorsConuter,
+        wrongLineErrorsCounter,
         distanceDeviationErrorsCouter,
       };
       // set the practice time to the current time
@@ -281,14 +283,7 @@ const TabletSketch = () => {
     if (practiceDone && practiceTime !== "00:00") {
       sendResults();
     }
-  }, [
-    practiceDone,
-    practiceTime,
-    maxDistance,
-    selectedProfile.id,
-    token,
-    writingTime,
-  ]);
+  }, [practiceDone, practiceTime, maxDistance, selectedProfile.id, token]);
 
   const clearSketchButton = (
     <ProfileButton variant="contained" onClick={clearSketch}>

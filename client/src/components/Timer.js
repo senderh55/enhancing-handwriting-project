@@ -29,10 +29,7 @@ const Timer = ({ setPracticeTime, practiceDone, practiceTime }) => {
   const handleStart = () => setRunning(true);
   const handleStop = () => {
     setRunning(false);
-    const timerPracticeDone = formatTime(time);
-    setTimerPracticeDone(timerPracticeDone, () => {
-      setPracticeTime(timerPracticeDone);
-    });
+    setPracticeTime(timerPracticeDone);
   };
 
   const handleReset = () => {

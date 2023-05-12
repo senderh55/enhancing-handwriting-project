@@ -219,9 +219,9 @@ export const sendPracticeData = async (id, token, data) => {
 
   const {
     practiceTime,
-    writingTime,
     maxDistance,
     lineDeviation,
+    wrongLineWriting,
     distanceDeviation,
   } = data;
   console.log(data);
@@ -231,9 +231,9 @@ export const sendPracticeData = async (id, token, data) => {
       {
         practiceDate,
         practiceTime,
-        writingTime,
         maxDistance,
         lineDeviation,
+        wrongLineWriting,
         distanceDeviation,
       },
       {
