@@ -1,4 +1,6 @@
-  ![Screen Shot](client/public/favicon.ico)
+<div align="center">
+  <img src="client/src/assets/images/logo.png" alt="Logo">
+</div>
 
 ScribbleBoost is an academic final project developed by Sender Hodik and Idan Brauner, supervised by Dr. Anat Dahan and Dr. Navit Roth.
 
