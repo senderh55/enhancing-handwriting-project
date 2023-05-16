@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import p5 from "p5";
 import * as api from "../utils/api";
 import { Button } from "@mui/material";
@@ -9,7 +9,7 @@ import { PracticeButtonWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
-
+import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 
 import { ProfileButton } from "../theme";
@@ -44,7 +44,8 @@ const TabletSketch = () => {
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
   const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
-
+  // Wrap the initialization of positionData in a useMemo hook
+  const positionData = useMemo(() => ({}), []);
   // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
   //changed from the setup to global
   const canvasWidth = 8.82 * 96;
@@ -73,6 +74,7 @@ const TabletSketch = () => {
     // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
     for (let i = startingLine; i < canvasHeight; i += rowHeight) {
       p5.line(startingLine, i, canvasWidth, i);
+      console.log(i);
       rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
@@ -120,7 +122,7 @@ const TabletSketch = () => {
       y: p5.mouseY,
     };
 
-    // calculate the distance between the current and previous mouse position ///idan
+    // calculate the distance between the current and previous mouse position
     const wrongLinedistance = () => {
       if (!inCanvas(p5)) {
         return false;
@@ -134,24 +136,38 @@ const TabletSketch = () => {
     console.log(currentMousePosition.x + "\n");
     console.log(currentMousePosition.y + "\n");
 
-    // idan change
+    // calculate the X distance between the current and previous mouse position
     const sameLineDist = p5.dist(
       currentMousePosition.x,
       0,
       previousMouseXPositionRef.current,
       0
     );
+    //check if the writing arrived to the end of the line and start on the next one.
+    const endLineCheck = () => {
+      return (
+        previousMouseXPositionRef.current > 0 &&
+        previousMouseXPositionRef.current <= 35 &&
+        currentMousePosition.y > previousMouseYPositionRef.current &&
+        currentMousePosition.x < canvasWidth &&
+        currentMousePosition.x > canvasWidth - 35
+      );
+    };
 
-    //idan change
-    if (wrongLinedistance()) {
+    //Check if the writing line is equal or grater to starting line
+    if (startingLine * rowHeight >= previousMouseYPositionRef.current) {
+      p5.fill(255, 0, 255);
+      p5.triangle(30, 75, 58, 20, 86, 75);
+      distanceErrorSound.current.play(); // play the distance error sound
+    } //Check if the user start writing on the next line before reaching to the end of the line.
+    else if (wrongLinedistance() && !endLineCheck()) {
       p5.fill(0, 0, 255);
       p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
-      //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
       lineSameDeviationSound.current.play(); // play the distance error sound
       wrongLineErrors.current++;
     }
     // check if the distance is greater than maxDistance
-    else if (sameLineDist > maxDistance && inCanvas(p5)) {
+    else if (sameLineDist > maxDistance && inCanvas(p5) && !endLineCheck()) {
       // if it is greater than 100px, log the distance
       // draw red circle as a visual indicator of error and fill it with red color
       p5.fill(255, 0, 0);
@@ -164,7 +180,7 @@ const TabletSketch = () => {
     validDrawing.current = true;
   };
 
-  //idan change
+  //Check if the mouse in the Canvas borders
   const inCanvas = (p5) => {
     return (
       p5.mouseX >= 0 &&
@@ -174,9 +190,8 @@ const TabletSketch = () => {
     );
   };
 
-  //idan change
+  //set the previousMousePosition to the current mouse position while it in the Canvas
   const saveMousePosition = (p5) => {
-    // set the previousMousePosition to the current mouse position
     if (inCanvas(p5)) {
       console.log("!!!");
       previousMouseXPositionRef.current = p5.mouseX;
@@ -193,7 +208,7 @@ const TabletSketch = () => {
       });
     };
 
-    // get the current mouse position
+    // Get the current mouse position
     const currentMousePosition = {
       x: p5.mouseX,
       y: p5.mouseY,
@@ -213,7 +228,8 @@ const TabletSketch = () => {
   };
 
   const touchMoved = (p5) => {
-    lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlaping the x points of the rows from rowsYPositions array
+    saveTimeStamp(p5, getCurrentTime());
+    lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlapping the x points of the rows from rowsYPositions array
     p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
 
     // call the checkTimeSinceLastTouchMoved function
@@ -223,9 +239,31 @@ const TabletSketch = () => {
       // if the time passed is greater than 300 ms, call the checkDistanceBetweenPoints function
       checkDistanceBetweenPoints(p5);
     }
-    if (validDrawing.current) saveMousePosition(p5);
+
+    if (validDrawing.current) {
+      saveMousePosition(p5); // Pass the current time to the saveMousePosition function
+    }
+
     // prevent default
     return false;
+  };
+
+  // Function to get the current time in the format "hours:min"
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  // Function to save the mouse position along with the current time
+  const saveTimeStamp = (p5, currentTime) => {
+    // get the current mouse position with the format "x:y" and only two decimal points
+    const position = `x:${p5.mouseX.toFixed(2)},y:${p5.mouseY.toFixed(2)}`;
+    positionData[currentTime] = position;
+    console.log(positionData);
+    // You can modify this function to store the timestamped position as required
   };
 
   const clearSketch = () => {
@@ -260,6 +298,7 @@ const TabletSketch = () => {
     link.href = img;
     link.click();
   };
+
   const navigate = useNavigate();
   useEffect(() => {
     console.log(selectedProfile.key);
@@ -269,7 +308,6 @@ const TabletSketch = () => {
       let lineDeviationErrorsConuter = lineDeviationErrors.current;
       let distanceDeviationErrorsCounter = distanceDeviationErrors.current;
       let wrongLineErrorsCounter = wrongLineErrors.current;
-      console.log(practiceTime);
       const practiceData = {
         practiceTime,
         maxDistance,
@@ -283,6 +321,17 @@ const TabletSketch = () => {
         console.log(practiceData);
         await api.sendPracticeData(selectedProfile.key, practiceData);
         navigate("/results");
+        // Save positionData as a text file
+        const fileContents = JSON.stringify(positionData);
+        const blob = new Blob([fileContents], {
+          type: "text/plain;charset=utf-8",
+        });
+        saveAs(
+          blob,
+          `positionAndTimeData-${selectedProfile.name}-${
+            new Date().toLocaleString().split(",")[0]
+          }.txt`
+        );
       } catch (error) {
         console.log(error);
       }
@@ -292,7 +341,14 @@ const TabletSketch = () => {
     if (practiceDone && practiceTime !== "00:00") {
       sendResults();
     }
-  }, [practiceDone, practiceTime, maxDistance, selectedProfile, navigate]);
+  }, [
+    practiceDone,
+    practiceTime,
+    maxDistance,
+    selectedProfile,
+    navigate,
+    positionData,
+  ]);
 
   const clearSketchButton = (
     <ProfileButton variant="contained" onClick={clearSketch}>
