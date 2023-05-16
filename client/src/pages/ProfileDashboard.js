@@ -19,21 +19,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { ProfileButtonWrapper, ProfileButton } from "../theme";
+import { ProfileButtonWrapper, ProfileButton, StyledSnackbar } from "../theme";
 import Logo from "../components/Logo";
-import Snackbar from "@mui/material/Snackbar";
-const StyledSnackbar = styled(Snackbar)`
-  && {
-    width: 50%; /* change the width as needed */
-    margin: auto; /* center the Snackbar horizontally */
-    top: 90%; /* center the Snackbar vertically */
-    transform: translateY(-50%);
-
-    @media (max-width: 600px) {
-      width: 100%; /* adjust the width for smaller screens */
-    }
-  }
-`;
 
 const ProfileCard = styled(Card)``;
 

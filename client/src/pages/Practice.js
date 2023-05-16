@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import p5 from "p5";
 import * as api from "../utils/api";
-
 import Timer from "./../components/Timer";
 import PracticeInputForm from "./../components/PracticeInputForm";
 import PracticeInfo from "./../components/PracticeInfo";
@@ -11,18 +10,21 @@ import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
-
-import { ProfileButton } from "../theme";
+import {
+  ProfileButton,
+  StyledButton,
+  StyledButtonWrapper,
+  StyledSnackbar,
+} from "../theme";
 
 import { useNavigate } from "react-router-dom";
-import { StyledButton, StyledButtonWrapper } from "../theme";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
 
   const [clear, setClear] = useState(false);
   const { selectedProfile } = useContext(AuthContext);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [maxDistance, setMaxDistance] = useState(100);
   const [startingLine, setStartingLine] = useState(0);
   const [practiceTime, setPracticeTime] = useState(`00:00`);
@@ -118,9 +120,6 @@ const TabletSketch = () => {
         );
     };
 
-    console.log(currentMousePosition.x + "\n");
-    console.log(currentMousePosition.y + "\n");
-
     // calculate the X distance between the current and previous mouse position
     const sameLineDist = p5.dist(
       currentMousePosition.x,
@@ -178,7 +177,6 @@ const TabletSketch = () => {
   //set the previousMousePosition to the current mouse position while it in the Canvas
   const saveMousePosition = (p5) => {
     if (inCanvas(p5)) {
-      console.log("!!!");
       previousMouseXPositionRef.current = p5.mouseX;
       previousMouseYPositionRef.current = p5.mouseY;
     }
@@ -247,8 +245,6 @@ const TabletSketch = () => {
     // get the current mouse position with the format "x:y" and only two decimal points
     const position = `x:${p5.mouseX.toFixed(2)},y:${p5.mouseY.toFixed(2)}`;
     positionData[currentTime] = position;
-    console.log(positionData);
-    // You can modify this function to store the timestamped position as required
   };
 
   const clearSketch = () => {
@@ -286,9 +282,7 @@ const TabletSketch = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(selectedProfile.key);
     const sendResults = async () => {
-      console.log(selectedProfile.key);
       // set the practiceDone to true, To stop the timer, among other things
       let lineDeviationErrorsConuter = lineDeviationErrors.current;
       let distanceDeviationErrorsCounter = distanceDeviationErrors.current;
@@ -303,7 +297,6 @@ const TabletSketch = () => {
 
       // set the practice time to the current time
       try {
-        console.log(practiceData);
         await api.sendPracticeData(selectedProfile.key, practiceData);
         navigate("/results");
         // Save positionData as a text file
@@ -319,6 +312,7 @@ const TabletSketch = () => {
         );
       } catch (error) {
         console.log(error);
+        setSnackbarOpen(true);
       }
     };
 
@@ -345,6 +339,15 @@ const TabletSketch = () => {
     <ProfileButton variant="contained" onClick={() => saveSketch()}>
       Save Sketch
     </ProfileButton>
+  );
+
+  const conntectionErrorAlert = (
+    <StyledSnackbar
+      open={snackbarOpen}
+      autoHideDuration={6000}
+      onClose={() => setSnackbarOpen(false)}
+      message={"An error occurred. Please try again later."}
+    />
   );
 
   const donePracticeButton = (
@@ -393,6 +396,7 @@ const TabletSketch = () => {
 
       <Timer setPracticeTime={setPracticeTime} practiceDone={practiceDone} />
       {donePracticeButton}
+      {conntectionErrorAlert}
     </>
   );
 };

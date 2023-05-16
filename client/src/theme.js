@@ -3,6 +3,7 @@ import { red } from "@mui/material/colors";
 import styled from "styled-components";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 // this is the main theme for the app and the components, solution to the problem of the theme not being applied to the components when rendering the app
 // implement the theme in the app.js file and then use the components in the pages with themeProvider
 const theme = createTheme({
@@ -206,4 +207,16 @@ export const StyledButton = styled(Button)`
   padding: 10px 20px;
 `;
 
+export const StyledSnackbar = styled(Snackbar)`
+  && {
+    width: 50%; /* change the width as needed */
+    margin: auto; /* center the Snackbar horizontally */
+    top: 90%; /* center the Snackbar vertically */
+    transform: translateY(-50%);
+
+    @media (max-width: 600px) {
+      width: 100%; /* adjust the width for smaller screens */
+    }
+  }
+`;
 export default theme;
