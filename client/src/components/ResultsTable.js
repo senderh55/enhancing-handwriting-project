@@ -252,15 +252,14 @@ export default function EnhancedTable(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const [practiceData, setPracticeData] = React.useState(rows);
+  const { practiceData, setPracticeData } = props;
 
   const { profileKey } = props;
   React.useEffect(() => {
     getResults(profileKey).then((res) => {
       setPracticeData(res);
     });
-  }, [profileKey]);
+  }, [profileKey, setPracticeData]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";

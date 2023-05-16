@@ -2,6 +2,7 @@ import { createTheme } from "@mui/material/styles";
 import { red } from "@mui/material/colors";
 import styled from "styled-components";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 // this is the main theme for the app and the components, solution to the problem of the theme not being applied to the components when rendering the app
 // implement the theme in the app.js file and then use the components in the pages with themeProvider
 const theme = createTheme({
@@ -188,5 +189,21 @@ export const fadeInUp = {
     },
   },
 };
+
+export const StyledButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+export const StyledButton = styled(Button)`
+  margin: 5px;
+  &:first-of-type {
+    margin-right: 5px;
+  }
+  font-size: 1.5rem;
+  padding: 10px 20px;
+`;
 
 export default theme;

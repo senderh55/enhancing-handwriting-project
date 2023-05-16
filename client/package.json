@@ -20,6 +20,7 @@
     "iconify": "^1.4.0",
     "lodash": "^4.17.21",
     "p5": "^1.6.0",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",

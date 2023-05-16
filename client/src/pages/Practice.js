@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from "react";
 import p5 from "p5";
 import * as api from "../utils/api";
-import { Button } from "@mui/material";
+
 import Timer from "./../components/Timer";
 import PracticeInputForm from "./../components/PracticeInputForm";
 import PracticeInfo from "./../components/PracticeInfo";
@@ -13,24 +13,9 @@ import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 
 import { ProfileButton } from "../theme";
-import styled from "styled-components";
+
 import { useNavigate } from "react-router-dom";
-
-const StyledButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-`;
-
-const StyledButton = styled(Button)`
-  margin: 5px;
-  &:first-of-type {
-    margin-right: 5px;
-  }
-  font-size: 1.5rem;
-  padding: 10px 20px;
-`;
+import { StyledButton, StyledButtonWrapper } from "../theme";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
