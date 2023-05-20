@@ -66,8 +66,8 @@ const TabletSketch = () => {
     p5.background(225);
     p5.strokeWeight(1);
     // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
-    for (let i = startingLine; i < canvasHeight; i += rowHeight) {
-      p5.line(startingLine, i, canvasWidth, i);
+    for (let i = 0; i < canvasHeight; i += rowHeight) {
+      p5.line(0, i, canvasWidth, i);
       rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
@@ -379,6 +379,9 @@ const TabletSketch = () => {
   };
 
   useEffect(() => {
+    previousMouseXPositionRef.current = null;
+    previousMouseYPositionRef.current = null;
+    lastTouchMovedTimeRef.current = null;
     setClear(false);
   }, [clear]);
 
