@@ -18,16 +18,19 @@ const sendMail = async (mailOptions) => {
 const sendWelcomeEmail = async (email, name, verificationCode) => {
   try {
     sendMail({
-      from: "ScribbleBoost>",
+      from: "ScribbleBoost",
       to: email,
       subject:
         "Please verify your email address to complete your ScribbleBoost registration",
       html: `
-        <div style="background-color: #f5f5f5; padding: 20px;">
-          <h1 style="color: #007bff; font-size: 36px; margin-bottom: 20px;">Hello, ${name}!</h1>
-          <p style="font-size: 18px;">Thank you for signing up for ScribbleBoost!</p>
-          <p style="font-size: 18px;">To complete your registration, please Enter the following code while login: ${verificationCode}</p>
-          <p style="font-size: 18px;">If you did not sign up for ScribbleBoost, please ignore this email.</p>
+        <div style="background-color: #f5f5f5; padding: 20px; font-family: Arial, sans-serif;">
+          <h1 style="color: #007bff; font-size: 24px; margin-bottom: 20px; text-align: left">Hello, ${name}</h1>
+          <p style="font-size: 16px; margin-bottom: 10px; text-align: left">Thank you for signing up for ScribbleBoost</p>
+          <p style="font-size: 16px; margin-bottom: 10px; text-align: left">To complete your registration, please enter the following code</p>
+          <div style="background-color: #ffffff; border: 1px solid #dddddd; padding: 10px; font-size: 18px; text-align: left">
+            <strong>${verificationCode}</strong>
+          </div>
+          <p style="font-size: 16px; margin-top: 10px; text-align: left">If you did not sign up for ScribbleBoost, please ignore this email</p>
         </div>
       `,
     });
@@ -39,12 +42,15 @@ const sendWelcomeEmail = async (email, name, verificationCode) => {
 
 const sendResetPasswordEmail = async (email, name, verificationCode) => {
   try {
-    sendMail({
+    await sendMail({
       from: "ScribbleBoost",
       to: email,
       subject: "Reset your password",
-      text: `Hello, ${name}!!
-      Please reset your password by sumbitting the following code: ${verificationCode}
+      text: `
+        Hello, ${name}!
+
+        Please reset your password by submitting the following code:
+        ${verificationCode}
       `,
     });
   } catch (err) {
