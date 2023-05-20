@@ -16,7 +16,7 @@ const animate = {
   },
 };
 
-const PracticeInputForm = ({ setStartingLine, setMaxDistance }) => {
+const PracticeInputForm = ({ setStartingLine, setMaxDistance, setClear }) => {
   const CreatePracticeInputSchema = Yup.object().shape({
     startingLine: Yup.number()
       .typeError("Starting Line must be a number")
@@ -42,6 +42,7 @@ const PracticeInputForm = ({ setStartingLine, setMaxDistance }) => {
       // update parameters in the parent component -> practice.js
       setStartingLine(values.startingLine - 1); // -1 because the row number starts from 0
       setMaxDistance(values.maxDistance);
+      setClear(true);
     },
   });
 

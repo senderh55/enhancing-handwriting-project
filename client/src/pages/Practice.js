@@ -10,6 +10,8 @@ import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
+import endLineSuccessSoundFile from "../assets/audio/success.mp3";
+
 import {
   ProfileButton,
   StyledButton,
@@ -51,7 +53,12 @@ const TabletSketch = () => {
   // IMPORTENT NOTE: p5.sound is not supported in this stracture, so we using the HTML5 Audio API and useref to keep track of the sound
   let distanceErrorSound = useRef(null); // add a ref to keep track of the distance error sound
   let lineDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
-  let lineSameDeviationSound = useRef(null); // add a ref to keep track of the line deviation sound
+  let lineSameDeviationSound = useRef(null); // add a ref to keep track of the same line deviation sound
+  let endLineSuccessSound = useRef(null); //add a ref to keep track of the Success Sound sound
+
+  let firstWrite = 0; // first write indicator
+  let afterDivi = 0; //deviation indicator
+  let successInit = 0;
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(canvasWidth, canvasHeight).parent(canvasParentRef);
@@ -61,7 +68,6 @@ const TabletSketch = () => {
     // draw rows of 30.236px gap (as regular notebook) between each other to create a paper for the user to draw on top of it
     for (let i = startingLine; i < canvasHeight; i += rowHeight) {
       p5.line(startingLine, i, canvasWidth, i);
-      console.log(i);
       rowsYPositions.push(i);
     }
     p5.strokeWeight(3);
@@ -69,6 +75,7 @@ const TabletSketch = () => {
     distanceErrorSound.current = new Audio(distanceErrorSoundFile);
     lineDeviationSound.current = new Audio(lineDeviationSoundFile);
     lineSameDeviationSound.current = new Audio(sameLineDeviationFile);
+    endLineSuccessSound.current = new Audio(endLineSuccessSoundFile);
   };
 
   const draw = (p5) => {};
@@ -102,6 +109,61 @@ const TabletSketch = () => {
     return timePassed;
   };
 
+  //checks errors throw the session
+  const errorChecks = () => {
+    return (
+      lineDeviationErrors.current === 0 &&
+      distanceDeviationErrors.current === 0 &&
+      wrongLineErrors.current === 0
+    );
+  };
+
+  //Show positive encouragement during the practice on real time for various small successes during the session
+  const positiveEncouragement = (p5) => {
+    if (p5.mouseX <= canvasWidth / 2 && p5.mouseX >= canvasWidth / 2 - 60)
+      if (errorChecks()) {
+        if (successInit === 0) {
+          p5.textSize(32);
+          p5.text("!התקדמות טובה", 10, canvasHeight - 20);
+          p5.fill(0, 102, 153);
+          return true;
+        } else if (successInit === 1) {
+          p5.textSize(32);
+          p5.text("!!אתה תותח", canvasWidth - 155, canvasHeight - 20);
+          p5.fill(0, 255, 153);
+          return true;
+        }
+      } else return false;
+  };
+
+  //Check if the writing line is equal or grater to starting line
+  const wrongStartLine = (p5) => {
+    if (inCanvas(p5)) {
+      if (startingLine * rowHeight >= p5.mouseY) {
+        p5.fill(255, 0, 255);
+        p5.textSize(32);
+        p5.text("רישום לא בשורה שנבחרה", canvasWidth - 330, 30);
+        p5.triangle(10, 30, 30, 5, 50, 30);
+        distanceErrorSound.current.play(); // play the distance error sound
+        validDrawing.current = false;
+        return true;
+      } else {
+        validDrawing.current = true;
+        return false;
+      }
+    }
+  };
+
+  //Check if the writing stating from the right side
+  const sideCheck = (p5) => {
+    if (inCanvas(p5)) {
+      if (p5.mouseX < canvasWidth && p5.mouseX > canvasWidth - 60) {
+        firstWrite = 1;
+        return true;
+      }
+    } else return false;
+  };
+
   const checkDistanceBetweenPoints = (p5) => {
     // get the current mouse position
     const currentMousePosition = {
@@ -109,10 +171,36 @@ const TabletSketch = () => {
       y: p5.mouseY,
     };
 
-    // calculate the distance between the current and previous mouse position
-    const wrongLinedistance = () => {
-      if (!inCanvas(p5)) {
-        return false;
+    //Check if the writing is out of the line
+    const wrongLineCheck = () => {
+      if (!inCanvas(p5)) return false;
+      else if (afterDivi === 1) {
+        if (
+          Math.floor(currentMousePosition.y / rowHeight) ===
+          Math.floor(previousMouseYPositionRef.current / rowHeight)
+        ) {
+          //check if there was a line deviation to ignore the wrong line error
+          afterDivi = 0;
+          return true;
+        } else {
+          //Check if the line after the deviation is not the one started before
+          if (
+            Math.floor(currentMousePosition.y / rowHeight) ===
+              Math.floor(
+                (previousMouseYPositionRef.current - rowHeight) / rowHeight
+              ) ||
+            Math.floor(currentMousePosition.y / rowHeight) ===
+              Math.floor(
+                (previousMouseYPositionRef.current + rowHeight) / rowHeight
+              )
+          ) {
+            afterDivi = 0;
+            return false;
+          } else {
+            afterDivi = 0;
+            return true;
+          }
+        }
       } else
         return (
           Math.floor(currentMousePosition.y / rowHeight) !==
@@ -129,39 +217,41 @@ const TabletSketch = () => {
     );
     //check if the writing arrived to the end of the line and start on the next one.
     const endLineCheck = () => {
-      return (
+      if (
         previousMouseXPositionRef.current > 0 &&
-        previousMouseXPositionRef.current <= 35 &&
+        previousMouseXPositionRef.current <= 55 &&
         currentMousePosition.y > previousMouseYPositionRef.current &&
         currentMousePosition.x < canvasWidth &&
-        currentMousePosition.x > canvasWidth - 35
-      );
+        currentMousePosition.x > canvasWidth - 55
+      )
+        if (errorChecks()) {
+          successInit = 1;
+          endLineSuccessSound.current.play(); // play the distance error sound
+          return true;
+        } else return true;
+      return false;
     };
 
-    //Check if the writing line is equal or grater to starting line
-    if (startingLine * rowHeight >= previousMouseYPositionRef.current) {
-      p5.fill(255, 0, 255);
-      p5.triangle(30, 75, 58, 20, 86, 75);
-      distanceErrorSound.current.play(); // play the distance error sound
-    } //Check if the user start writing on the next line before reaching to the end of the line.
-    else if (wrongLinedistance() && !endLineCheck()) {
-      p5.fill(0, 0, 255);
-      p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
-      lineSameDeviationSound.current.play(); // play the distance error sound
-      wrongLineErrors.current++;
-    }
-    // check if the distance is greater than maxDistance
-    else if (sameLineDist > maxDistance && inCanvas(p5) && !endLineCheck()) {
-      // if it is greater than 100px, log the distance
-      // draw red circle as a visual indicator of error and fill it with red color
-      p5.fill(255, 0, 0);
-      p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
-      //validDrawing.current = false; // set the validDrawing to false FiXXCCCCcCCCGGGgshshshsjsj
-      lineDeviationSound.current.play(); // play the distance error sound
-      distanceDeviationErrors.current++;
-    }
+    if (inCanvas(p5) && validDrawing.current) {
+      //Check if the user start writing on the next line before reaching to the end of the line.
+      if (wrongLineCheck() && !endLineCheck()) {
+        p5.fill(0, 0, 255);
+        p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
+        lineSameDeviationSound.current.play(); // play the distance error sound
+        wrongLineErrors.current++;
+      }
+      // check if the distance is greater than maxDistance
+      else if (sameLineDist > maxDistance && inCanvas(p5) && !endLineCheck()) {
+        // if it is greater than 100px, log the distance
+        // draw red circle as a visual indicator of error and fill it with red color
+        p5.fill(255, 0, 0);
+        p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
+        lineDeviationSound.current.play(); // play the distance error sound
+        distanceDeviationErrors.current++;
+      }
 
-    validDrawing.current = true;
+      validDrawing.current = true;
+    }
   };
 
   //Check if the mouse in the Canvas borders
@@ -201,6 +291,7 @@ const TabletSketch = () => {
     if (
       containsNumberWithDeviation(rowsYPositions, currentMousePosition.y, 0.5)
     ) {
+      afterDivi = 1; //indicates if there was deviation for other functions
       // if it is overlaping, draw a big green rectangle as a visual indicator of error and fill it with green color
       p5.fill(0, 255, 0);
       // create a rectangle with the size of 10px x 10px in the current X,Y mouse position
@@ -212,9 +303,33 @@ const TabletSketch = () => {
 
   const touchMoved = (p5) => {
     saveTimeStamp(p5, getCurrentTime());
-    lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlapping the x points of the rows from rowsYPositions array
-    p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
+    if (!wrongStartLine(p5) && firstWrite !== 1 && inCanvas(p5)) {
+      //Check if the starting writing line is equal or grater to starting line and starts from the right to left
+      if (!sideCheck(p5)) {
+        validDrawing.current = false;
+        p5.fill(255, 255, 0);
+        p5.textSize(32);
+        p5.text(
+          "בבקשה להתחיל לרשום מצד ימין",
+          canvasWidth - 400,
+          canvasHeight - 20
+        );
+        p5.triangle(
+          10,
+          canvasHeight - 40,
+          30,
+          canvasHeight - 15,
+          50,
+          canvasHeight - 40
+        );
+        return false;
+      }
+    }
 
+    lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlapping the x points of the rows from rowsYPositions array
+    console.log(successInit);
+
+    positiveEncouragement(p5);
     // call the checkTimeSinceLastTouchMoved function
     let timePassed = checkTimeSinceLastTouchMoved(p5);
 
@@ -225,6 +340,7 @@ const TabletSketch = () => {
 
     if (validDrawing.current) {
       saveMousePosition(p5); // Pass the current time to the saveMousePosition function
+      p5.line(p5.mouseX, p5.mouseY, p5.pmouseX, p5.pmouseY); // draw a line between the previous and current mouse position
     }
 
     // prevent default
@@ -257,6 +373,7 @@ const TabletSketch = () => {
     lineDeviationErrors.current = 0;
     distanceDeviationErrors.current = 0;
     wrongLineErrors.current = 0;
+
     // set validDrawing to true
     //validDrawing.current = true;
   };
@@ -370,6 +487,7 @@ const TabletSketch = () => {
     <PracticeInputForm
       setMaxDistance={setMaxDistance}
       setStartingLine={setStartingLine}
+      setClear={setClear}
     />
   );
   const sketch = (
