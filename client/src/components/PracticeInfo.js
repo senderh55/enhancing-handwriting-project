@@ -8,8 +8,7 @@ const InfoContainer = styled(Paper)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  height: 100%;
+  padding: 30px;
 `;
 
 const InfoTitle = styled(Typography)`

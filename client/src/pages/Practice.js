@@ -11,6 +11,8 @@ import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 import endLineSuccessSoundFile from "../assets/audio/success.mp3";
+import Explanation from "../components/Explanation";
+import Motivation from "../components/Motivation";
 
 import {
   ProfileButton,
@@ -142,8 +144,8 @@ const TabletSketch = () => {
       if (startingLine * rowHeight >= p5.mouseY) {
         p5.fill(255, 0, 255);
         p5.textSize(32);
-        p5.text("רישום לא בשורה שנבחרה", canvasWidth - 330, 30);
-        p5.triangle(10, 30, 30, 5, 50, 30);
+        p5.text("רישום לא בשורה שנבחרה", canvasWidth - 330, 25);
+        p5.triangle(10, 28, 30, 2, 50, 28);
         distanceErrorSound.current.play(); // play the distance error sound
         validDrawing.current = false;
         return true;
@@ -235,6 +237,7 @@ const TabletSketch = () => {
     if (inCanvas(p5) && validDrawing.current) {
       //Check if the user start writing on the next line before reaching to the end of the line.
       if (wrongLineCheck() && !endLineCheck()) {
+        // draw blue circle as a visual indicator of error and fill it with red color
         p5.fill(0, 0, 255);
         p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
         lineSameDeviationSound.current.play(); // play the distance error sound
@@ -242,7 +245,6 @@ const TabletSketch = () => {
       }
       // check if the distance is greater than maxDistance
       else if (sameLineDist > maxDistance && inCanvas(p5) && !endLineCheck()) {
-        // if it is greater than 100px, log the distance
         // draw red circle as a visual indicator of error and fill it with red color
         p5.fill(255, 0, 0);
         p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
@@ -311,16 +313,16 @@ const TabletSketch = () => {
         p5.textSize(32);
         p5.text(
           "בבקשה להתחיל לרשום מצד ימין",
-          canvasWidth - 400,
-          canvasHeight - 20
+          canvasWidth - 410,
+          canvasHeight - 22
         );
         p5.triangle(
           10,
-          canvasHeight - 40,
+          canvasHeight - 42,
           30,
-          canvasHeight - 15,
+          canvasHeight - 18,
           50,
-          canvasHeight - 40
+          canvasHeight - 42
         );
         return false;
       }
@@ -379,9 +381,6 @@ const TabletSketch = () => {
   };
 
   useEffect(() => {
-    previousMouseXPositionRef.current = null;
-    previousMouseYPositionRef.current = null;
-    lastTouchMovedTimeRef.current = null;
     setClear(false);
   }, [clear]);
 
@@ -399,6 +398,12 @@ const TabletSketch = () => {
     link.href = img;
     link.click();
   };
+  useEffect(() => {
+    previousMouseXPositionRef.current = null;
+    previousMouseYPositionRef.current = null;
+    lastTouchMovedTimeRef.current = null;
+    setClear(false);
+  }, [clear]);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -510,9 +515,15 @@ const TabletSketch = () => {
         {saveSketchButton}
       </PracticeButtonWrapper>
       <PracticeButtonWrapper>
-        {inputForm}
+        <explanationWrapper>
+          {inputForm}
+          <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
+        </explanationWrapper>
         {sketch}
-        <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
+        <explanationWrapper>
+          <Motivation />
+          <Explanation />
+        </explanationWrapper>
       </PracticeButtonWrapper>
 
       <Timer setPracticeTime={setPracticeTime} practiceDone={practiceDone} />

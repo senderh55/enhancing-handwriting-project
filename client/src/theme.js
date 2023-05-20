@@ -138,6 +138,19 @@ export const PracticeButtonWrapper = styled.div`
   gap: 25px;
   & > * {
     margin: 5px;
+    margin-left: 10px;
+  }
+`;
+
+// define wrapper that will be under component
+export const explanationWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 45px;
+  & > * {
+    margin-right: 10px;
+    margin-buttom: 10px;
   }
 `;
 
