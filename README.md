@@ -6,7 +6,7 @@ ScribbleBoost is an academic final project developed by Sender Hodik and Idan Br
 
 We aim to provide occupational therapists a tool for tracking handwriting practices. By using our system, therapists can provide their patients with interactive writing practice while monitoring data and changing parameters.
 
-## Built With
+## The following technologies were used
 
 This project uses a variety of technologies to build a full-stack web application. Here's a brief explanation of each one:
 
@@ -70,7 +70,7 @@ npm install
 4. Run the project in each folder using:
 ```sh
 npm start
-```
+``` 
 
 
 
