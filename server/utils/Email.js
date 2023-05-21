@@ -45,13 +45,17 @@ const sendResetPasswordEmail = async (email, name, verificationCode) => {
     await sendMail({
       from: "ScribbleBoost",
       to: email,
-      subject: "Reset your password",
-      text: `
-        Hello, ${name}!
-
-        Please reset your password by submitting the following code:
-        ${verificationCode}
-      `,
+      subject: "ScibbleBoost - Reset your password",
+      html: `
+      <div style="background-color: #f5f5f5; padding: 20px; font-family: Arial, sans-serif;">
+        <h1 style="color: #007bff; font-size: 24px; margin-bottom: 20px; text-align: left">Hello, ${name}</h1>
+        <p style="font-size: 16px; margin-bottom: 10px; text-align: left">Please reset your password by submitting the following code</p>
+        <div style="background-color: #ffffff; border: 1px solid #dddddd; padding: 10px; font-size: 18px; text-align: left">
+          <strong>${verificationCode}</strong>
+        </div>
+        <p style="font-size: 16px; margin-top: 10px; text-align: left">If you did not sign up for ScribbleBoost, please ignore this email</p>
+      </div>
+    `,
     });
   } catch (err) {
     console.log(`Error sendResetPasswordEmail email.js: ${err}`);
