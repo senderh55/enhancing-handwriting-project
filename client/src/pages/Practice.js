@@ -4,7 +4,7 @@ import * as api from "../utils/api";
 import Timer from "./../components/Timer";
 import PracticeInputForm from "./../components/PracticeInputForm";
 import PracticeInfo from "./../components/PracticeInfo";
-import { PracticeButtonWrapper } from "../theme";
+import { PracticeButtonWrapper, ExplanationWrapper } from "../theme";
 import { AuthContext } from "../context/authContext";
 import distanceErrorSoundFile from "../assets/audio/distanceError.mp3";
 import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
@@ -361,7 +361,7 @@ const TabletSketch = () => {
   // Function to save the mouse position along with the current time
   const saveTimeStamp = (p5, currentTime) => {
     // get the current mouse position with the format "x:y" and only two decimal points
-    const position = `x:${p5.mouseX.toFixed(2)},y:${p5.mouseY.toFixed(2)}`;
+    const position = `x:${p5.mouseX.toFixed(2)} y:${p5.mouseY.toFixed(2)}`;
     positionData[currentTime] = position;
   };
 
@@ -419,22 +419,21 @@ const TabletSketch = () => {
         wrongLineErrorsCounter,
         distanceDeviationErrorsCounter,
       };
-
+      // Save positionData as a text file
+      const fileContents = JSON.stringify(positionData);
+      const blob = new Blob([fileContents], {
+        type: "text/plain;charset=utf-8",
+      });
+      saveAs(
+        blob,
+        `positionAndTimeData-${selectedProfile.name}-${
+          new Date().toLocaleString().split(",")[0]
+        }.txt`
+      );
       // set the practice time to the current time
       try {
         await api.sendPracticeData(selectedProfile.key, practiceData);
         navigate("/results");
-        // Save positionData as a text file
-        const fileContents = JSON.stringify(positionData);
-        const blob = new Blob([fileContents], {
-          type: "text/plain;charset=utf-8",
-        });
-        saveAs(
-          blob,
-          `positionAndTimeData-${selectedProfile.name}-${
-            new Date().toLocaleString().split(",")[0]
-          }.txt`
-        );
       } catch (error) {
         console.log(error);
         setSnackbarOpen(true);
@@ -515,15 +514,15 @@ const TabletSketch = () => {
         {saveSketchButton}
       </PracticeButtonWrapper>
       <PracticeButtonWrapper>
-        <explanationWrapper>
+        <ExplanationWrapper>
           {inputForm}
           <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
-        </explanationWrapper>
+        </ExplanationWrapper>
         {sketch}
-        <explanationWrapper>
+        <ExplanationWrapper>
           <Motivation />
           <Explanation />
-        </explanationWrapper>
+        </ExplanationWrapper>
       </PracticeButtonWrapper>
 
       <Timer setPracticeTime={setPracticeTime} practiceDone={practiceDone} />

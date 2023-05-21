@@ -143,14 +143,14 @@ export const PracticeButtonWrapper = styled.div`
 `;
 
 // define wrapper that will be under component
-export const explanationWrapper = styled.div`
+export const ExplanationWrapper = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column; /* Set the flex direction to column */
+  align-items: center; /* Center align the components horizontally */
   gap: 45px;
+
   & > * {
-    margin-right: 10px;
-    margin-buttom: 10px;
+    margin-bottom: 10px; /* Correct the spelling of margin-bottom */
   }
 `;
 
