@@ -147,7 +147,7 @@ export const ExplanationWrapper = styled.div`
   display: flex;
   flex-direction: column; /* Set the flex direction to column */
   align-items: center; /* Center align the components horizontally */
-  gap: 45px;
+  gap: 15px;
 
   & > * {
     margin-bottom: 10px; /* Correct the spelling of margin-bottom */
