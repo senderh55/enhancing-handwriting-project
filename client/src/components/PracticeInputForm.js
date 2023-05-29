@@ -34,7 +34,7 @@ const PracticeInputForm = ({ setStartingLine, setMaxDistance, setClear }) => {
   const formik = useFormik({
     initialValues: {
       startingLine: 1,
-      maxDistance: 100,
+      maxDistance: 2.5,
     },
     validationSchema: CreatePracticeInputSchema,
 

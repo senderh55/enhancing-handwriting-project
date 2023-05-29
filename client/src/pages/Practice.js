@@ -11,8 +11,7 @@ import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 import endLineSuccessSoundFile from "../assets/audio/success.mp3";
-import Explanation from "../components/Explanation";
-import Motivation from "../components/Motivation";
+import {Explanation, ParameterExplanation} from "../components/Explanation";
 
 import {
   ProfileButton,
@@ -516,7 +515,7 @@ const TabletSketch = () => {
         </ExplanationWrapper>
         {sketch}
         <ExplanationWrapper>
-          <Motivation />
+          <ParameterExplanation />
           <Explanation />
         </ExplanationWrapper>
       </PracticeButtonWrapper>
