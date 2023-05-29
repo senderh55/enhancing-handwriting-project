@@ -29,7 +29,7 @@ const TabletSketch = () => {
   const [clear, setClear] = useState(false);
   const { selectedProfile } = useContext(AuthContext);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [maxDistance, setMaxDistance] = useState(100);
+  const [maxDistance, setMaxDistance] = useState(2.5);
   const [startingLine, setStartingLine] = useState(0);
   const [practiceTime, setPracticeTime] = useState(`00:00`);
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
@@ -98,7 +98,7 @@ const TabletSketch = () => {
         : 0;
 
       // check if the time difference is greater than the max gap
-      if (timeDifference > maxDistance) {
+      if (timeDifference > (maxDistance*37.7952755906)) {
         // if it is greater than the max gap, log the time difference
         console.log(timeDifference + "ms passed since last write");
         timePassed = true;
@@ -175,27 +175,21 @@ const TabletSketch = () => {
 
     //Check if the writing is out of the line
     const wrongLineCheck = () => {
-      if (!inCanvas(p5)) return false;
+      if (!inCanvas(p5)) 
+      return false;
       else if (afterDivi === 1) {
-        if (
-          Math.floor(currentMousePosition.y / rowHeight) ===
-          Math.floor(previousMouseYPositionRef.current / rowHeight)
-        ) {
+        if (setTimeout(() => {  console.log("World!"); }, 600)) {
+        if (Math.floor(currentMousePosition.y / rowHeight) ===
+          Math.floor(previousMouseYPositionRef.current / rowHeight)) {
           //check if there was a line deviation to ignore the wrong line error
           afterDivi = 0;
           return true;
-        } else {
+        } else 
+        {
           //Check if the line after the deviation is not the one started before
-          if (
-            Math.floor(currentMousePosition.y / rowHeight) ===
-              Math.floor(
-                (previousMouseYPositionRef.current - rowHeight) / rowHeight
-              ) ||
-            Math.floor(currentMousePosition.y / rowHeight) ===
-              Math.floor(
-                (previousMouseYPositionRef.current + rowHeight) / rowHeight
-              )
-          ) {
+          if (Math.floor(currentMousePosition.y / rowHeight) === Math.floor((previousMouseYPositionRef.current - rowHeight) / rowHeight) 
+           ||Math.floor(currentMousePosition.y / rowHeight) === Math.floor((previousMouseYPositionRef.current + rowHeight) / rowHeight)) 
+           {
             afterDivi = 0;
             return false;
           } else {
@@ -203,11 +197,13 @@ const TabletSketch = () => {
             return true;
           }
         }
-      } else
-        return (
-          Math.floor(currentMousePosition.y / rowHeight) !==
-          Math.floor(previousMouseYPositionRef.current / rowHeight)
-        );
+     }
+    }else
+      setTimeout(() => {return (
+        Math.floor(currentMousePosition.y / rowHeight) !==
+        Math.floor(previousMouseYPositionRef.current / rowHeight)
+      );}, 600)
+        
     };
 
     // calculate the X distance between the current and previous mouse position
@@ -244,7 +240,7 @@ const TabletSketch = () => {
         wrongLineErrors.current++;
       }
       // check if the distance is greater than maxDistance
-      else if (sameLineDist > maxDistance && inCanvas(p5) && !endLineCheck()) {
+      else if (sameLineDist > (maxDistance*37.7952755906) && inCanvas(p5) && !endLineCheck()) {
         // draw red circle as a visual indicator of error and fill it with red color
         p5.fill(255, 0, 0);
         p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
@@ -307,7 +303,7 @@ const TabletSketch = () => {
     saveTimeStamp(p5, getCurrentTime());
     if (!wrongStartLine(p5) && firstWrite !== 1 && inCanvas(p5)) {
       //Check if the starting writing line is equal or grater to starting line and starts from the right to left
-      if (!sideCheck(p5)) {
+    /*  if (!sideCheck(p5)) {
         validDrawing.current = false;
         p5.fill(255, 255, 0);
         p5.textSize(32);
@@ -325,7 +321,7 @@ const TabletSketch = () => {
           canvasHeight - 42
         );
         return false;
-      }
+      }*/
     }
 
     lineDeviationCheck(p5); // call the lineDeviationCheck function to check if the current drawing not overlapping the x points of the rows from rowsYPositions array
