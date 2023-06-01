@@ -58,7 +58,7 @@ const Timer = ({ setPracticeTime, practiceDone, practiceTime }) => {
           Reset Timer
         </ProfileButton>
       </ProfileButtonWrapper>
-      <Typography variant="h4" gutterBottom>
+      <Typography margin="20px 0 0" variant="h4" gutterBottom>
         {formatTime(time)}
       </Typography>
     </div>

@@ -135,10 +135,11 @@ export const PracticeButtonWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 25px;
+  gap: z5px;
   & > * {
-    margin: 5px;
-    margin-left: 10px;
+    margin: 10px;
+    margin-left: 30px;
+    margin-right: 10px;
   }
 `;
 

@@ -11,16 +11,12 @@ import lineDeviationSoundFile from "../assets/audio/lineDeviation.wav";
 import saveAs from "file-saver";
 import sameLineDeviationFile from "../assets/audio/sameLineDeviation.mp3";
 import endLineSuccessSoundFile from "../assets/audio/success.mp3";
-import {Explanation, ParameterExplanation} from "../components/Explanation";
+import { Explanation, ParameterExplanation } from "../components/Explanation";
 
-import {
-  ProfileButton,
-  StyledButton,
-  StyledButtonWrapper,
-  StyledSnackbar,
-} from "../theme";
+import { ProfileButton, StyledSnackbar } from "../theme";
 
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const TabletSketch = () => {
   const canvasRef = useRef(null);
@@ -32,14 +28,14 @@ const TabletSketch = () => {
   const [startingLine, setStartingLine] = useState(0);
   const [practiceTime, setPracticeTime] = useState(`00:00`);
   const [practiceDone, setPracticeDone] = useState(false); // add a state to keep track if the practice is done or not
-  const rowHeight = 30.236; // 0.8 cm ≈ 30.236 px
+  const rowHeight = 30; // 0.79 cm ≈ 30 px
   const rowsYPositions = []; // array to keep track of the y positions of the rows
   // Wrap the initialization of positionData in a useMemo hook
   const positionData = useMemo(() => ({}), []);
-  // define canvas size in inches according to the size of the wacom intuos pro medium size tablet (8.82 x 5.83 inches)
+  // define canvas size in inches according to the size of the wacom intuos pro snall size tablet (6.2 x 3.9 inches)
   //changed from the setup to global
-  const canvasWidth = 8.82 * 96;
-  const canvasHeight = 5.83 * 96;
+  const canvasWidth = 595.2;
+  const canvasHeight = 374.4;
 
   let lastTouchMovedTimeRef = useRef(null);
   // add a ref to previousMousePosition - x and y coordinates
@@ -97,7 +93,7 @@ const TabletSketch = () => {
         : 0;
 
       // check if the time difference is greater than the max gap
-      if (timeDifference > (maxDistance*37.7952755906)) {
+      if (timeDifference > maxDistance * 37.7952755906) {
         // if it is greater than the max gap, log the time difference
         console.log(timeDifference + "ms passed since last write");
         timePassed = true;
@@ -130,7 +126,7 @@ const TabletSketch = () => {
           return true;
         } else if (successInit === 1) {
           p5.textSize(32);
-          p5.text("!!אתה תותח", canvasWidth - 155, canvasHeight - 20);
+          p5.text("!!כל הכבוד", canvasWidth - 155, canvasHeight - 20);
           p5.fill(0, 255, 153);
           return true;
         }
@@ -174,35 +170,47 @@ const TabletSketch = () => {
 
     //Check if the writing is out of the line
     const wrongLineCheck = () => {
-      if (!inCanvas(p5)) 
-      return false;
+      if (!inCanvas(p5)) return false;
       else if (afterDivi === 1) {
-        if (setTimeout(() => {  console.log("World!"); }, 600)) {
-        if (Math.floor(currentMousePosition.y / rowHeight) ===
-          Math.floor(previousMouseYPositionRef.current / rowHeight)) {
-          //check if there was a line deviation to ignore the wrong line error
-          afterDivi = 0;
-          return true;
-        } else 
-        {
-          //Check if the line after the deviation is not the one started before
-          if (Math.floor(currentMousePosition.y / rowHeight) === Math.floor((previousMouseYPositionRef.current - rowHeight) / rowHeight) 
-           ||Math.floor(currentMousePosition.y / rowHeight) === Math.floor((previousMouseYPositionRef.current + rowHeight) / rowHeight)) 
-           {
-            afterDivi = 0;
-            return false;
-          } else {
+        if (
+          setTimeout(() => {
+            console.log("World!");
+          }, 600)
+        ) {
+          if (
+            Math.floor(currentMousePosition.y / rowHeight) ===
+            Math.floor(previousMouseYPositionRef.current / rowHeight)
+          ) {
+            //check if there was a line deviation to ignore the wrong line error
             afterDivi = 0;
             return true;
+          } else {
+            //Check if the line after the deviation is not the one started before
+            if (
+              Math.floor(currentMousePosition.y / rowHeight) ===
+                Math.floor(
+                  (previousMouseYPositionRef.current - rowHeight) / rowHeight
+                ) ||
+              Math.floor(currentMousePosition.y / rowHeight) ===
+                Math.floor(
+                  (previousMouseYPositionRef.current + rowHeight) / rowHeight
+                )
+            ) {
+              afterDivi = 0;
+              return false;
+            } else {
+              afterDivi = 0;
+              return true;
+            }
           }
         }
-     }
-    }else
-      setTimeout(() => {return (
-        Math.floor(currentMousePosition.y / rowHeight) !==
-        Math.floor(previousMouseYPositionRef.current / rowHeight)
-      );}, 600)
-        
+      } else
+        setTimeout(() => {
+          return (
+            Math.floor(currentMousePosition.y / rowHeight) !==
+            Math.floor(previousMouseYPositionRef.current / rowHeight)
+          );
+        }, 600);
     };
 
     // calculate the X distance between the current and previous mouse position
@@ -239,7 +247,11 @@ const TabletSketch = () => {
         wrongLineErrors.current++;
       }
       // check if the distance is greater than maxDistance
-      else if (sameLineDist > (maxDistance*37.7952755906) && inCanvas(p5) && !endLineCheck()) {
+      else if (
+        sameLineDist > maxDistance * 37.7952755906 &&
+        inCanvas(p5) &&
+        !endLineCheck()
+      ) {
         // draw red circle as a visual indicator of error and fill it with red color
         p5.fill(255, 0, 0);
         p5.circle(currentMousePosition.x, currentMousePosition.y, 10);
@@ -302,7 +314,7 @@ const TabletSketch = () => {
     saveTimeStamp(p5, getCurrentTime());
     if (!wrongStartLine(p5) && firstWrite !== 1 && inCanvas(p5)) {
       //Check if the starting writing line is equal or grater to starting line and starts from the right to left
-    /*  if (!sideCheck(p5)) {
+      /*  if (!sideCheck(p5)) {
         validDrawing.current = false;
         p5.fill(255, 255, 0);
         p5.textSize(32);
@@ -470,19 +482,17 @@ const TabletSketch = () => {
   );
 
   const donePracticeButton = (
-    <StyledButtonWrapper>
-      <StyledButton
-        variant="contained"
-        onClick={() => setPracticeDone(true)}
-        color="secondary"
-        style={{
-          fontSize: "1.5rem",
-          padding: "10px 60px",
-        }}
-      >
-        Done practice
-      </StyledButton>
-    </StyledButtonWrapper>
+    <Button
+      variant="contained"
+      onClick={() => setPracticeDone(true)}
+      color="secondary"
+      style={{
+        fontSize: "1.5rem",
+        padding: "10px 60px",
+      }}
+    >
+      Done practice
+    </Button>
   );
 
   const inputForm = (
@@ -513,15 +523,20 @@ const TabletSketch = () => {
           {inputForm}
           <PracticeInfo maxDistance={maxDistance} startingLine={startingLine} />
         </ExplanationWrapper>
-        {sketch}
+        <ExplanationWrapper>
+          {sketch}
+          <Timer
+            setPracticeTime={setPracticeTime}
+            practiceDone={practiceDone}
+          />
+          {donePracticeButton}
+        </ExplanationWrapper>
         <ExplanationWrapper>
           <ParameterExplanation />
           <Explanation />
         </ExplanationWrapper>
       </PracticeButtonWrapper>
 
-      <Timer setPracticeTime={setPracticeTime} practiceDone={practiceDone} />
-      {donePracticeButton}
       {conntectionErrorAlert}
     </>
   );
