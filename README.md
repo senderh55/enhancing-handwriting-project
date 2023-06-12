@@ -83,4 +83,4 @@ npm start
 
 
 ## Usage
-![]([https://github.com/senderh55/Minesweeper/blob/main/mine.gif](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/Scribbleboost%20main%20flow.mp4))
+![](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/Scribbleboost_main_flow.mp4))
