@@ -4,19 +4,27 @@
 
 ScribbleBoost is an academic final project developed by Sender Hodik and Idan Brauner, supervised by Dr. Anat Dahan and Dr. Navit Roth.
 
-We aim to provide occupational therapists a tool for tracking handwriting practices. By using our system, therapists can provide their patients with interactive writing practice while monitoring data and changing parameters.
+Handwriting is an essential skill used in building self-esteem, academic achievement, accessible creativity, artistic opportunities, and daily task. Many children struggle with handwriting despite the fact that it is a necessary skill for academics and other professions. As a result, there are occupational therapists who are skilled in helping children improve their handwriting.
+
+Since technology has advanced, development of advanced digital technologies may offer fresh and newer ideas from the traditional methods like pencil and paper that are no longer efficient enough. 
+For occupational therapists treating elementary school-aged children with handwriting difficulties, we developed ScribbleBoost, a web-based program that utilizes graphic tablets to track and improve handwriting skills
+With the system, patients can perform writing exercises on the tablet, which are synchronized with what is done on the system's screen, providing positive and negative feedback in real time, while adjusting specific parameters such as marking the line at which the writing begins and the distance between the scribbles of a patient on a page
+As part of the system, therapists are able to view and track their patients' progress through a user management interface.
+
+The project has tremendous potential, both from a research perspective where researchers can examine the progress of patients, as well as from a performance perspective where patients, particularly children, can use a user-friendly system to improve their handwriting skills. 
+
 
 ## The following technologies were used
 
 This project uses a variety of technologies to build a full-stack web application. Here's a brief explanation of each one:
 
-Front-end: ReactJS
+Front-end: 
 ReactJS is a popular JavaScript library for building user interfaces. It allows developers to create reusable UI components and manage the state of the application efficiently. ReactJS is widely used for building single-page applications and is known for its high performance and ease of use.
 
-UI Framework: MaterialUI
+UI Framework: 
 MaterialUI is a popular React component library that provides pre-built UI components based on Google's Material Design guidelines. It includes a wide range of components such as buttons, forms, cards, and more, that can be easily customized to match the project's design.
 
-Backend: NodeJS
+Backend: 
 NodeJS is a popular JavaScript runtime environment that allows developers to run JavaScript code outside of the browser. It is widely used for building server-side applications, and its event-driven, non-blocking I/O model makes it highly scalable and efficient.
 
 Database: MongoDB
@@ -75,4 +83,4 @@ npm start
 
 
 ## Usage
-
+![]([https://github.com/senderh55/Minesweeper/blob/main/mine.gif](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/Scribbleboost%20main%20flow.mp4))
