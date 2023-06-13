@@ -27,10 +27,8 @@ MaterialUI is a popular React component library that provides pre-built UI compo
 Backend: 
 NodeJS is a popular JavaScript runtime environment that allows developers to run JavaScript code outside of the browser. It is widely used for building server-side applications, and its event-driven, non-blocking I/O model makes it highly scalable and efficient.
 
-Database: MongoDB
-MongoDB is a popular NoSQL database that stores data in JSON-like documents. It is widely used for building scalable, high-performance web applications, and is known for its flexibility and ease of use.
+Database: MongoDB is a popular NoSQL database that stores data in JSON-like documents. It is widely used for building scalable, high-performance web applications, and is known for its flexibility and ease of use.
 
-* []()
 
 ## Getting Started
 
