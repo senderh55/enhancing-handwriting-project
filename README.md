@@ -83,4 +83,5 @@ npm start
 
 
 ## Preview
-![]([https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/Scribbleboost_main_flow.gif](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/scribbleboost_main_flow.gif))
+![scribbleboost_main_flow](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/scribbleboost_main_flow.gif)
+
