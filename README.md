@@ -14,6 +14,10 @@ As part of the system, therapists are able to view and track their patients' pro
 The project has tremendous potential, both from a research perspective where researchers can examine the progress of patients, as well as from a performance perspective where patients, particularly children, can use a user-friendly system to improve their handwriting skills. 
 
 
+## Preview
+![scribbleboost_main_flow](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/scribbleboost_main_flow.gif)
+
+
 ## The following technologies were used
 
 This project uses a variety of technologies to build a full-stack web application. Here's a brief explanation of each one:
@@ -80,6 +84,4 @@ npm start
 
 
 
-## Preview
-![scribbleboost_main_flow](https://github.com/senderh55/enhancing-handwriting-project/blob/main/appendix/scribbleboost_main_flow.gif)
 
